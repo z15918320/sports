@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="supplyDao">
+
+<select id="supplyDao.selectSupplyCommentBySupply" parameterType="com.miaotu.supplyComment.pojo.SupplyCommentParams" resultType="com.miaotu.supplyComment.vo.SupplyCommentInfo">
+		select su.*,us.user_name from SUPPLY_COMMENT su inner join USER_INFO us ON su.user_id=us.user_id 
+	        where su.supply_id= #{supply_id}
+        ORDER BY su.supply_comment_id desc
+	</select>
+	
+
+	<select id="supplyDao.selectSupply" parameterType="com.miaotu.supply.pojo.SupplyParams" resultType="com.miaotu.supply.vo.SupplyInfo">
+		select su.*,us.user_name from SUPPLY su inner join USER_INFO us ON su.user_id=us.user_id 
+	        <where>
+		        <if test="varieties!=null and varieties!='' ">  
+		             AND su.varieties LIKE CONCAT(CONCAT('%', #{varieties}),'%')   
+		        </if>  
+		        <if test="user_id!=null and user_id!='' ">  
+		            AND su.user_id = #{user_id}   
+		        </if> 
+		        <if test="supply_id !=null and supply_id !='' ">  
+		            AND su.supply_id = #{supply_id}   
+		        </if> 
+		        <if test="starTime !=null and starTime !='' ">  
+		            AND su.uploadtime &gt;= date_format(#{starTime},'%Y-%c-%d %h:%i:%s')
+		        </if> 
+		        <if test="endTime !=null and endTime !='' ">  
+		            AND su.uploadtime &lt;=  date_format(#{endTime},'%Y-%c-%d %h:%i:%s') 
+		        </if> 
+		        <if test="status !=null">  
+		            AND su.status = #{status}   
+		        </if> 
+	        </where> 
+        ORDER BY su.isTop desc,su.supply_id desc limit #{starNumber}, #{num}
+	</select>
+	
+	<select id="supplyDao.selectSupplyCount" parameterType="com.miaotu.supply.pojo.SupplyParams" resultType="Integer">
+		select count(1) from SUPPLY su
+		<where>
+		        <if test="varieties!=null and varieties!='' ">  
+		             AND su.varieties LIKE CONCAT(CONCAT('%', #{varieties}),'%')   
+		        </if>  
+		        <if test="user_id!=null and user_id!='' ">  
+		            AND su.user_id = #{user_id}   
+		        </if> 
+		        <if test="starTime !=null and starTime !='' ">  
+		            AND su.uploadtime &gt;= date_format(#{starTime},'%Y-%c-%d %h:%i:%s')
+		        </if> 
+		        <if test="endTime !=null and endTime !='' ">  
+		            AND su.uploadtime &lt;=  date_format(#{endTime},'%Y-%c-%d %h:%i:%s') 
+		        </if> 
+		        <if test="status !=null">  
+		            AND su.status = #{status}   
+		        </if> 
+	        </where> 
+	</select>
+	
+	<select id="supplyDao.selectSupplyById" parameterType="Integer" resultType="com.miaotu.supply.vo.SupplyInfo">
+		select * from SUPPLY where supply_id= #{supply_id};
+	</select>
+	
+	<select id="supplyDao.selectTop" resultType="Integer">
+		select MAX(isTop) from SUPPLY;
+	</select>
+	
+	<update id="supplyDao.changeStatusSupplyById" parameterType="Integer">
+		update SUPPLY set status=(case when status = 0 then 1 when status = 1 then 0 end)
+		where supply_id = #{supply_id};
+	</update>
+	
+	<insert id="supplyDao.addSupplyById" keyProperty="supply_id"
+		useGeneratedKeys="true" parameterType="com.miaotu.supply.pojo.SupplyParams">
+		insert into SUPPLY 
+		(varieties,
+		number,
+		unit_price,
+		user_id,
+		rod_diameter,
+		branch_point,
+		crown_width_e,
+		height_s,
+		crown_width_s,
+		height_e,
+		seedling_source_address,
+		selling_point,
+		supply_url,
+		uploadtime) 
+		values
+		(#{varieties},
+		#{number},
+		#{unit_price},
+		#{user_id},
+		#{rod_diameter},
+		#{branch_point},
+		#{crown_width_e},
+		#{height_s},
+		#{crown_width_s},
+		#{height_e},
+		#{seedling_source_address},
+		#{selling_point},
+		#{supply_url},
+		now()
+		);
+		</insert>
+		
+	<update id="supplyDao.cancelTop" parameterType="Integer">
+		UPDATE SUPPLY SET isTop=0 where supply_id=#{supply_id};
+	</update>
+	
+	<update id="supplyDao.editSupplyById" parameterType="com.miaotu.supply.pojo.SupplyParams">
+		update SUPPLY 
+		<set>
+		  <if test="supply_url!=null and supply_url!='' ">  
+	            supply_url = #{supply_url},
+	      </if>
+	      <if test="isTop!=null and isTop!='' ">  
+	            isTop = #{isTop},
+	      </if>
+	      <if test="varieties!=null and varieties!='' ">  
+	            varieties = #{varieties},
+	      </if>
+	      <if test="number!=null and number!='' ">  
+	            number = #{number},
+	      </if>
+	      <if test="unit_price!=null and unit_price!='' ">  
+	            unit_price = #{unit_price},
+	      </if>
+	      <if test="user_id!=null and user_id!='' ">  
+	            user_id = #{user_id},
+	      </if>
+	      <if test="rod_diameter!=null and rod_diameter!='' ">  
+	            rod_diameter = #{rod_diameter},
+	      </if>
+	      <if test="branch_point!=null and branch_point!='' ">  
+	            branch_point = #{branch_point},
+	      </if>
+	      <if test="crown_width_e!=null and crown_width_e!='' ">  
+	            crown_width_e = #{crown_width_e},
+	      </if>
+	      <if test="height_s!=null and height_s!='' ">  
+	            height_s = #{height_s},
+	      </if>
+	      <if test="crown_width_s!=null and crown_width_s!='' ">  
+	            crown_width_s = #{crown_width_s},
+	      </if>
+	      <if test="height_e!=null and height_e!='' ">  
+	            height_e = #{height_e},
+	      </if>
+	      <if test="seedling_source_address!=null and seedling_source_address!='' ">  
+	            seedling_source_address = #{seedling_source_address},
+	      </if>
+	      <if test="selling_point!=null and selling_point!='' ">  
+	            selling_point = #{selling_point},
+	      </if>
+	      <if test="commentTotal !=null and commentTotal !='' ">  
+	            commentTotal = #{commentTotal},
+	      </if>
+		</set>
+		where supply_id = #{supply_id}
+	</update>
+
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

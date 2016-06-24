@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wantbuyDao">
+
+	<select id="wantbuyDao.selectTop" resultType="Integer">
+		select MAX(isTop) from WANT_BUY;
+	</select>
+	<update id="wantbuyDao.cancelTop" parameterType="Integer">
+		UPDATE WANT_BUY SET isTop=0 where want_buy_id=#{want_buy_id};
+	</update>
+	<select id="wantbuyDao.selectWantBuy" parameterType="com.miaotu.wantbuy.pojo.WantBuyParams"
+		resultType="com.miaotu.wantbuy.vo.WantBuyInfo">
+		select c.*,us.user_name,pmd.payment_methods_dictionary_name as pmd_name from WANT_BUY c 
+		inner join USER_INFO us on us.user_id=c.user_id 
+		inner join PAYMENT_METHODS_DICTIONARY pmd 
+		on c.payment_methods_dictionary_id = pmd.payment_methods_dictionary_id
+		<where>
+				<if test="want_buy_id !=null and want_buy_id !='' ">  
+		             AND c.want_buy_id = #{want_buy_id} 
+		        </if> 
+		        <if test="varieties!=null and varieties!='' ">  
+		             AND c.varieties LIKE CONCAT(CONCAT('%', #{varieties}),'%')   
+		        </if>  
+		        <if test="user_id!=null and user_id!='' ">  
+		            AND c.user_id = #{user_id}   
+		        </if> 
+		        <if test="starTime !=null and starTime !='' ">  
+		            AND c.uploadtime &gt;= date_format(#{starTime},'%Y-%c-%d %h:%i:%s')
+		        </if> 
+		        <if test="endTime !=null and endTime !='' ">  
+		            AND c.uploadtime &lt;=  date_format(#{endTime},'%Y-%c-%d %h:%i:%s') 
+		        </if> 
+		        <if test="status !=null">  
+		            AND c.status = #{status}   
+		        </if> 
+	        </where>
+	        ORDER BY c.isTop desc,c.want_buy_id desc limit #{starNumber}, #{num}
+	</select>
+	
+	<select id="wantbuyDao.selectWantBuyCount" parameterType="com.miaotu.wantbuy.pojo.WantBuyParams"
+		resultType="Integer">
+		select count(1) from WANT_BUY c
+		<where>
+		        <if test="varieties!=null and varieties!='' ">  
+		             AND c.varieties LIKE CONCAT(CONCAT('%', #{varieties}),'%')   
+		        </if>  
+		        <if test="user_id!=null and user_id!='' ">  
+		            AND c.user_id = #{user_id}   
+		        </if> 
+		        <if test="starTime !=null and starTime !='' ">  
+		            AND c.uploadtime &gt;= date_format(#{starTime},'%Y-%c-%d %h:%i:%s')
+		        </if> 
+		        <if test="endTime !=null and endTime !='' ">  
+		            AND c.uploadtime &lt;=  date_format(#{endTime},'%Y-%c-%d %h:%i:%s') 
+		        </if> 
+		        <if test="status !=null">  
+		            AND c.status = #{status}   
+		        </if> 
+	        </where>  
+	</select>
+	
+	<select id="wantbuyDao.selectWantBuyById" parameterType="Integer"
+		resultType="com.miaotu.wantbuy.vo.WantBuyInfo">
+		select * from WANT_BUY c where c.want_buy_id = #{want_buy_id};
+	</select>
+
+	<update id="wantbuyDao.editWantBuyById" parameterType="com.miaotu.wantbuy.pojo.WantBuyParams">
+		update WANT_BUY 
+		<set>
+		  <if test="want_buy_url != null and want_buy_url != '' ">  
+	            want_buy_url = #{want_buy_url},
+	      </if>
+	      <if test="isTop != null and isTop != '' ">  
+		         isTop = #{isTop},
+		  </if>
+		  <if test="mining_area != null and mining_area != '' ">  
+		         mining_area = #{mining_area},
+		  </if>
+		  <if test="use_mining_area != null and use_mining_area != '' ">  
+		         use_mining_area = #{use_mining_area},
+		  </if>
+		  <if test="height_e != null and height_e != '' ">  
+		         height_e = #{height_e},
+		  </if>
+		  <if test="crown_width_s != null and crown_width_s != '' ">  
+		         crown_width_s = #{crown_width_s},
+		  </if>
+		  <if test="height_s != null and height_s != '' ">  
+		         height_s = #{height_s},
+		  </if>
+		  <if test="crown_width_e != null and crown_width_e != '' ">  
+		         crown_width_e = #{crown_width_e},
+		  </if>
+		  <if test="branch_point != null and branch_point != '' ">  
+		         branch_point = #{branch_point},
+		  </if>
+		  <if test="rod_diameter != null and rod_diameter != '' ">  
+		         rod_diameter = #{rod_diameter},
+		  </if>
+		  <if test="user_id != null and user_id != '' ">  
+		         user_id = #{user_id},
+		  </if>
+		  <if test="payment_methods_dictionary_id != null and payment_methods_dictionary_id != '' ">  
+		         payment_methods_dictionary_id = #{payment_methods_dictionary_id},
+		  </if>
+		  <if test="number != null and number != '' ">  
+		         number = #{number},
+		  </if>
+		  <if test="varieties != null and varieties != '' ">  
+		         varieties = #{varieties},
+		  </if>
+		  <if test="commentTotal !=null and commentTotal !='' ">  
+	            commentTotal = #{commentTotal},
+	      </if>
+		</set>
+		where want_buy_id = #{want_buy_id}
+	</update>
+
+	<insert id="wantbuyDao.addWantBuyById" keyProperty="want_buy_id"
+		useGeneratedKeys="true" parameterType="com.miaotu.wantbuy.pojo.WantBuyParams">
+		insert into WANT_BUY 
+		(varieties,
+		number,
+		payment_methods_dictionary_id,
+		user_id,
+		rod_diameter,
+		branch_point,
+		crown_width_e,
+		height_s,
+		crown_width_s,
+		height_e,
+		use_mining_area,
+		mining_area,
+		want_buy_url) 
+		values
+		(#{varieties},
+		#{number},
+		#{payment_methods_dictionary_id},
+		#{user_id},
+		#{rod_diameter},
+		#{branch_point},
+		#{crown_width_e},
+		#{height_s},
+		#{crown_width_s},
+		#{height_e},
+		#{use_mining_area},
+		#{mining_area},
+		#{want_buy_url}
+		);
+		</insert>
+
+	<update id="wantbuyDao.changeStatusWantBuyById" parameterType="Integer">
+		update WANT_BUY set status=(case when status = 0 then 1 when status = 1 then 0 end)
+		where want_buy_id = #{want_buy_id};
+	</update>
+
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

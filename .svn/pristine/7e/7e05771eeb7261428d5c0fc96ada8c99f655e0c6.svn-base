@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="topicDao">
+
+	<select id="selectTopicId" parameterType="com.miaotu.topic.pojo.TopicParams"
+		resultType="com.miaotu.topic.vo.SelectTopicInfo">
+		SELECT UI.nickname,UI.sexy,UI.heed_image_url,PI.* FROM TOPIC_INFO PI LEFT JOIN USER_INFO UI ON PI.user_id = UI.user_id where 1=1  
+		ORDER BY PI.uploadtime limit #{page},#{num};
+	</select>
+
+	<select id="selecTopicforId" parameterType="Integer"
+		resultType="com.miaotu.topic.vo.SelectTopicInfo">
+		SELECT UI.nickname,UI.sexy,UI.heed_image_url,PI.* FROM TOPIC_INFO PI LEFT JOIN USER_INFO UI ON PI.user_id = UI.user_id WHERE PI.topic_id = #{topic_id};
+	</select>
+
+	<insert id="saveTopic" keyProperty="topic_id" useGeneratedKeys="true"
+		parameterType="com.miaotu.topic.vo.TopicInfo">
+		insert into
+		TOPIC_INFO(user_id,topic_url,topic_content,uploadtime)
+		values
+		(#{user_id},#{topic_url},#{topic_content},now());
+		<!-- ON duplicate KEY UPDATE user_name = #{user_name} 限制重复插入的另一种方法 -->
+	</insert>
+
+	<select id="selectTopicNumForUserId" parameterType="Integer"
+		resultType="Integer">
+		SELECT count(user_id) AS topic_num FROM TOPIC_INFO WHERE
+		user_id = #{user_id};
+	</select>
+
+	<insert id="saveTopicCollection" parameterType="com.miaotu.topic.pojo.TopicCollection">
+		insert into TOPIC_COMMENT(user_id,topic_id) values (#{user_id},#{topic_id});
+	</insert>
+	
+	<insert id="saveTopicComment" parameterType="com.miaotu.topic.pojo.TopicCommentParams">
+		insert into
+		TOPIC_COMMENT(user_id,topic_id,topic_comment,topic_comment_time)
+		values
+		(#{user_id},#{topic_id},#{topic_comment},now());
+	</insert>
+
+	<update id="updateTopicId" parameterType="com.miaotu.topic.vo.TopicInfo">
+		update
+		TOPIC_INFO
+		<set>
+			<if test="topic_url != null and  '' != topic_header   ">varieties=#{topic_header},</if>
+			<if test="topic_content != null and  '' != topic_content   ">topic_content=#{topic_content},</if>
+		</set>
+		where topic_id = #{topic_id}
+	</update>
+
+	<delete id="deleteTopicId" parameterType="Integer">
+		delete from
+		TOPIC_INFO
+		where topic_id = #{topic_id};
+	</delete>
+
+
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

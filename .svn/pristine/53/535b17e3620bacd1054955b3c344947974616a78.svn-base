@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="userDao">
+
+	<select id="selectName" parameterType="String" resultType="String">
+		select user_name from USER_INFO b where b.user_name = #{user_name};
+	</select>
+
+	<select id="selectUserForName" parameterType="String"
+		resultType="com.miaotu.user.vo.UserInfo">
+		select * from USER_INFO b where b.user_name =#{user_name};
+	</select>
+
+	<insert id="registerUser" keyProperty="user_id"
+		useGeneratedKeys="true" parameterType="com.miaotu.user.vo.UserInfo">
+		insert into
+		USER_INFO(user_name,company_name,password,hx_password,nickname,address,mobile,landline,
+		email,i_type_id,sexy,business_direction,user_authentication,heed_image_url,register_time)
+		values
+		(#{user_name},#{company_name},#{password},#{hx_password},#{nickname},#{address},#{mobile},
+		#{landline},#{email},#{i_type_id},#{sexy},
+		#{business_direction},#{user_authentication},#{heed_image_url},date_format(now(),'%Y-%c-%d %h:%i:%s'));
+		<!-- ON duplicate KEY UPDATE user_name = #{user_name} 限制重复插入的另一种方法 -->
+	</insert>
+
+	<select id="selectUser" parameterType="com.miaotu.user.pojo.LoginPramas"
+		resultType="com.miaotu.user.vo.UserInfo">
+		select
+		b.user_id,user_name,company_name,password,hx_password,
+		nickname,address,mobile,landline,email,
+		business_direction,user_authentication,e.behavior_value,e.consumption_value,e.residual_value,sexy,
+		heed_image_url,heed_image_url,register_time,
+		a.country,a.province,a.city,a.area,a.street,a.longitude,a.latitude
+		from
+		USER_INFO b
+		left join USER_ADDRESS a on b.user_id = a.user_id
+		left
+		join USER_EXPERIENCE e ON e.user_id = b.user_id
+		where
+		b.user_name =#{user_name} and password = #{password};
+	</select>
+
+
+	<select id="selectNearbyUser" parameterType="com.miaotu.user.pojo.UserParams"
+		resultType="com.miaotu.user.vo.UserInfo">
+		SELECT
+		b.user_id,b.user_name,b.company_name,password,hx_password,
+		nickname,address,mobile,landline,email,
+		business_direction,user_authentication,heed_image_url,
+		country,province,city,area,street,
+		longitude,latitude,register_time,
+		heed_image_url ,
+		e.behavior_value,e.consumption_value,e.residual_value,sexy,
+		(POWER(MOD(ABS(a.longitude - #{longitude}),360),2) +
+		POWER(ABS(a.latitude - #{latitude}),2)) AS new_neaby
+		from
+		USER_INFO b
+		left join USER_ADDRESS a on a.user_id = b.user_id
+		left join
+		USER_EXPERIENCE e ON e.user_id = b.user_id
+		ORDER BY new_neaby LIMIT
+		#{page}, #{num}
+	</select>
+
+	<select id="selectPaymentMethods" resultType="com.miaotu.user.vo.PaymentMethodsInfo">
+		SELECT * from PAYMENT_METHODS_DICTIONARY ;
+	</select>
+	
+	<select id="selectIndustry" resultType="com.miaotu.user.vo.IndustryInfo">
+		SELECT * from INDUSTRY_TYPE ;
+	</select>
+	
+	
+
+	<select id="selectNewUser" parameterType="com.miaotu.user.pojo.NewUserParams"
+		resultType="com.miaotu.user.vo.UserInfo">
+		SELECT 
+		b.user_id,b.user_name,b.company_name,password,hx_password,
+		nickname,address,mobile,landline,email,
+		business_direction,user_authentication,heed_image_url,
+		country,province,city,area,street,
+		longitude,latitude,register_time,heed_image_url,e.behavior_value,
+		e.consumption_value,e.residual_value,sexy from
+		USER_INFO b
+		left join
+		USER_ADDRESS a on a.user_id = b.user_id
+		left
+		join USER_EXPERIENCE e ON
+		e.user_id = b.user_id
+		ORDER BY register_time
+		desc LIMIT #{page}, #{num}
+	</select>
+
+
+	<update id="updateUser" keyProperty="user_id" useGeneratedKeys="true"
+		parameterType="com.miaotu.user.vo.UserInfo">
+		update USER_INFO
+		<set>
+			<if test="company_name != null and  '' != company_name ">company_name=#{company_name},</if>
+			<if test="password != null and  '' != password ">password=#{password},</if>
+			<if test="nickname != null and  '' != nickname ">nickname=#{nickname},</if>
+			<if test="address != null and  '' != address ">address=#{address},</if>
+			<if test="email != null and  '' != email ">email=#{email},</if>
+			<if test="business_direction != null and  '' != business_direction ">business_direction=#{business_direction},</if>
+			<if test="mobile != null and  '' != mobile  and 0 != mobile">mobile=#{mobile},</if>
+			<if test="landline != null and  '' != landline  and 0 != landline">landline=#{landline},</if>
+			<if
+				test="user_authentication != null and  '' != user_authentication  and 0 != user_authentication">user_authentication=#{user_authentication},</if>
+			<if test="heed_image_url != null and  '' != heed_image_url ">heed_image_url=#{heed_image_url},</if>
+		</set>
+		where user_name = #{user_name}
+	</update>
+
+	<insert id="addUserAddress" keyProperty="a_id" useGeneratedKeys="true"
+		parameterType="com.miaotu.user.vo.AddressInfo">
+		insert into
+		USER_ADDRESS(user_id,country,province,city,area,street,longitude,latitude)
+		values
+		(#{user_id},#{country},#{province},#{city},#{area},#{street},#{longitude},#{latitude});
+	</insert>
+
+	<update id="updateUserAddress" parameterType="com.miaotu.user.vo.AddressInfo">
+		update USER_ADDRESS
+		<set>
+			<if test="country != null and  '' != country">country=#{country},</if>
+			<if test="province != null and  '' != province ">province=#{province},</if>
+			<if test="city != null and  '' != city ">city=#{city},</if>
+			<if test="area != null and  '' != area ">area=#{area},</if>
+			<if test="street != null and  '' != street ">street=#{street},</if>
+			<if test="longitude != null and  '' != longitude and 0!= longitude">longitude=#{longitude},</if>
+			<if test="latitude != null and  '' != latitude and 0!= latitude">latitude=#{consumption_vlatitudealue},</if>
+		</set>
+		where user_id = #{user_id}
+	</update>
+
+	<delete id="deleteUserAddress" parameterType="Integer">
+		delete from
+		USER_ADDRESS a where a.user_id = #{user_id}
+	</delete>
+
+	<insert id="addExperience" parameterType="com.miaotu.user.vo.ExperienceInfo">
+		insert into
+		USER_EXPERIENCE(behavior_value,consumption_value,residual_value)
+		values
+		(#{behavior_value},#{consumption_value},#{residual_value});
+	</insert>
+
+	<update id="updateExperience" parameterType="com.miaotu.user.vo.ExperienceInfo">
+		update USER_ADDRESS
+		<set>
+			<if
+				test="behavior_value != null and  '' != behavior_value and 0 != behavior_value">behavior_value=#{behavior_value},</if>
+			<if
+				test="consumption_value != null and  '' != consumption_value and 0 != consumption_value">behavior_value=#{consumption_value},</if>
+			<if
+				test="residual_value != null and  '' != residual_value and 0!= residual_value">behavior_value=#{consumption_value},</if>
+		</set>
+		where user_id = #{user_id}
+	</update>
+
+
+	<select id="selectUserForActivitiesId" parameterType="com.miaotu.user.vo.ActivitiesId"
+		resultType="com.miaotu.user.vo.UserInfo">
+		SELECT ui.* FROM USER_ACTIVITIES ua LEFT JOIN USER_INFO ui
+		ON ua.user_id = ui.user_id
+		WHERE ua.activities_id = #{activities_id}
+		ORDER BY ui.register_time DESC
+		LIMIT
+		#{page}, #{num}
+	</select>
+
+
+
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,251 @@
+package com.miaotu.orderActive.controller;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.miaotu.activities.vo.AdminUser;
+import com.miaotu.orderActive.pojo.orderActiveParams;
+import com.miaotu.orderActive.service.orderActiveService;
+import com.miaotu.orderActive.vo.orderActiveInfo;
+
+/**
+ * 订单管理controller
+ * @author zhijiang.zhang
+ * 2016-05-06 09:35:20
+ */
+@Controller 
+@RequestMapping("/orderActive")
+public class OrderActiveController {
+
+	/**
+	 * 一页显示条数
+	 */
+	private Integer number=10;
+	
+	/**
+	 * 起始数
+	 */
+	private Integer starNumber=0;
+	
+	/**
+	 * 总页数  
+	 */
+	private Integer pageCount=1;
+	
+	/**
+	 * 订单总数
+	 */
+	private Integer custCount=0;
+	
+	/**
+	 * 当前页数
+	 */
+	private Integer pageNow =0;
+	
+	String pageCountt;
+	String orderNo;
+	String starTime;
+	String endTime;
+	String entityStatus="";
+	String contactsPhone;
+	
+	@Autowired
+	private orderActiveService service;
+	
+	
+	/**
+	 * 删除订单
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/deleteOrderActive.do")
+	public String deleteOrderActive(HttpServletRequest request,String allIDCheck,RedirectAttributes attr) {
+	  String [] ids = allIDCheck.split(",");
+	  boolean isdelete = true;
+	  if(null!=ids&&ids.length>0){
+		  for (String id : ids) {
+			  isdelete = this.service.deleteEntity(new Integer(id));
+			  if(!isdelete){
+					break;
+				}
+		}
+	  }
+	  if(isdelete){
+		  attr.addAttribute("message", "操作订单成功");
+		}else{
+			attr.addAttribute("message", "操作订单失败");
+		}
+	 return "redirect:/orderActive/toOrderActiveList.do";
+	}
+	
+	
+	
+	/**
+	 * 订单编辑提交逻辑
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toOrderActiveSubmit.do")  
+	@ResponseBody
+	public Map toOrderActiveSubmit(HttpServletRequest request,@RequestBody  orderActiveParams par){
+		Map<String,String> map = new HashMap<String,String>();
+		try{
+			request.setCharacterEncoding("UTF-8");
+			HttpSession session = request.getSession();
+			AdminUser userinfo = (AdminUser)session.getAttribute("user");
+			boolean isadd=true;
+			if(null!=userinfo){
+				isadd = this.service.editEntity(par);
+				//判断是否新增
+				if(isadd){
+					map.put("message", "修改订单成功");
+				}else{
+					map.put("message", "修改订单失败");
+				}
+				
+			}
+		}catch(Exception e){
+			map.put("message", "操作订单失败");
+		}
+		return map;
+	}
+
+	
+	
+	/**
+	 * 订单编辑页面
+	 * @param request
+	 * @return
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
+	 */
+	@RequestMapping("/toOrderActiveEdit.do")  
+	public String toOrderActiveEdit(HttpServletRequest request) throws JsonParseException, JsonMappingException, IOException{
+		String returnStr="/jsp/orderActive/orderActiveEdit";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			//获得订单ID
+			String entityId = request.getParameter("entityId");
+			orderActiveInfo entityInfo = new orderActiveInfo();
+			if(StringUtils.isNotEmpty(entityId)){
+				entityInfo = this.service.getEntityInfo(new Integer(entityId));
+			}
+			request.setAttribute("entityInfo", entityInfo);
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	/**
+	 * index页面查询下一页订单
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectNextPage.do")
+	public String selectNextPage(HttpServletRequest request){
+		pageNow+=1;
+		return "redirect:/orderActive/toOrderActiveList.do";
+	}
+	
+	/**
+	 * index页面查询下一页订单
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectLastPage.do")
+	public String selectLastPage(HttpServletRequest request){
+		if(pageNow>0){
+			pageNow-=1;
+		}
+		return "redirect:/orderActive/toOrderActiveList.do";
+	}
+
+	
+	
+	@RequestMapping("/toOrderActiveList.do")  
+	public String toOrderActiveList(HttpServletRequest request) throws JsonParseException, JsonMappingException, IOException{
+		String returnStr="/jsp/orderActive/orderActiveList";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			if(StringUtils.isNotEmpty(request.getParameter("pageCountt"))){
+				pageCountt = request.getParameter("pageCountt");
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("contactsPhone"))){
+				contactsPhone = request.getParameter("contactsPhone");
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("entityStatus"))){
+				entityStatus = request.getParameter("entityStatus");
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("endTime"))){
+				endTime = request.getParameter("endTime");
+			}else{
+				endTime=null;
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("starTime"))){
+				starTime = request.getParameter("starTime");
+			}else{
+				starTime=null;
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("orderNo"))){
+				orderNo = request.getParameter("orderNo");
+			}
+			if(StringUtils.isNotEmpty(pageCountt)){
+				pageNow = new Integer(pageCountt)-1;
+			}
+			orderActiveParams par = new orderActiveParams();
+			par.setContacts_phone(contactsPhone);
+			par.setOrder_no(orderNo);
+			par.setActivities_starttime(starTime);
+			par.setActivities_endtime(endTime);
+			if(StringUtils.isNotEmpty(entityStatus.trim())){
+				par.setOrder_status(new Integer(entityStatus));
+			}else{
+				par.setOrder_status(null);
+			}
+			par.setNum(number);
+			if(null!=pageNow&&pageNow>=0){
+				starNumber = pageNow*number;
+			}
+			par.setStarNumber(starNumber);
+			List<orderActiveInfo> entityList = this.service.getEntityList(par);
+			custCount = this.service.getCountEntity(par);
+			Double c = Math.ceil(custCount/number.doubleValue());
+			pageCount = c.intValue();
+			request.setAttribute("contactsPhone", contactsPhone);
+			request.setAttribute("infoList", entityList);
+			request.setAttribute("entityStatus", par.getOrder_status());
+			request.setAttribute("orderNo", orderNo);
+			request.setAttribute("starTime", starTime);
+			request.setAttribute("endTime", endTime);
+			request.setAttribute("pageCount", pageCount);
+			request.setAttribute("number", number);
+			request.setAttribute("starNumber", starNumber);
+			request.setAttribute("custCount", custCount);
+			request.setAttribute("pageNow", pageNow);
+			
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+}

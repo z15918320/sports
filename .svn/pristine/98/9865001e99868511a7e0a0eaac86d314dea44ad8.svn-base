@@ -1,0 +1,23 @@
+package com.miaotu.information.service;
+import java.util.List;
+
+import com.miaotu.information.pojo.InformationParams;
+import com.miaotu.information.vo.InformationInfo;
+
+public interface InformationService {
+	
+	public boolean deleteEntity(Integer info_id);
+	
+	public boolean changeEntityStatus(Integer info_id);
+	
+	public boolean addEntity(InformationParams par);
+	
+	public boolean editEntity(InformationParams par);
+	
+	public InformationInfo getEntityInfo(Integer info_id);
+	
+	public List<InformationInfo> getEntityList(InformationParams par);
+	
+	public Integer getCountEntity(InformationParams par);
+	
+}

@@ -1,0 +1,316 @@
+package com.miaotu.user.controller;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.miaotu.activities.vo.ActivitesPar;
+import com.miaotu.activities.vo.AdminUser;
+import com.miaotu.activities.vo.IdentityValue;
+import com.miaotu.common.util.MD5Utils;
+import com.miaotu.common.util.UuidHelp;
+import com.miaotu.huanxin.httpclient.apidemo.EasemobIMUsers;
+import com.miaotu.user.pojo.UserBehaviorValueParams;
+import com.miaotu.user.pojo.UserParams;
+import com.miaotu.user.service.UserService;
+import com.miaotu.user.vo.UserInfo;
+
+import net.sf.json.JSONArray;
+
+/**
+ * 用户管理controller
+ * @author zhijiang.zhang
+ * 2016-4-21 11:09:11
+ */
+@Controller 
+@RequestMapping("/UserActivities")
+public class UserController {
+
+	/**
+	 * 一页显示条数
+	 */
+	private Integer number=10;
+	
+	/**
+	 * 起始数
+	 */
+	private Integer starNumber=0;
+	
+	/**
+	 * 总页数  
+	 */
+	private Integer pageCount=1;
+	
+	/**
+	 * 用户总数
+	 */
+	private Integer custCount=0;
+	
+	/**
+	 * 当前页数
+	 */
+	private Integer pageNow =0;
+	
+	@Autowired
+	private UserService userService;
+	
+	
+	/**
+	 * 改变用户状态
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/userUnactive.do")
+	public String toUnActiveActivity(HttpServletRequest request,String allIDCheck,RedirectAttributes attr) {
+	  String [] userIds = allIDCheck.split(",");
+	  boolean isdelete = true;
+	  if(null!=userIds&&userIds.length>0){
+		  for (String uid : userIds) {
+			  isdelete = this.userService.deleteUserActivities(new Integer(uid));
+			  if(!isdelete){
+					break;
+				}
+		}
+	  }
+	  if(isdelete){
+		  attr.addAttribute("message", "操作用户成功");
+		}else{
+			attr.addAttribute("message", "操作用户失败");
+		}
+	 return "redirect:/UserActivities/toUserList.do";
+	}
+	
+	/**
+	 * 改变用户级别
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toChangeUserIdentity.do")
+	public String toChangeUserIdentity(HttpServletRequest request,String allIDCheck,RedirectAttributes attr) {
+	  Integer identityKey = new Integer(request.getParameter("tag"));//要修改的用户级别
+	  String [] userIds = allIDCheck.split(",");
+	  boolean isdelete = true;
+	  if(null!=userIds&&userIds.length>0){
+		  for (String uid : userIds) {
+			  UserParams userPar = new UserParams();
+			  userPar.setUser_id(new Integer(uid));
+			  userPar.setIdentity_key(identityKey);
+			  isdelete = this.userService.editUserActivities(userPar);
+			  if(!isdelete){
+					break;
+				}
+		}
+	  }
+	  if(isdelete){
+		  attr.addAttribute("message", "操作用户成功");
+		}else{
+			attr.addAttribute("message", "操作用户失败");
+		}
+	 return "redirect:/UserActivities/toUserList.do";
+	}
+	
+	public static void main(String[] args) {
+		String aa = MD5Utils.GetMD5Code(MD5Utils.GetMD5Code("admin"));
+		System.out.println(aa);
+	}
+	
+	/**
+	 * 用户编辑提交逻辑
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toUserSubmit.do")  
+	@ResponseBody
+	public Map toUserSubmit(HttpServletRequest request,@RequestBody  UserParams userPar){
+		Map<String,String> map = new HashMap<String,String>();
+		try{
+			request.setCharacterEncoding("UTF-8");
+			HttpSession session = request.getSession();
+			AdminUser userinfo = (AdminUser)session.getAttribute("user");
+			boolean isadd;
+			if(null!=userinfo){
+				userPar.setRegister_time(new Date().toLocaleString());
+				String password = userPar.getPassword();
+				if(null!=userPar.getUser_id()&&userPar.getUser_id()>0){
+					UserInfo tmpUser = this.userService.getUserInfoFroIdActivities(userPar.getUser_id());
+					//如果有修改密码否则不修改密码
+					if(!password.equals(tmpUser.getPassword())){
+						userPar.setPassword(MD5Utils.GetMD5Code(MD5Utils.GetMD5Code(password)));
+					}
+					if(!tmpUser.getUser_name().equals(userPar.getUser_name())){
+						userPar.setMobile(userPar.getUser_name());
+					}
+					isadd = this.userService.editUserActivities(userPar);
+					
+					if(null!=userPar.getBehavior_value()){
+						UserBehaviorValueParams par = new UserBehaviorValueParams();
+						par.setBehavior_value(userPar.getBehavior_value());
+						par.setUser_id(userPar.getUser_id());
+						isadd = this.userService.updateUserBehaviorValueActivities(par);
+					}
+					
+				}else{
+					userPar.setMobile(userPar.getUser_name());
+					userPar.setPassword(MD5Utils.GetMD5Code(MD5Utils.GetMD5Code(password)));
+					String hx_user_name = UuidHelp.uuid();
+					String hx_password = MD5Utils.GetMD5Code(hx_user_name);
+					ObjectNode datanode = JsonNodeFactory.instance.objectNode();
+					datanode.put("username", hx_user_name);
+					datanode.put("password", hx_password);
+					ObjectNode createNewIMUserSingleNode = EasemobIMUsers.createNewIMUserSingle(datanode);
+					if(null==createNewIMUserSingleNode){
+						isadd = false;
+					}else{
+						userPar.setHx_user_name(hx_user_name);
+						userPar.setHx_password(hx_password);
+						isadd = this.userService.addUserActivities(userPar);
+						isadd = this.userService.addUserBehaviorValueActivities(userPar);
+						isadd = this.userService.addTaskNewUser(userPar.getUser_id());
+					}
+				}
+				if(isadd){
+					map.put("message", "操作用户成功");
+				}else{
+					map.put("message", "操作用户失败");
+				}
+				
+			}
+		}catch(Exception e){
+			map.put("message", "操作用户失败");
+		}
+		return map;
+	}
+
+	
+	
+	/**
+	 * 用户编辑页面
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toUserEdit.do")  
+	public String toUserEdit(HttpServletRequest request){
+		String returnStr="/jsp/user/userEdit";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			//获得用户ID
+			String userid = request.getParameter("userid");
+			UserInfo userInfo = new UserInfo();
+			if(StringUtils.isNotEmpty(userid)){
+				userInfo = this.userService.getUserInfoFroIdActivities(new Integer(userid));
+			}
+			request.setAttribute("userInfo", userInfo);
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectNextPage.do")
+	public String selectNextPage(HttpServletRequest request){
+		pageNow+=1;
+		return "redirect:/UserActivities/toUserList.do";
+	}
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectLastPage.do")
+	public String selectLastPage(HttpServletRequest request){
+		if(pageNow>0){
+			pageNow-=1;
+		}
+		return "redirect:/UserActivities/toUserList.do";
+	}
+	
+	
+	@RequestMapping("/toUserList.do")  
+	public String toUserList(HttpServletRequest request){
+		String returnStr="/jsp/user/userList";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			String user_name = request.getParameter("user_name");
+			String nickname = request.getParameter("nickname");
+			String company_name = request.getParameter("company_name");
+			String sexyStr = request.getParameter("sexy");
+			String entityStatus = request.getParameter("entityStatus");
+			String pageCountt = request.getParameter("pageCountt");
+			if(StringUtils.isNotEmpty(pageCountt)){
+				pageNow = new Integer(pageCountt)-1;
+			}
+			UserParams userPar = new UserParams();
+			if(StringUtils.isNotEmpty(sexyStr)){
+				userPar.setSexy(new Integer(sexyStr));
+			}
+			if(StringUtils.isNotEmpty(entityStatus)){
+				userPar.setStatus(new Integer(entityStatus));
+			}
+			userPar.setUser_name(user_name);
+			userPar.setNickname(nickname);
+			userPar.setCompany_name(company_name);
+			userPar.setNum(number);
+			if(null!=pageNow&&pageNow>=0){
+				starNumber = pageNow*number;
+			}
+			userPar.setStarNumber(starNumber);
+			List<UserInfo> userInfoList = this.userService.getUserInfoFroParActivities(userPar);
+			custCount = this.userService.getCountUserInfoActivities(userPar);
+			Double c = Math.ceil(custCount/number.doubleValue());
+			pageCount = c.intValue();
+			request.setAttribute("infoList", userInfoList);
+			request.setAttribute("selectUserName", user_name);
+			request.setAttribute("selectNickName", nickname);
+			request.setAttribute("selectCompanyName", company_name);
+			request.setAttribute("selectSexy", userPar.getSexy());
+			request.setAttribute("entityStatus", userPar.getStatus());
+			request.setAttribute("pageCount", pageCount);
+			request.setAttribute("number", number);
+			request.setAttribute("starNumber", starNumber);
+			request.setAttribute("custCount", custCount);
+			request.setAttribute("pageNow", pageNow);
+			
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	@RequestMapping("/selectIdeneity.do")
+	@ResponseBody
+	public String selectIdeneity(HttpServletRequest request,@RequestBody  ActivitesPar par){
+		List<IdentityValue> userIdentityList = this.userService.getUserIdentityActivities(null);
+		String json = JSONArray.fromObject(userIdentityList).toString();
+		 return json;
+	}
+	
+	@RequestMapping("/selectITypeId.do")
+	@ResponseBody
+	public String selectITypeId(HttpServletRequest request,@RequestBody  ActivitesPar par){
+		List<IdentityValue> userIdentityList = this.userService.getUserITypeIdActivities(null);
+		String json = JSONArray.fromObject(userIdentityList).toString();
+		 return json;
+	}
+}

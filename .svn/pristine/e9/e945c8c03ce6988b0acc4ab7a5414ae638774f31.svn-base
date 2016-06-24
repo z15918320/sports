@@ -1,0 +1,260 @@
+package com.miaotu.wantbuy.pojo;
+
+public class WantBuyParams {
+
+	/**
+	 * 一页显示条数
+	 */
+	private static Integer num=10;
+	
+	/**
+	 * 起始数
+	 */
+	private static Integer starNumber=0;
+	
+	private Integer want_buy_id;
+	private Integer user_id;
+	private Integer number;
+	private Integer urgency_level_id;
+	private Integer clickLikeTotal;
+	private Integer collectionTotal;
+	private Integer commentTotal;
+	private Integer shareTotal;
+	private Integer payment_methods_dictionary_id;
+	private Double rod_diameter;
+	private Double branch_point;
+	private Double crown_width_e;
+	private Double height_s;
+	private Double height_e;
+	private Double crown_width_s;
+	private String use_mining_area;
+	private String mining_area;
+	private String want_buy_url;
+	private String uploadtime;
+	private String address;
+	private String varieties;
+	private String selling_point;
+	private Integer isTop;
+	private String want_buy_ur1;
+	private String want_buy_ur2;
+	private String want_buy_ur3;
+	private String want_buy_ur4;
+	private String want_buy_ur5;
+	private String want_buy_ur6;
+	private String isdelete;
+	private String starTime;
+	private String endTime;
+	private Integer status;
+	
+	
+	public String getStarTime() {
+		return starTime;
+	}
+	public void setStarTime(String starTime) {
+		this.starTime = starTime;
+	}
+	public String getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	public static Integer getNum() {
+		return num;
+	}
+	public static void setNum(Integer num) {
+		WantBuyParams.num = num;
+	}
+	public static Integer getStarNumber() {
+		return starNumber;
+	}
+	public static void setStarNumber(Integer starNumber) {
+		WantBuyParams.starNumber = starNumber;
+	}
+	public Integer getWant_buy_id() {
+		return want_buy_id;
+	}
+	public void setWant_buy_id(Integer want_buy_id) {
+		this.want_buy_id = want_buy_id;
+	}
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	public Integer getNumber() {
+		return number;
+	}
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+	public Integer getUrgency_level_id() {
+		return urgency_level_id;
+	}
+	public void setUrgency_level_id(Integer urgency_level_id) {
+		this.urgency_level_id = urgency_level_id;
+	}
+	public Integer getIsTop() {
+		return isTop;
+	}
+	public void setIsTop(Integer isTop) {
+		this.isTop = isTop;
+	}
+	public String getWant_buy_ur1() {
+		return want_buy_ur1;
+	}
+	public void setWant_buy_ur1(String want_buy_ur1) {
+		this.want_buy_ur1 = want_buy_ur1;
+	}
+	public String getWant_buy_ur2() {
+		return want_buy_ur2;
+	}
+	public void setWant_buy_ur2(String want_buy_ur2) {
+		this.want_buy_ur2 = want_buy_ur2;
+	}
+	public String getWant_buy_ur3() {
+		return want_buy_ur3;
+	}
+	public void setWant_buy_ur3(String want_buy_ur3) {
+		this.want_buy_ur3 = want_buy_ur3;
+	}
+	public String getWant_buy_ur4() {
+		return want_buy_ur4;
+	}
+	public void setWant_buy_ur4(String want_buy_ur4) {
+		this.want_buy_ur4 = want_buy_ur4;
+	}
+	public String getWant_buy_ur5() {
+		return want_buy_ur5;
+	}
+	public void setWant_buy_ur5(String want_buy_ur5) {
+		this.want_buy_ur5 = want_buy_ur5;
+	}
+	public String getWant_buy_ur6() {
+		return want_buy_ur6;
+	}
+	public void setWant_buy_ur6(String want_buy_ur6) {
+		this.want_buy_ur6 = want_buy_ur6;
+	}
+	public String getIsdelete() {
+		return isdelete;
+	}
+	public void setIsdelete(String isdelete) {
+		this.isdelete = isdelete;
+	}
+	public Integer getClickLikeTotal() {
+		return clickLikeTotal;
+	}
+	public void setClickLikeTotal(Integer clickLikeTotal) {
+		this.clickLikeTotal = clickLikeTotal;
+	}
+	public Integer getCollectionTotal() {
+		return collectionTotal;
+	}
+	public void setCollectionTotal(Integer collectionTotal) {
+		this.collectionTotal = collectionTotal;
+	}
+	public Integer getCommentTotal() {
+		return commentTotal;
+	}
+	public void setCommentTotal(Integer commentTotal) {
+		this.commentTotal = commentTotal;
+	}
+	public Integer getShareTotal() {
+		return shareTotal;
+	}
+	public void setShareTotal(Integer shareTotal) {
+		this.shareTotal = shareTotal;
+	}
+	public Integer getPayment_methods_dictionary_id() {
+		return payment_methods_dictionary_id;
+	}
+	public void setPayment_methods_dictionary_id(Integer payment_methods_dictionary_id) {
+		this.payment_methods_dictionary_id = payment_methods_dictionary_id;
+	}
+	public Double getRod_diameter() {
+		return rod_diameter;
+	}
+	public void setRod_diameter(Double rod_diameter) {
+		this.rod_diameter = rod_diameter;
+	}
+	public Double getBranch_point() {
+		return branch_point;
+	}
+	public void setBranch_point(Double branch_point) {
+		this.branch_point = branch_point;
+	}
+	public Double getCrown_width_e() {
+		return crown_width_e;
+	}
+	public void setCrown_width_e(Double crown_width_e) {
+		this.crown_width_e = crown_width_e;
+	}
+	public Double getHeight_s() {
+		return height_s;
+	}
+	public void setHeight_s(Double height_s) {
+		this.height_s = height_s;
+	}
+	public Double getHeight_e() {
+		return height_e;
+	}
+	public void setHeight_e(Double height_e) {
+		this.height_e = height_e;
+	}
+	public Double getCrown_width_s() {
+		return crown_width_s;
+	}
+	public void setCrown_width_s(Double crown_width_s) {
+		this.crown_width_s = crown_width_s;
+	}
+	public String getUse_mining_area() {
+		return use_mining_area;
+	}
+	public void setUse_mining_area(String use_mining_area) {
+		this.use_mining_area = use_mining_area;
+	}
+	public String getMining_area() {
+		return mining_area;
+	}
+	public void setMining_area(String mining_area) {
+		this.mining_area = mining_area;
+	}
+	public String getWant_buy_url() {
+		return want_buy_url;
+	}
+	public void setWant_buy_url(String want_buy_url) {
+		this.want_buy_url = want_buy_url;
+	}
+	public String getUploadtime() {
+		return uploadtime;
+	}
+	public void setUploadtime(String uploadtime) {
+		this.uploadtime = uploadtime;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getVarieties() {
+		return varieties;
+	}
+	public void setVarieties(String varieties) {
+		this.varieties = varieties;
+	}
+	public String getSelling_point() {
+		return selling_point;
+	}
+	public void setSelling_point(String selling_point) {
+		this.selling_point = selling_point;
+	}
+}

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="WantBuyCommentDao">
+	<select id="WantBuyCommentDao.selectEntity" parameterType="com.miaotu.wantbuyComment.pojo.WantBuyCommentParams" resultType="com.miaotu.wantbuyComment.vo.WantBuyCommentInfo">
+		select su.*,us.user_name from WANT_BUY_COMMENT su inner join USER_INFO us ON su.user_id=us.user_id 
+	        <where>
+		        <if test="reply_user_id!=null and reply_user_id!='' ">  
+		            AND su.reply_user_id = #{reply_user_id}
+		        </if>  
+		        <if test="user_id!=null and user_id!='' ">  
+		            AND su.user_id = #{user_id}   
+		        </if> 
+		        <if test="want_buy_id!=null and want_buy_id!='' ">  
+		            AND su.want_buy_id = #{want_buy_id}   
+		        </if>
+		        <if test="starTime!=null and starTime!='' ">  
+		            AND su.want_buy_comment_time &gt;= #{starTime}   
+		        </if> 
+		        <if test="endTime!=null and endTime!='' ">  
+		            AND su.want_buy_comment_time &lt;= #{endTime}   
+		        </if>
+	        </where> 
+        ORDER BY su.want_buy_comment_time desc limit #{starNumber}, #{num}
+	</select>
+	
+	<select id="WantBuyCommentDao.selectEntityCount" parameterType="com.miaotu.wantbuyComment.pojo.WantBuyCommentParams" resultType="Integer">
+		select count(1) from WANT_BUY_COMMENT su
+		<where>  
+	        <if test="reply_user_id!=null and reply_user_id!='' ">  
+	            AND su.reply_user_id = #{reply_user_id}
+	        </if>  
+	        <if test="user_id!=null and user_id!='' ">  
+	            AND su.user_id = #{user_id}   
+	        </if> 
+	        <if test="want_buy_id!=null and want_buy_id!='' ">  
+	            AND su.want_buy_id = #{want_buy_id}   
+	        </if>
+	        <if test="starTime!=null and starTime!='' ">  
+	            AND su.want_buy_comment_time &gt;= #{starTime}   
+	        </if> 
+	        <if test="endTime!=null and endTime!='' ">  
+	            AND su.want_buy_comment_time &lt;= #{endTime}   
+	        </if>
+    	 </where>
+	</select>
+	
+	<update id="WantBuyCommentDao.deleteEntityById" parameterType="Integer">
+		delete from WANT_BUY_COMMENT where want_buy_comment_id = #{want_buy_comment_id};
+	</update>
+	
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

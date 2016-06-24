@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+	<bean name="memcachedHostAddress" class="java.net.InetSocketAddress">
+		<constructor-arg value="${memached.host}" />
+		<constructor-arg value="${memached.port}" />
+	</bean>
+
+	<bean name="authInfo" class="net.rubyeye.xmemcached.auth.AuthInfo"
+		factory-method="plain">
+		<constructor-arg value="${cache_name}" />
+		<constructor-arg value="${cache_password}" />
+	</bean>
+	<bean name="defaultMemcachedClient" class="com.google.code.ssm.CacheFactory">
+		<property name="cacheClientFactory">
+			<bean
+				class="com.google.code.ssm.providers.xmemcached.MemcacheClientFactoryImpl" />
+		</property>
+		<property name="addressProvider">
+			<bean class="com.google.code.ssm.config.DefaultAddressProvider">
+				<property name="address" value="${memached.host}:${memached.port}" />
+			</bean>
+		</property>
+
+		<property name="configuration">
+			<bean
+				class="com.google.code.ssm.providers.xmemcached.XMemcachedConfiguration">
+
+				<!-- <property name="authInfoMap"> <map> <entry value-ref="addressProvider"> 
+					<bean class="net.rubyeye.xmemcached.auth.AuthInfo" factory-method="typical"> 
+					<constructor-arg index="0"> <value>${cache_name}</value> </constructor-arg> 
+					<constructor-arg index="1"> <value>${cache_password}</value> </constructor-arg> 
+					</bean> </entry> </map> </property> -->
+				<property name="consistentHashing" value="true" />
+				<property name="useBinaryProtocol" value="true"/>
+ 
+				<property name="authInfoMap">
+					<map>
+						<entry key-ref="memcachedHostAddress" value-ref="authInfo" />
+					</map>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	<bean class="com.google.code.ssm.Settings">
+		<property name="order" value="500" />
+	</bean>
+</beans>

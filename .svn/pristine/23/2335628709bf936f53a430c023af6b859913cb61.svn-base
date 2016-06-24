@@ -1,0 +1,51 @@
+package com.miaotu.activities.pojo;
+
+public class LoginParams {
+
+	private String username;
+	
+	private String password;
+
+	/**
+	 * 一页显示条数
+	 */
+	private static Integer num=10;
+	
+	/**
+	 * 当前页数
+	 */
+	private static Integer page=0;
+	
+
+	public static Integer getNum() {
+		return num;
+	}
+
+	public static void setNum(Integer num) {
+		LoginParams.num = num;
+	}
+
+	public static Integer getPage() {
+		return page;
+	}
+
+	public static void setPage(Integer page) {
+		LoginParams.page = page;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+}

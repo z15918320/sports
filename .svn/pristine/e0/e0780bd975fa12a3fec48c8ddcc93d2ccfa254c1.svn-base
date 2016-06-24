@@ -1,0 +1,21 @@
+package com.miaotu.publishTheme.service;
+
+import java.util.List;
+
+import com.miaotu.publishTheme.pojo.PublishThemeParams;
+import com.miaotu.publishTheme.vo.PublishThemeInfo;
+
+public interface PublishThemeService {
+	public List<PublishThemeInfo> getEntityInfoActivities(PublishThemeParams par);
+	
+	public PublishThemeInfo getEntityInfoByIdActivities(Integer id);
+	
+	public Integer getCountEntityInfoActivities(PublishThemeParams params);
+	
+	public boolean changeStautsActivities(Integer id);
+	
+	public boolean editEntityActivities(PublishThemeParams params);
+	
+	public boolean addEntityActivities(PublishThemeParams params);
+
+}

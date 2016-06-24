@@ -1,0 +1,154 @@
+package com.miaotu.information.pojo;
+
+public class InformationParams {
+	/**
+	 * 一页显示条数
+	 */
+	private static Integer num = 10;
+	/**
+	 * 起始数
+	 */
+	private static Integer starNumber = 0;
+
+	private Integer info_id;
+	/**
+	 * 资讯浏览数
+	 */
+	private Integer view_Total;
+	/**
+	 * 图片类型 0:一张大图 1:一张小图 2:多张小图
+	 */
+	private Integer img_type;
+	/**
+	 * 资讯标题
+	 */
+	private String info_title;
+	/**
+	 * 资讯详细内容
+	 */
+	private String info_content;
+	/**
+	 * 资讯来源
+	 */
+	private String info_from;
+	/**
+	 * 发布日期
+	 */
+	private String uploadtime;
+	/**
+	 * 资讯图片路径
+	 */
+	private String info_url;
+	/**
+	 * 状态
+	 */
+	private Integer status;
+	/**
+	 * 查询时间开始
+	 */
+	private String starTime;
+	/**
+	 * 查询时间结束
+	 */
+	private String endTime;
+	
+	/**
+	 * 资讯详细内容跳转路径
+	 */
+	private String infomation_url;
+	
+	private String isdelete;
+	
+	public String getIsdelete() {
+		return isdelete;
+	}
+	public void setIsdelete(String isdelete) {
+		this.isdelete = isdelete;
+	}
+	public String getInfomation_url() {
+		return infomation_url;
+	}
+	public void setInfomation_url(String infomation_url) {
+		this.infomation_url = infomation_url;
+	}
+	public String getStarTime() {
+		return starTime;
+	}
+	public void setStarTime(String starTime) {
+		this.starTime = starTime;
+	}
+	public String getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+	public static Integer getNum() {
+		return num;
+	}
+	public static void setNum(Integer num) {
+		InformationParams.num = num;
+	}
+	public static Integer getStarNumber() {
+		return starNumber;
+	}
+	public static void setStarNumber(Integer starNumber) {
+		InformationParams.starNumber = starNumber;
+	}
+	public Integer getInfo_id() {
+		return info_id;
+	}
+	public void setInfo_id(Integer info_id) {
+		this.info_id = info_id;
+	}
+	public Integer getView_Total() {
+		return view_Total;
+	}
+	public void setView_Total(Integer view_Total) {
+		this.view_Total = view_Total;
+	}
+	public Integer getImg_type() {
+		return img_type;
+	}
+	public void setImg_type(Integer img_type) {
+		this.img_type = img_type;
+	}
+	public String getInfo_title() {
+		return info_title;
+	}
+	public void setInfo_title(String info_title) {
+		this.info_title = info_title;
+	}
+	public String getInfo_content() {
+		return info_content;
+	}
+	public void setInfo_content(String info_content) {
+		this.info_content = info_content;
+	}
+	public String getInfo_from() {
+		return info_from;
+	}
+	public void setInfo_from(String info_from) {
+		this.info_from = info_from;
+	}
+	public String getUploadtime() {
+		return uploadtime;
+	}
+	public void setUploadtime(String uploadtime) {
+		this.uploadtime = uploadtime;
+	}
+	public String getInfo_url() {
+		return info_url;
+	}
+	public void setInfo_url(String info_url) {
+		this.info_url = info_url;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	
+}

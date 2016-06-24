@@ -1,0 +1,301 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ page language="java" import="java.util.*"%>
+<%@page contentType="text/html; charset=utf-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>活动编辑</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../../..${pageContext.request.contextPath}/style/authority/basic_layout.css" rel="stylesheet" type="text/css"/>
+<link href="../../..${pageContext.request.contextPath}/style/authority/common_style.css" rel="stylesheet" type="text/css"/>
+<link href="../../..${pageContext.request.contextPath}/plugs/uploadify/uploadify.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../..${pageContext.request.contextPath}/scripts/authority/commonAll.js"></script>
+<script type="text/javascript" src="../../..${pageContext.request.contextPath}/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../..${pageContext.request.contextPath}/plugs/uploadify/jquery.uploadify.min.js"></script>
+<script type="text/javascript" src="../../..${pageContext.request.contextPath}/scripts/artDialog/artDialog.js?skin=default"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		var modelselect = ${entityInfo.model };
+
+		var EmergencyObj = document.getElementById("model").options;
+	  for (var i=0; i<EmergencyObj.length; i++) {
+	            if (EmergencyObj[i].value == modelselect) {
+	                  EmergencyObj[i].selected = true;
+	                  break;
+	               }
+	         } 
+	  
+	 
+		/*
+		 * 提交
+		 */
+		$("#submitbutton").click(function() {
+			if(validateForm()){
+				checkUserSubmit();
+			}
+		});
+		
+		/*
+		 * 取消
+		 */
+		$("#cancelbutton").click(function() {
+			/**  关闭弹出iframe  **/
+			window.parent.$.fancybox.close();
+		});
+		
+		var result = 'null';
+		if(result =='success'){
+			/**  关闭弹出iframe  **/
+			window.parent.$.fancybox.close();
+		}
+	});
+	
+	/** 提交form  **/
+	function checkUserSubmit(){
+		// 分别获取用户各个字段
+		var reqParam = {};
+			reqParam.activities_id = $("#activities_id").val();
+			reqParam.activities_titile = $("#activities_titile").val();
+			reqParam.activities_starttime =  $('#activities_starttime').val();
+			reqParam.activities_endtime = $('#activities_endtime').val();
+			reqParam.activities_expiretime = $('#activities_expiretime').val();
+			reqParam.activities_contacts = $("#activities_contacts").val();
+			reqParam.contact_phone = $("#contact_phone").val();
+			reqParam.payment_amount = $("#payment_amount").val();
+			reqParam.user_upper_limit_num = $("#user_upper_limit_num").val();
+			reqParam.model = $("#model").val();
+			reqParam.businessid = $("#businessid").val();
+			reqParam.activities_content = $("#activities_content").val();
+			reqParam.activities_pic = $("#activities_pic").val(); 
+			reqParam.activities_address_lat = $("#activities_address_lat").val();
+			reqParam.activities_address_lon = $("#activities_address_lon").val();
+			reqParam.activities_address = $("#activities_address").val();
+			reqParam.activities_content_text = $("#activities_content_text").val();
+		$.ajax({
+			type:"POST",
+			url:"${pageContext.request.contextPath}/publishActivity.do",
+			dataType : 'json',
+			data : JSON.stringify(reqParam),
+			beforeSend : function(xhr) {
+				  xhr.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+			},
+			success : function(data) {
+				alert(JSON.stringify(data));
+				window.parent.$.fancybox.close();
+			},
+			error : function(data) {
+					alert("修改活动失败");
+			}
+		});
+
+		return true;
+	}
+	
+	/** 表单验证  **/
+	function validateForm(){
+		/* if($("#nickname").val()==""){
+			art.dialog({icon:'error', title:'友情提示', drag:false, resize:false, content:'填写用户名称', ok:true,});
+			return false;
+		}else if($("#heed_image_url").val()==""){
+			art.dialog({icon:'error', title:'友情提示', drag:false, resize:false, content:'上传用户头像', ok:true,});
+			return false;
+		} */
+		return true;
+	}	
+</script>
+</head>
+<body>
+<form id="submitForm" name="submitForm" action="" method="post">
+	
+	<div id="container">
+		<div id="nav_links">
+			当前位置:基础数据&nbsp;>&nbsp;<span style="color: #1A5CC6;">活动编辑</span>
+			<div id="page_close">
+				<a href="javascript:parent.$.fancybox.close();">
+					<img src="../../..${pageContext.request.contextPath}/images/common/page_close.png" width="20" height="20" style="vertical-align: text-top;"/>
+				</a>
+			</div>
+		</div>
+		<div class="ui_content">
+			<table  cellspacing="0" cellpadding="0" width="100%" align="left" border="0">
+			<input type="hidden" name="activities_id" value="${entityInfo.activities_id }" id="activities_id"/>
+				<tr>
+					<td class="ui_text_rt">活动标题</td>
+					<td class="ui_text_lt">
+						<input type="text" id="activities_titile" name="activities_titile" value="${entityInfo.activities_titile }"  class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">活动开始时间</td>
+					<td class="ui_text_lt">
+						<input type="text" id="activities_starttime" name="activities_starttime" value="${entityInfo.activities_starttime }"  class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">活动结束时间</td>
+					<td class="ui_text_lt">
+						<input type="text" id="activities_endtime" name="activities_endtime" value="${entityInfo.activities_endtime }"  class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">报名截止日期</td>
+					<td class="ui_text_lt">
+						<input type="text" id="activities_expiretime" name="activities_expiretime" value="${entityInfo.activities_expiretime }"  class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">联系人</td>
+					<td class="ui_text_lt">
+						<input type="text" id="activities_contacts" name="activities_contacts"  value="${entityInfo.activities_contacts }" class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">联系电话</td>
+					<td class="ui_text_lt">
+						<input type="text" id="contact_phone" name="contact_phone" value="${entityInfo.contact_phone }" class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">报名金额 </td>
+					<td class="ui_text_lt">
+						<input type="text" id="payment_amount" name="payment_amount" value="${entityInfo.payment_amount }" class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">上限人数</td>
+					<td class="ui_text_lt">
+						<input type="text" id="user_upper_limit_num" name="user_upper_limit_num" value="${entityInfo.user_upper_limit_num }" class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">活动地址经度</td>
+					<td class="ui_text_lt">
+						<input type="text" id="activities_address_lat" name="activities_address_lat" value="${entityInfo.activities_address_lat }" class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">活动地址纬度</td>
+					<td class="ui_text_lt">
+						<input type="text" id="activities_address_lon" name="activities_address_lon" value="${entityInfo.activities_address_lon }" class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">活动地址</td>
+					<td class="ui_text_lt">
+						<input type="text" id="activities_address" name="activities_address" value="${entityInfo.activities_address }" class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">类别类型</td>
+					<td class="ui_text_lt">
+					<select name="model" id="model" value="${entityInfo.model }">
+						<option value="0">广告</option>
+						<option value="1">供应</option>
+						<option value="2">话题</option>
+						<option value="3">求购</option>
+						<option value="4">活动</option>
+                    </select>
+                    </td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">类别ID</td>
+					<td class="ui_text_lt">
+						<input type="text" id="businessid" name="businessid" value="${entityInfo.businessid }" class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">类别内容</td>
+					<td class="ui_text_lt">
+						<input type="text" readonly="readonly" id="businessInfo" name="businessInfo" value="${entityInfo.businessInfo }" class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">活动内容链接</td>
+					<td class="ui_text_lt">
+						<input type="text" id="activities_content" name="activities_content" value="${entityInfo.activities_content }" class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">活动内容文本:</td>
+					<td class="ui_text_lt">
+						<textarea rows="10" cols="50" id="activities_content_text">
+						${entityInfo.activities_content_text }
+						</textarea>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">活动图片</td>
+					<td class="ui_text_lt">
+					    <input type="text" id="activities_pic" name='activities_pic' class="ui_input_txt02"/>
+						<div id="imgs"><img alt="活动图片" width="150px" height="150px" src="${entityInfo.activities_pic }@!header"></div><br/>
+						<div id="queue"></div>
+						<input id="file_upload" name="file_upload" class="easyui-numberbox" type="file"  multiple="true"> 
+				    </td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td class="ui_text_lt">
+						&nbsp;<input id="submitbutton" type="button" value="提交" class="ui_input_btn01"/>
+						&nbsp;<input id="cancelbutton" type="button" value="取消" class="ui_input_btn01"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</form>
+<script type="text/javascript">
+var imgs = [];
+//初始化文件上传 start
+$('#file_upload').uploadify({  
+   'debug'         : false,  
+   'auto'          : true,             //是否自动上传,  
+   'buttonText'    : '上传图片',       //按钮文字  
+   'height'        : 30,               //按钮高度  
+   'width'         : 100,              //按钮宽度  
+   'checkExisting' : 'false',//是否检测图片存在,不检测:false  
+   'fileObjName'   : 'files',           //默认 Filedata, $_FILES控件名称  
+   'fileSizeLimit' : '1024KB',          //文件大小限制 0为无限制 默认KB  
+   'fileTypeDesc'  : 'All Files',       //图片选择描述  
+   'fileTypeExts'  : '*.gif; *.jpg; *.png',//文件后缀限制 默认：'*.*'  
+   'formData'      : {'someKey' : 'someValue', 'someOtherKey' : 1},//传输数据JSON格式  
+   //'overrideEvents': ['onUploadProgress'],  // The progress will not be updated  
+   //'progressData' : 'speed',             //默认percentage 进度显示方式  
+   'queueID'       : 'queue',              //默认队列ID  
+   'queueSizeLimit': 20,                   //一个队列上传文件数限制  
+   'removeCompleted' : true,               //完成时是否清除队列 默认true  
+   'removeTimeout'   : 3,                  //完成时清除队列显示秒数,默认3秒  
+   'requeueErrors'   : false,              //队列上传出错，是否继续回滚队列  
+   'successTimeout'  : 5,                  //上传超时  
+   'uploadLimit'     : 5,                 //允许上传的最多张数  
+   'swf'  : '${pageContext.request.contextPath}/jsp/uploadify.swf', //swfUpload  
+   'uploader': '${pageContext.request.contextPath}/uploadFile.do?tag=1', //服务器端脚本   
+   //上传成功  
+   'onUploadSuccess' : function(file, data, response) { 
+  	
+  	 var response=JSON.parse(data);
+  	 if(response.STATUS == '1'){
+  		 var dom='<img src="'+response.url+'@!header" height="100px" width="100px" />';
+      	 $("#imgs").html(dom);
+      	 $("#activities_pic").val(response.url);
+      	 var imgObj ={};
+      	 imgObj.url=response.url;
+      	 imgs.push(imgObj);
+  	 }else{
+  		 alert(response.MSG);
+  	 }
+           	 
+   },  
+   //上传错误  
+   'onUploadError' : function(file, errorCode, errorMsg, errorString) {  
+       alert("图片上传失败");
+   },
+  
+});  
+//初始化文件上传 end
+</script>
+<div style="display:none"><script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script></div>
+</body>
+</html>

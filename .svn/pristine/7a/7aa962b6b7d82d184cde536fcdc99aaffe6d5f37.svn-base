@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wantbuyDao">
+
+	<select id="selectWantBuy" parameterType="com.miaotu.wantbuy.pojo.WantBuyParams"
+		resultType="com.miaotu.wantbuy.vo.WantBuyInfo">
+		select * from WANT_BUY c where 1=1 limit #{page}, #{num};
+	</select>
+
+	<select id="selectWantbuyforId" parameterType="Integer"
+		resultType="com.miaotu.wantbuy.vo.WantBuyInfo">
+		select * from WANT_BUY c where c.want_buy_id =
+		#{want_buy_id} ;
+	</select>
+
+	<insert id="saveWantBuy" keyProperty="want_buy_id"
+		useGeneratedKeys="true" parameterType="com.miaotu.wantbuy.vo.WantBuyInfo">
+		insert into
+		WANT_BUY(user_id,payment_methods_dictionary_id,varieties,unit_price,number,rod_diameter,crown_width_s,crown_width_e,
+		height_s,height_e,mining_area,urgency_level_id,selling_point,use_mining_area,uploadtime,want_buy_url)
+		values
+		(#{user_id},#{payment_methods_dictionary_id},#{varieties},#{unit_price},#{number},#{rod_diameter},
+		#{crown_width_s},#{crown_width_e},#{height_s},#{height_e},#{mining_area},#{urgency_level_id},#{use_mining_area},
+		#{selling_point},date_format(now(),'%Y-%c-%d %h:%i:%s'),#{want_buy_url});
+		<!-- ON duplicate KEY UPDATE user_name = #{user_name} 限制重复插入的另一种方法 -->
+	</insert>
+
+	<select id="selectWantBuyNumForUserId" parameterType="Integer"
+		resultType="Integer">
+		SELECT count(user_id) AS want_buy_num FROM WANT_BUY WHERE
+		user_id = #{user_id};
+	</select>
+	<select id="selectUrgencyLevel" resultType="com.miaotu.wantbuy.pojo.UrgencyLevel">
+		SELECT * from
+		URGENCY_LEVEL;
+	</select>
+
+	<insert id="saveWantBuyComment" parameterType="com.miaotu.wantbuy.pojo.WantBuyCommentParams">
+		insert into
+		WANT_BUY_COMMENT(user_id,want_buy_id,want_buy_comment,want_buy_comment_time)
+		values
+		(#{user_id},#{want_buy_id},#{want_buy_comment},date_format(now(),'%Y-%c-%d %h:%i:%s'));
+	</insert>
+
+	<insert id="saveWantBuyCollection" parameterType="com.miaotu.wantbuy.pojo.WantBuyCollection">
+		insert into
+		WANT_BUY_COMMENT(user_id,want_buy_id) values (#{user_id},#{want_buy_id});
+	</insert>
+
+	<update id="updateWantBuyId" parameterType="com.miaotu.wantbuy.vo.WantBuyInfo">
+		update WANT_BUY
+		<set>
+			<if
+				test="payment_methods_dictionary_id != null and  '' != payment_methods_dictionary_id and 0!= payment_methods_dictionary_id">payment_methods_dictionary_id=#{payment_methods_dictionary_id},
+			</if>
+			<if test="varieties != null and  '' != varieties   ">varieties=#{varieties},</if>
+			<if test="unit_price != null and  '' != unit_price and 0!= unit_price">unit_price=#{unit_price},</if>
+			<if test="number != null and  '' != number and 0!= number">number=#{number},</if>
+			<if test="rod_diameter != null and  '' != rod_diameter   ">rod_diameter=#{rod_diameter},</if>
+			<if
+				test="crown_width_s != null and  '' != crown_width_s  and 0!= crown_width_s">crown_width_s=#{crown_width_s},</if>
+			<if
+				test="crown_width_e != null and  '' != crown_width_e and  0!= crown_width_e">crown_width_e=#{crown_width_e},</if>
+			<if test="height_s != null and  '' != height_s and 0!= height_s">height_s=#{height_s},</if>
+			<if test="height_e != null and  '' != height_e and  0!= height_e">height_s=#{height_s},</if>
+			<if test="mining_area != null and  '' != mining_area   ">mining_area=#{mining_area},</if>
+			<if
+				test="urgency_level_id != null and  '' != urgency_level_id and 0!= urgency_level_id">urgency_level_id=#{urgency_level_id},</if>
+			<if test="selling_point != null and  '' != selling_point   ">selling_point=#{selling_point},</if>
+			<if test="want_buy_url != null and  '' != want_buy_url   ">want_buy_url=#{want_buy_url},</if>
+		</set>
+		where want_buy_id = #{want_buy_id}
+	</update>
+
+
+	<delete id="deleteWantBuyId" parameterType="Integer">
+		delete from WANT_BUY
+		where want_buy_id = #{want_buy_id};
+	</delete>
+
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

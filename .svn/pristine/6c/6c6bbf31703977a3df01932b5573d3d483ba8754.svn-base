@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="supplyDao">
+
+	<select id="selectSupply" parameterType="com.miaotu.supply.pojo.SupplyParams"
+		resultType="com.miaotu.supply.vo.SupplyInfo">
+		select * from SUPPLY c where 1=1 limit #{page}, #{num};
+	</select>
+
+	<select id="selectSupplyforId" parameterType="Integer"
+		resultType="com.miaotu.supply.vo.SupplyInfo">
+		select * from SUPPLY c where c.supply_id = #{supply_id};
+	</select>
+	
+	<select id="selectSupplyCollectionforUserId" parameterType="Integer"
+		resultType="com.miaotu.supply.vo.UserSupplyCollection">
+		select s1.*,s2.address,s2.nickname from  SUPPLY_COLLECTION s 
+		LEFT JOIN SUPPLY s1 ON s.supply_id = s1.supply_id 
+		LEFT JOIN USER_INFO s2 ON s2.user_id = s1.user_id 
+		WHERE s.user_id = #{user_id};
+	</select>
+
+	<select id="selectSupplyNumForUserId" parameterType="Integer"
+		resultType="Integer">
+		SELECT count(user_id) AS supply_num FROM SUPPLY WHERE
+		user_id = #{user_id};
+	</select>
+
+	<insert id="saveSupply" keyProperty="supply_id"
+		useGeneratedKeys="true" parameterType="com.miaotu.supply.vo.SupplyInfo">
+		insert into
+		SUPPLY(user_id,varieties,unit_price,number,rod_diameter,crown_width_s,crown_width_e,
+		height_s,height_e,selling_point,seedling_source_address,uploadtime,supply_url)
+		values
+		(#{user_id},#{varieties},#{unit_price},#{number},#{rod_diameter},
+		#{crown_width_s},#{crown_width_e},#{height_s},#{height_e},#{selling_point},#{seedling_source_address},date_format(now(),'%Y-%c-%d %h:%i:%s'),#{supply_url});
+		<!-- ON duplicate KEY UPDATE user_name = #{user_name} 限制重复插入的另一种方法 -->
+	</insert>
+
+	<insert id="saveSupplyComment" parameterType="com.miaotu.supply.pojo.SupplyCommentParams">
+		insert into
+		SUPPLY_COMMENT(user_id,supply_id,reply_user_id,supply_comment,supply_comment_time)
+		values
+		(#{user_id},#{supply_id},#{reply_user_id},#{supply_comment},date_format(now(),'%Y-%c-%d %h:%i:%s'));
+	</insert>
+
+	
+	<insert id="saveSupplyCollection" parameterType="com.miaotu.supply.pojo.SupplyCollection">
+		insert into SUPPLY_COLLECTION(user_id,supply_id) values (#{user_id},#{supply_id});
+	</insert>
+	
+	<update id="updateSupply" parameterType="com.miaotu.supply.vo.SupplyInfo">
+		update SUPPLY
+		<set>
+			<if test="varieties != null and  '' != varieties   ">varieties=#{varieties},</if>
+			<if test="unit_price != null and  '' != unit_price and  0!= unit_price">unit_price=#{unit_price},</if>
+			<if test="rod_diameter != null and  '' != rod_diameter ">rod_diameter=#{rod_diameter},</if>
+			<if test="crown_width_s != null and  '' != crown_width_s and  0!= crown_width_s">crown_width_s=#{crown_width_s},</if>
+			<if test="crown_width_e != null and  '' != crown_width_e and  0!= crown_width_e">crown_width_e=#{crown_width_e},</if>
+			<if test="height_s != null and  '' != height_s and 0!= height_s">height_s=#{height_s},</if>
+			<if test="height_e != null and  '' != height_e and 0!= height_e">height_e=#{height_e},</if>
+			<if
+				test="selling_point != null and  '' != selling_point and 0!= selling_point">selling_point=#{selling_point},</if>
+			<if
+				test="seedling_source_address != null and  '' != seedling_source_address ">seedling_source_address=#{seedling_source_address},</if>
+			<if test="supply_url != null and  '' != supply_url ">supply_url=#{supply_url},</if>
+
+		</set>
+		where supply_id = #{supply_id}
+	</update>
+
+	<delete id="deleteSupply" parameterType="Integer">
+		delete from SUPPLY
+		where
+		supply_id = #{supply_id};
+	</delete>
+
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

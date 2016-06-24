@@ -1,0 +1,304 @@
+package com.miaotu.activities.vo;
+
+public class ActivitiesInfo {
+	// 活动ID
+	private Integer activities_id;
+	// 活动标题
+	private String activities_titile;
+	// 活动开始时间
+	private String activities_starttime;
+	// 活动结束时间
+	private String activities_endtime;
+	// 活动内容
+	private String activities_content;
+	// 活动图片
+	private String activities_pic;
+	// 活动截止日期
+	private String activities_expiretime;
+	// 联系人
+	private String activities_contacts;
+	// 联系电话
+	private String contact_phone;
+	// 报名金额
+	private float payment_amount;
+	// 发布时间
+	private String uploadtime;
+	// 活动报名上限人数
+	private Integer user_upper_limit_num;
+	
+	// 报名用户
+	private String registration_user;
+	
+	private Integer model=0;
+	
+	private Integer businessid;
+	
+	/**
+	 * 状态
+	 */
+	private String status;
+	
+	/**
+	 * 活动文本内容
+	 */
+	private String activities_content_text;
+	
+	// 业务类别
+	private String modelType;
+	// 业务内容
+	private String businessInfo;
+
+	/**
+	 * 活动地址经度
+	 */
+	private float activities_address_lat;
+	/**
+	 * 活动地址纬度
+	 */
+	private float activities_address_lon;
+	/**
+	 * 活动地址
+	 */
+	private String activities_address;
+	
+	/**
+	 * 评论数
+	 */
+	private Integer commentTotal;
+	
+	/**
+	 * 点赞数
+	 */
+	private Integer clickLikeTotal;
+	
+	/**
+	 * 分享数
+	 */
+	private Integer shareTotal;
+	
+	/**
+	 * 报名数
+	 */
+	private Integer sign_up_num;
+	
+	/**订单汇总金额**/
+	private float orderAmount;
+	
+	
+	public float getOrderAmount() {
+		return orderAmount;
+	}
+
+	public void setOrderAmount(float orderAmount) {
+		this.orderAmount = orderAmount/100;
+	}
+
+	public float getActivities_address_lat() {
+		return activities_address_lat;
+	}
+
+	public void setActivities_address_lat(float activities_address_lat) {
+		this.activities_address_lat = activities_address_lat;
+	}
+
+	public float getActivities_address_lon() {
+		return activities_address_lon;
+	}
+
+	public void setActivities_address_lon(float activities_address_lon) {
+		this.activities_address_lon = activities_address_lon;
+	}
+
+	public String getActivities_address() {
+		return activities_address;
+	}
+
+	public void setActivities_address(String activities_address) {
+		this.activities_address = activities_address;
+	}
+
+	public Integer getCommentTotal() {
+		return commentTotal;
+	}
+
+	public void setCommentTotal(Integer commentTotal) {
+		this.commentTotal = commentTotal;
+	}
+
+	public Integer getClickLikeTotal() {
+		return clickLikeTotal;
+	}
+
+	public void setClickLikeTotal(Integer clickLikeTotal) {
+		this.clickLikeTotal = clickLikeTotal;
+	}
+
+	public Integer getShareTotal() {
+		return shareTotal;
+	}
+
+	public void setShareTotal(Integer shareTotal) {
+		this.shareTotal = shareTotal;
+	}
+
+	public Integer getSign_up_num() {
+		return sign_up_num;
+	}
+
+	public void setSign_up_num(Integer sign_up_num) {
+		this.sign_up_num = sign_up_num;
+	}
+
+	public String getActivities_content_text() {
+		return activities_content_text;
+	}
+
+	public void setActivities_content_text(String activities_content_text) {
+		this.activities_content_text = activities_content_text;
+	}
+
+	public Integer getModel() {
+		return model;
+	}
+
+	public void setModel(Integer model) {
+		this.model = model;
+	}
+
+	public Integer getBusinessid() {
+		return businessid;
+	}
+
+	public void setBusinessid(Integer businessid) {
+		this.businessid = businessid;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getModelType() {
+		return modelType;
+	}
+
+	public void setModelType(String modelType) {
+		this.modelType = modelType;
+	}
+
+	public String getBusinessInfo() {
+		return businessInfo;
+	}
+
+	public void setBusinessInfo(String businessInfo) {
+		this.businessInfo = businessInfo;
+	}
+
+	public void setContact_phone(String contact_phone) {
+		this.contact_phone = contact_phone;
+	}
+
+	public void setRegistration_user(String registration_user) {
+		this.registration_user = registration_user;
+	}
+
+	public String getUploadtime() {
+		return uploadtime;
+	}
+
+	public void setUploadtime(String uploadtime) {
+		this.uploadtime = uploadtime;
+	}
+
+	public Integer getActivities_id() {
+		return activities_id;
+	}
+
+	public void setActivities_id(Integer activities_id) {
+		this.activities_id = activities_id;
+	}
+
+	public String getActivities_titile() {
+		return activities_titile;
+	}
+
+	public void setActivities_titile(String activities_titile) {
+		this.activities_titile = activities_titile;
+	}
+
+	public String getActivities_starttime() {
+		return activities_starttime;
+	}
+
+	public void setActivities_starttime(String activities_starttime) {
+		this.activities_starttime = activities_starttime.substring(0, 10).trim();
+	}
+
+	public String getActivities_endtime() {
+		return activities_endtime;
+	}
+
+	public void setActivities_endtime(String activities_endtime) {
+		this.activities_endtime = activities_endtime.substring(0, 10).trim();
+	}
+
+	public String getActivities_content() {
+		return activities_content;
+	}
+
+	public void setActivities_content(String activities_content) {
+		this.activities_content = activities_content;
+	}
+
+	public String getActivities_pic() {
+		return activities_pic;
+	}
+
+	public void setActivities_pic(String activities_pic) {
+		this.activities_pic = activities_pic;
+	}
+
+	public String getActivities_expiretime() {
+		return activities_expiretime;
+	}
+
+	public void setActivities_expiretime(String activities_expiretime) {
+		this.activities_expiretime = activities_expiretime.substring(0, 10).trim();
+	}
+
+	public Integer getUser_upper_limit_num() {
+		return user_upper_limit_num;
+	}
+
+	public void setUser_upper_limit_num(Integer user_upper_limit_num) {
+		this.user_upper_limit_num = user_upper_limit_num;
+	}
+
+	public String getContact_phone() {
+		return contact_phone;
+	}
+
+	public String getRegistration_user() {
+		return registration_user;
+	}
+
+	public String getActivities_contacts() {
+		return activities_contacts;
+	}
+
+	public void setActivities_contacts(String activities_contacts) {
+		this.activities_contacts = activities_contacts;
+	}
+
+	public float getPayment_amount() {
+		return payment_amount;
+	}
+
+	public void setPayment_amount(float payment_amount) {
+		this.payment_amount = payment_amount;
+	}
+	
+}

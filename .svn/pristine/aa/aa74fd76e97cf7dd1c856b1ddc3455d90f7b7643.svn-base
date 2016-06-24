@@ -1,0 +1,79 @@
+package com.miaotu.information.service.impl;
+
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.miaotu.common.service.impl.BaseServiceImpl;
+import com.miaotu.information.pojo.InformationParams;
+import com.miaotu.information.service.InformationService;
+import com.miaotu.information.vo.InformationInfo;
+@Service
+public class InformationServiceImpl extends BaseServiceImpl implements InformationService{
+	private static final String CHANGE_ENTITY_STATUS="informationDao.changeEntityStatus";
+	
+	private static final String DELETE_ENTITY_ID="informationDao.deleteEntity";
+
+	private static final String SELECT_ENTITY_COUNT = "informationDao.selectEntityCount";
+	
+	private static final String SELECT_ENTITY_BY_ID = "informationDao.selectEntityById";
+	
+	private static final String ADD_ENTITY = "informationDao.addEntity";
+	
+	private static final String EDIT_ENTITY = "informationDao.editEntity";
+	
+	private static final String SELECT_ENTITY_PAR = "informationDao.selectEntityByPar";
+
+	@Override
+	public boolean deleteEntity(Integer info_id) {
+		int i = baseDao.delete(DELETE_ENTITY_ID, info_id);
+		if (i > 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean addEntity(InformationParams par) {
+		int i = baseDao.save(ADD_ENTITY, par);
+		if (i > 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean editEntity(InformationParams par) {
+		int i = baseDao.update(EDIT_ENTITY, par);
+		if (i > 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public InformationInfo getEntityInfo(Integer info_id) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_ENTITY_BY_ID,info_id);
+	}
+
+	@Override
+	public List<InformationInfo> getEntityList(InformationParams par) {
+		// TODO Auto-generated method stub
+		return baseDao.getList(SELECT_ENTITY_PAR,par);
+	}
+
+	@Override
+	public Integer getCountEntity(InformationParams par) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_ENTITY_COUNT, par);
+	}
+
+	@Override
+	public boolean changeEntityStatus(Integer info_id) {
+		int i = baseDao.update(CHANGE_ENTITY_STATUS, info_id);
+		if (i > 0)
+			return true;
+		return false;
+	}
+	
+	
+}

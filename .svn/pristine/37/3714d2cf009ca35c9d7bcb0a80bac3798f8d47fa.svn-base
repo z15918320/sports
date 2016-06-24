@@ -1,0 +1,25 @@
+package com.miaotu.supply.service;
+
+import java.util.List;
+
+import com.miaotu.supply.pojo.SupplyParams;
+import com.miaotu.supply.vo.SupplyInfo;
+
+public interface  SupplyService {
+
+	public List<SupplyInfo> getSupplyInfoActivities(SupplyParams params);
+	
+	public SupplyInfo getSupplyInfoByIdActivities(Integer supply_id);
+	
+	public Integer getCountSupplyInfoActivities(SupplyParams params);
+	
+	public Integer getTopActivities();
+	
+	public boolean cancelTopActivities(Integer supply_id);
+	
+	public boolean changeStautsActivities(Integer supply_id);
+	
+	public boolean editSupplyActivities(SupplyParams params);
+	
+	public boolean addSupplyActivities(SupplyParams params);
+}

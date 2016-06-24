@@ -1,0 +1,199 @@
+package com.miaotu.userIdentity.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.miaotu.activities.vo.AdminUser;
+import com.miaotu.userIdentity.pojo.UserIdentityParams;
+import com.miaotu.userIdentity.service.UserIdentityService;
+import com.miaotu.userIdentity.vo.UserIdentityInfo;
+
+@Controller
+@RequestMapping("/userIdentity")
+public class userIdentityController{
+	private static final Logger logger=LoggerFactory.getLogger(userIdentityController.class);
+	/**
+	 * 一页显示条数
+	 */
+	private Integer number=10;
+	
+	/**
+	 * 起始数
+	 */
+	private Integer starNumber=0;
+	
+	/**
+	 * 总页数  
+	 */
+	private Integer pageCount=1;
+	
+	/**
+	 * 用户总数
+	 */
+	private Integer custCount=0;
+	
+	/**
+	 * 当前页数
+	 */
+	private Integer pageNow =0;
+	
+	String pageCountt;
+	
+	@Autowired
+	private UserIdentityService service;
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectNextPage.do")
+	public String selectNextPage(HttpServletRequest request){
+		pageNow+=1;
+		return "redirect:/userIdentity/toUserIdentityList.do";
+	}
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectLastPage.do")
+	public String selectLastPage(HttpServletRequest request){
+		if(pageNow>0){
+			pageNow-=1;
+		}
+		return "redirect:/userIdentity/toUserIdentityList.do";
+	}
+	
+	
+	@RequestMapping("/toUserIdentityList.do")  
+	public String toUserIdentityList(HttpServletRequest request){
+		String returnStr="/jsp/userIdentity/userIdentityList";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			if(StringUtils.isNotEmpty(request.getParameter("pageCountt"))){
+				pageCountt = request.getParameter("pageCountt");
+			}
+			if(StringUtils.isNotEmpty(pageCountt)){
+				pageNow = new Integer(pageCountt)-1;
+			}
+			UserIdentityParams par = new UserIdentityParams();
+			par.setNum(number);
+			if(null!=pageNow&&pageNow>=0){
+				starNumber = pageNow*number;
+			}
+			par.setStarNumber(starNumber);
+			List<UserIdentityInfo> infoList = this.service.getEntityInfoActivities(par);
+			custCount = this.service.getCountEntityInfoActivities(par);
+			Double c = Math.ceil(custCount/number.doubleValue());
+			pageCount = c.intValue();
+			request.setAttribute("infoList", infoList);
+			request.setAttribute("pageCount", pageCount);
+			request.setAttribute("number", number);
+			request.setAttribute("starNumber", starNumber);
+			request.setAttribute("custCount", custCount);
+			request.setAttribute("pageNow", pageNow);
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	/**
+	 * 编辑页面
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toUserIdentityEdit.do")  
+	public String toUserIdentityEdit(HttpServletRequest request){
+		String returnStr="/jsp/userIdentity/userIdentityEdit";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			//获得供应ID
+			String entityId = request.getParameter("entityId");
+			if(StringUtils.isNotEmpty(entityId)){
+				UserIdentityInfo entityInfo = this.service.getEntityInfoByIdActivities(new Integer(entityId));
+				request.setAttribute("entityInfo", entityInfo);
+			}
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	/**
+	 * 用户等级提交逻辑
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toUserIdentitySubmit.do")  
+	@ResponseBody
+	public Map toUserIdentitySubmit(HttpServletRequest request,@RequestBody  UserIdentityParams pars){
+		Map<String,String> map = new HashMap<String,String>();
+		try{
+			request.setCharacterEncoding("UTF-8");
+			HttpSession session = request.getSession();
+			AdminUser userinfo = (AdminUser)session.getAttribute("user");
+			boolean isadd;
+			if(null!=userinfo){
+				if(null!=pars.getIdentity_key()&&pars.getIdentity_key()>0){
+					isadd = this.service.editEntityActivities(pars);
+				}else{
+					isadd = this.service.addEntityActivities(pars);
+				}
+				if(isadd){
+					map.put("message", "操作成功");
+				}else{
+					map.put("message", "操作失败");
+				}
+				
+			}
+		}catch(Exception e){
+			map.put("message", "操作失败");
+		}
+		return map;
+	}
+	
+	/**
+	 * 删除
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toDelete.do")
+	public String toDeleteActivity(HttpServletRequest request,String allIDCheck,RedirectAttributes attr) {
+	  String [] userIds = allIDCheck.split(",");
+	  boolean ischange = true;
+	  if(null!=userIds&&userIds.length>0){
+		  for (String uid : userIds) {
+			  ischange = this.service.deleteEntityActivities(new Integer(uid));
+			  if(!ischange){
+					break;
+				}
+		}
+	  }
+	  if(ischange){
+		  attr.addAttribute("message", "操作成功");
+		}else{
+			attr.addAttribute("message", "操作失败");
+		}
+	 return "redirect:/userIdentity/toUserIdentityList.do";
+	}
+	
+}

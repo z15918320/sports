@@ -1,0 +1,52 @@
+# ALL DEBUG INFO WARN ERROR FATAL OFF
+#add By LiuXianTing
+log4j.rootLogger=DEBUG ,stdout,R
+#log4j.rootLogger=INFO,stdout,R
+# org.springframework\u5305\u4e0b\u9762\u6240\u6709\u7684\u65e5\u5fd7\u8f93\u51fa\u7684\u7ea7\u522b\u8bbe\u4e3aDEBUG
+#log4j.logger.org.springframework=DEBUG  
+
+# \u5c06org.springframework.jdbc\u548corg.springframework.transaction\u7684\u65e5\u5fd7\u7ea7\u522b\u8bbe\u4e3aDEBUG
+#add By LiuXianTing
+#log4j.logger.org.springframework.jdbc=ERROR
+log4j.logger.org.springframework.jdbc=DEBUG
+#add By LiuXianTing
+#log4j.logger.org.springframework.transaction=ERROR
+log4j.logger.org.springframework.transaction=DEBUG
+
+# Pattern to output the caller's file name and line number.
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender  
+log4j.appender.stdout.Target = System.out
+log4j.appender.stdout.layout= org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%d [%F\:%L][%5p]\: %m%n
+#log4j.appender.stdout.layout.ConversionPattern=%-4r %-5p [%d{yyyy-MM-dd HH:mm:ss}]  %m%n
+
+# \u7acb\u5373\u8f93\u51fa
+log4j.appender.stdout.immediateFlush=true
+log4j.appender.R=org.apache.log4j.RollingFileAppender
+# ${webapp.root}  ${ssh.root}
+log4j.appender.R.File=${catalina.base}/logs/zmh_log.log
+
+log4j.appender.R.MaxFileSize=1000KB
+
+# Keep one backup file
+log4j.appender.R.MaxBackupIndex=1
+
+log4j.appender.R.layout=org.apache.log4j.PatternLayout
+log4j.appender.R.layout.ConversionPattern=%d{yyyy-MM-dd HH\:mm\:ss} [%F\:%L][%5p]\: %m%n
+log4j.appender.R.Encoding = utf-8
+
+log4j.logger.com.ibatis= DEBUG
+log4j.logger.com.ibatis.common.jdbc.SimpleDataSource=DEBUG
+log4j.logger.com.ibatis.common.jdbc.ScriptRunner = DEBUG
+log4j.logger.com.ibatis.sqlmap.engine.cache.CacheModel=debug
+log4j.logger.com.ibatis.sqlmap.engine.impl.SqlMapClientImpl=debug
+log4j.logger.com.ibatis.sqlmap.engine.builder.xml.SqlMapParser=debug
+log4j.logger.com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate = DEBUG
+log4j.logger.com.ibatis.common.util.StopWatch=debug,INFO
+
+log4j.logger.java.sql.PreparedStatement = debug
+log4j.logger.java.sql.ResultSet = debug
+log4j.logger.java.sql.Connection=debug
+log4j.logger.java.sql.Statement=debug
+
+

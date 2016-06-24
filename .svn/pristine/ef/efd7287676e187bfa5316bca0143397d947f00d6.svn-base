@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="activitiesDao">
+
+	<select id="activitiesDao.selectActivitiesforId" parameterType="Integer" resultType="com.miaotu.activities.vo.ActivitiesInfo">
+		select * from LAUNCH_ACTIVITIES c where c.activities_id = #{activities_id} order by c.activities_id desc;
+	</select>
+	
+	<delete id="activitiesDao.deleteActivities" parameterType="Integer">
+		delete from LAUNCH_ACTIVITIES where activities_id = #{activities_id};
+	</delete>
+	
+	<delete id="activitiesDao.deleteActivitiesFK" statementType="CALLABLE" parameterType="Integer">
+		CALL DELETE_ACTIVITIES_FK(#{activities_id})
+	</delete>
+	
+	<update id="activitiesDao.changeStatus" parameterType="Integer">
+		update LAUNCH_ACTIVITIES set status=(case when status = 0 then 1 when status = 1 then 0 end)
+		where activities_id = #{activities_id};
+	</update>
+	
+	<select id="activitiesDao.selectCountActivities" parameterType="Integer" resultType="Integer">
+		select count(1) from LAUNCH_ACTIVITIES c where 1=1 
+			<if test="activities_titile !=null and activities_titile !='' ">  
+		           AND c.activities_titile LIKE CONCAT(CONCAT('%', #{activities_titile}),'%') 
+		        </if>  
+		        <if test="activities_contacts != null and activities_contacts != '' ">  
+		            AND c.activities_contacts LIKE CONCAT(CONCAT('%', #{activities_contacts}),'%')
+		        </if>
+		        <if test="model !=null">  
+		            AND c.model = #{model}
+		        </if>  
+		        <if test="status !=null">  
+		            AND c.status = #{status}  
+		        </if> 
+	</select>
+	
+	<select id="activitiesDao.selectActivities" parameterType="com.miaotu.activities.pojo.ActivitiesParams" resultType="com.miaotu.activities.vo.ActivitiesInfo">
+		select c.*,sum(oa.payment_amount) as orderAmount from LAUNCH_ACTIVITIES c left JOIN ORDER_ACTIVITIES oa on c.activities_id=oa.activities_id 
+		where 1=1
+		        <if test="activities_titile !=null and activities_titile !='' ">  
+		           AND c.activities_titile LIKE CONCAT(CONCAT('%', #{activities_titile}),'%') 
+		        </if>  
+		        <if test="activities_contacts != null and activities_contacts != '' ">  
+		            AND c.activities_contacts LIKE CONCAT(CONCAT('%', #{activities_contacts}),'%')
+		        </if>  
+		        <if test="model !=null">  
+		            AND c.model = #{model}
+		        </if>  
+		        <if test="status !=null">  
+		            AND c.status = #{status}  
+		        </if> 
+		 GROUP BY c.activities_id 
+		 ORDER BY c.activities_id desc
+    	  limit #{starNumber}, #{num};
+	</select>
+
+	<select id="selecActivitiesforuserId" parameterType="com.miaotu.activities.pojo.ActivitiesParams"
+		resultType="com.miaotu.activities.vo.ActivitiesInfo">
+		SELECT  la.* FROM  USER_ACTIVITIES ua LEFT JOIN LAUNCH_ACTIVITIES la ON ua.activities_id = la.activities_id 
+		WHERE ua.user_id = #{user_id}  
+		ORDER BY  la.uploadtime DESC 
+		LIMIT #{page},#{num};
+	</select>
+	
+	<insert id="activitiesDao.saveActivitiesByParams" keyProperty="activities_id"
+		useGeneratedKeys="true" parameterType="com.miaotu.activities.pojo.ActivitiesParams">
+		insert into
+		LAUNCH_ACTIVITIES(activities_titile,activities_starttime,activities_endtime,activities_content,
+		activities_pic,activities_expiretime,activities_contacts,contact_phone,
+		payment_amount,user_upper_limit_num,registration_user,model,businessid,
+		businessInfo,uploadtime,activities_address_lat,activities_address_lon,activities_address,activities_content_text)
+		values
+		(#{activities_titile},date_format(#{activities_starttime},'%Y-%c-%d %h:%i:%s'),date_format(#{activities_endtime},'%Y-%c-%d %h:%i:%s'),#{activities_content},
+		#{activities_pic},date_format(#{activities_expiretime},'%Y-%c-%d %h:%i:%s'),#{activities_contacts},
+		#{contact_phone},#{payment_amount},#{user_upper_limit_num},#{registration_user},#{model},#{businessid},
+		#{businessInfo},now(),#{activities_address_lat},#{activities_address_lon},#{activities_address},#{activities_content_text});
+		<!-- ON duplicate KEY UPDATE user_name = #{user_name} 限制重复插入的另一种方法 -->
+	</insert>
+
+
+	<update id="activitiesDao.updateActivities" parameterType="com.miaotu.activities.pojo.ActivitiesParams">
+		update LAUNCH_ACTIVITIES 
+		<set>
+		  <if test="activities_pic !=null and activities_pic !='' ">  
+	            activities_pic = #{activities_pic},
+	      </if>
+	      <if test="activities_address !=null and activities_address !='' ">  
+	            activities_address = #{activities_address},
+	      </if>
+	      <if test="activities_address_lat !=null">  
+	            activities_address_lat = #{activities_address_lat},
+	      </if>
+	      <if test="activities_address_lon !=null">  
+	            activities_address_lon = #{activities_address_lon},
+	      </if>
+	      <if test="model !=null">  
+	            model = #{model},
+	      </if>
+	      <if test="businessid !=null and businessid !='' ">  
+	            businessid = #{businessid},
+	      </if>
+	      <if test="businessInfo !=null and businessInfo !='' ">  
+	            businessInfo = #{businessInfo},
+	      </if>
+	      <if test="payment_amount !=null and payment_amount !='' ">  
+	            payment_amount = #{payment_amount},
+	      </if>
+	      <if test="activities_content_text !=null and activities_content_text !='' ">  
+	            activities_content_text = #{activities_content_text},
+	      </if>
+	      <if test="contact_phone !=null and contact_phone !='' ">  
+	            contact_phone = #{contact_phone},
+	      </if>
+	      <if test="activities_contacts !=null and activities_contacts !='' ">  
+	            activities_contacts = #{activities_contacts},
+	      </if>
+	      <if test="registration_user !=null and registration_user !='' ">  
+	            registration_user = #{registration_user},
+	      </if>
+	      <if test="user_upper_limit_num !=null and user_upper_limit_num !='' ">  
+	            user_upper_limit_num = #{user_upper_limit_num},
+	      </if>
+	      <if test="activities_expiretime !=null and activities_expiretime !='' ">  
+	            activities_expiretime = date_format(#{activities_expiretime},'%Y-%c-%d %h:%i:%s'),
+	      </if>
+	      <if test="activities_content !=null and activities_content !='' ">  
+	            activities_content = #{activities_content},
+	      </if>
+	      <if test="activities_endtime !=null and activities_endtime !='' ">  
+	            activities_endtime = date_format(#{activities_endtime},'%Y-%c-%d %h:%i:%s'),
+	      </if>
+	      <if test="activities_starttime !=null and activities_starttime !='' ">  
+	            activities_starttime = date_format(#{activities_starttime},'%Y-%c-%d %h:%i:%s'),
+	      </if>
+	      <if test="activities_titile !=null and activities_titile !='' ">  
+	            activities_titile = #{activities_titile},
+	      </if>
+		</set>
+		where activities_id =
+		#{activities_id}
+	</update>
+
+	<select id="activitiesDao.selectUserByNamePassword" parameterType="com.miaotu.activities.pojo.LoginParams"
+		resultType="com.miaotu.activities.vo.AdminUser">
+		select * from ADMIN_USER where username = #{username} and password = #{password}
+	</select>
+	
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

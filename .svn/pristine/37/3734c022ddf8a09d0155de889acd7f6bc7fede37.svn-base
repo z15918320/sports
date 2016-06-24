@@ -1,0 +1,263 @@
+package com.miaotu.user.vo;
+
+import com.mysql.jdbc.StringUtils;
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
+//@JsonInclude(Include.NON_NULL)
+public class UserInfo {
+
+	@ApiModelProperty(value = "s:用户ID", required = true)
+	private Integer user_id;
+	@ApiModelProperty(value = "用户名", required = true)
+	private String user_name;
+	@ApiModelProperty(value = "公司名称", required = true)
+	private String company_name;
+	@ApiModelProperty(value = "用户密码", required = true)
+	private String password;
+	@ApiModelProperty(value = "用户昵称", required = true)
+	private String nickname;
+	@ApiModelProperty(value = "用户地址", required = true)
+	private String address;
+	@ApiModelProperty(value = "环信用户名", required = true)
+	private String hx_user_name;
+	@ApiModelProperty(value = "环信密码", required = true)
+	private String hx_password;
+	@ApiModelProperty(value = "移动电话", required = true)
+	private String mobile;
+	@ApiModelProperty(value = "座机", required = true)
+	private String landline;
+	@ApiModelProperty(value = "邮件", required = true)
+	private String email;
+	@ApiModelProperty(value = "行业ID", required = true)
+	private Integer i_type_id=0;
+	@ApiModelProperty(value = "性别", required = true)
+	private Integer sexy;
+	@ApiModelProperty(value = "主营", required = true)
+	private String business_direction;
+	@ApiModelProperty(value = "认证", required = true)
+	private int user_authentication;
+	@ApiModelProperty(value = "头像url", required = true)
+	private String heed_image_url;
+	@ApiModelProperty(value = "s:注册时间", required = true)
+	private String register_time;
+	@ApiModelProperty(value = "简介", required = true)
+	private String brief_introduction = "";
+	@ApiModelProperty(value = "状态:0生效,1失效", required = true)
+	private Integer status = 0;
+	@ApiModelProperty(value = "用户认证类型 :1普通用户,2认证用户,3为VIP,4站长,5合作伙伴", required = true)
+	private Integer identity_key = 0;
+	//行业
+	private String i_name;
+	//认证状态
+	private String authentication_string="未知";
+	private String identity_value;
+	private Integer behavior_value=0;
+	@ApiModelProperty(value = "营业执照URL", required = true)
+	private String business_license_url="";
+	
+	
+	public String getBusiness_license_url() {
+		return business_license_url;
+	}
+
+	public void setBusiness_license_url(String business_license_url) {
+		this.business_license_url = business_license_url;
+	}
+
+	public String getAuthentication_string() {
+		return authentication_string;
+	}
+
+	public void setAuthentication_string(String authentication_string) {
+		this.authentication_string = authentication_string;
+	}
+
+	public String getI_name() {
+		return i_name;
+	}
+
+	public void setI_name(String i_name) {
+		this.i_name = i_name;
+	}
+
+	public Integer getBehavior_value() {
+		return behavior_value;
+	}
+
+	public void setBehavior_value(Integer behavior_value) {
+		this.behavior_value = behavior_value;
+	}
+	public String getIdentity_value() {
+		return identity_value;
+	}
+
+	public void setIdentity_value(String identity_value) {
+		this.identity_value = identity_value;
+	}
+
+	public String getHx_user_name() {
+		return hx_user_name;
+	}
+
+	public void setHx_user_name(String hx_user_name) {
+		this.hx_user_name = hx_user_name;
+	}
+
+	public Integer getI_type_id() {
+		return i_type_id;
+	}
+
+	public void setI_type_id(Integer i_type_id) {
+		this.i_type_id = i_type_id;
+	}
+
+	public Integer getSexy() {
+		return sexy;
+	}
+
+	public void setSexy(Integer sexy) {
+		this.sexy = sexy;
+	}
+
+	public String getHeed_image_url() {
+		return heed_image_url;
+	}
+
+	public void setHeed_image_url(String heed_image_url) {
+		this.heed_image_url = heed_image_url;
+	}
+
+	public String getRegister_time() {
+		return register_time;
+	}
+
+	public void setRegister_time(String register_time) {
+		this.register_time = register_time.substring(0, 10).trim();
+	}
+
+	public String getBrief_introduction() {
+		return brief_introduction;
+	}
+
+	public void setBrief_introduction(String brief_introduction) {
+		this.brief_introduction = brief_introduction;
+	}
+
+	public Integer getIdentity_key() {
+		return identity_key;
+	}
+
+	public void setIdentity_key(Integer identity_key) {
+		this.identity_key = identity_key;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Integer getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+
+	public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+
+	public String getCompany_name() {
+		return company_name;
+	}
+
+	public void setCompany_name(String company_name) {
+		this.company_name = company_name;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getLandline() {
+		return landline;
+	}
+
+	public void setLandline(String landline) {
+		this.landline = landline;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getBusiness_direction() {
+		return business_direction;
+	}
+
+	public void setBusiness_direction(String business_direction) {
+		this.business_direction = business_direction;
+	}
+
+	public String getHx_password() {
+		return hx_password;
+	}
+
+	public void setHx_password(String hx_password) {
+		this.hx_password = hx_password;
+	}
+
+	public int getUser_authentication() {
+		return user_authentication;
+	}
+
+	public void setUser_authentication(int user_authentication) {
+		this.user_authentication = user_authentication;
+	}
+
+	public boolean isParamsError() {
+		if (StringUtils.isNullOrEmpty(this.user_name))
+			return true;
+		return false;
+	}
+}

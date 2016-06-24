@@ -1,0 +1,78 @@
+package com.miaotu.feedBack.pojo;
+
+public class FeedBackParams {
+
+	/**
+	 * 一页显示条数
+	 */
+	private static Integer num = 10;
+
+	/**
+	 * 起始数
+	 */
+	private static Integer starNumber = 0;
+
+	private Integer feed_back_id;
+	private Integer user_id;
+	private String feed_back_content;
+	private String phone;
+	private String updatetime;
+	private String starTime;
+	private String endTime;
+	
+	public String getStarTime() {
+		return starTime;
+	}
+	public void setStarTime(String starTime) {
+		this.starTime = starTime;
+	}
+	public String getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+	public static Integer getNum() {
+		return num;
+	}
+	public static void setNum(Integer num) {
+		FeedBackParams.num = num;
+	}
+	public static Integer getStarNumber() {
+		return starNumber;
+	}
+	public static void setStarNumber(Integer starNumber) {
+		FeedBackParams.starNumber = starNumber;
+	}
+	public Integer getFeed_back_id() {
+		return feed_back_id;
+	}
+	public void setFeed_back_id(Integer feed_back_id) {
+		this.feed_back_id = feed_back_id;
+	}
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	public String getFeed_back_content() {
+		return feed_back_content;
+	}
+	public void setFeed_back_content(String feed_back_content) {
+		this.feed_back_content = feed_back_content;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getUpdatetime() {
+		return updatetime;
+	}
+	public void setUpdatetime(String updatetime) {
+		this.updatetime = updatetime;
+	}
+
+}

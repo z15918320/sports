@@ -1,0 +1,60 @@
+package com.miaotu.orderActive.service.impl;
+
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.miaotu.common.service.impl.BaseServiceImpl;
+import com.miaotu.orderActive.pojo.orderActiveParams;
+import com.miaotu.orderActive.service.orderActiveService;
+import com.miaotu.orderActive.vo.orderActiveInfo;
+@Service
+public class orderActiveServiceImpl extends BaseServiceImpl implements orderActiveService{
+	
+	private static final String DELETE_ENTITY_ID="orderActiveDao.deleteEntity";
+
+	private static final String SELECT_ENTITY_COUNT = "orderActiveDao.selectEntityCount";
+	
+	private static final String SELECT_ENTITY_BY_ID = "orderActiveDao.selectEntityById";
+	
+	private static final String EDIT_ENTITY = "orderActiveDao.editEntity";
+	
+	private static final String SELECT_ENTITY_PAR = "orderActiveDao.selectEntityByPar";
+
+	@Override
+	public boolean deleteEntity(Integer a_order_id) {
+		int i = baseDao.delete(DELETE_ENTITY_ID, a_order_id);
+		if (i > 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean editEntity(orderActiveParams par) {
+		int i = baseDao.update(EDIT_ENTITY, par);
+		if (i > 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public orderActiveInfo getEntityInfo(Integer a_order_id) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_ENTITY_BY_ID,a_order_id);
+	}
+
+	@Override
+	public List<orderActiveInfo> getEntityList(orderActiveParams par) {
+		// TODO Auto-generated method stub
+		return baseDao.getList(SELECT_ENTITY_PAR,par);
+	}
+
+	@Override
+	public Integer getCountEntity(orderActiveParams par) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_ENTITY_COUNT, par);
+	}
+
+	
+}

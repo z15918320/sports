@@ -1,0 +1,90 @@
+package com.miaotu.supply.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.miaotu.common.service.impl.BaseServiceImpl;
+import com.miaotu.supply.pojo.SupplyParams;
+import com.miaotu.supply.service.SupplyService;
+import com.miaotu.supply.vo.SupplyInfo;
+@Service
+public class SupplyServiceImpl extends BaseServiceImpl implements SupplyService{
+
+	private static final String  SELECT_SUPPLY= "supplyDao.selectSupply";
+	
+	private static final String SELECT_SUPPLY_COUNT="supplyDao.selectSupplyCount";
+	
+	private static final String  SELECT_SUPPLY_BY_ID= "supplyDao.selectSupplyById";
+	
+	private static final String  CHANGE_STATUS_SUPPLY_BY_ID= "supplyDao.changeStatusSupplyById";
+	
+	private static final String  EDIT_SUPPLY_ID= "supplyDao.editSupplyById";
+	
+	private static final String  ADD_SUPPLY_ID= "supplyDao.addSupplyById";
+	
+	private static final String  SELECT_TOP= "supplyDao.selectTop";
+	
+	private static final String  CANCEL_TOP= "supplyDao.cancelTop";
+	
+	@Override
+	public List<SupplyInfo> getSupplyInfoActivities(SupplyParams params) {
+		// TODO Auto-generated method stub
+		return baseDao.getList(SELECT_SUPPLY,params);
+	}
+
+	@Override
+	public SupplyInfo getSupplyInfoByIdActivities(Integer supply_id) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_SUPPLY_BY_ID, supply_id);
+	}
+
+	@Override
+	public Integer getCountSupplyInfoActivities(SupplyParams params) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_SUPPLY_COUNT, params);
+	}
+
+	@Override
+	public boolean changeStautsActivities(Integer supply_id) {
+		// TODO Auto-generated method stub
+		int i = baseDao.delete(CHANGE_STATUS_SUPPLY_BY_ID, supply_id);
+		if (i > 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean editSupplyActivities(SupplyParams params) {
+		int count = baseDao.update(EDIT_SUPPLY_ID, params);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean addSupplyActivities(SupplyParams params) {
+		int count = baseDao.save(ADD_SUPPLY_ID, params);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Integer getTopActivities() {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_TOP,null);
+	}
+
+	@Override
+	public boolean cancelTopActivities(Integer supply_id) {
+		int count = baseDao.update(CANCEL_TOP, supply_id);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+}

@@ -1,0 +1,177 @@
+package com.miaotu.user.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.miaotu.activities.vo.AdminUser;
+import com.miaotu.user.pojo.UserParams;
+import com.miaotu.user.service.UserService;
+import com.miaotu.user.vo.UserInfo;
+
+/**
+ * 企业认证管理controller
+ * @author zhijiang.zhang
+ * 2016-4-21 11:09:11
+ */
+@Controller 
+@RequestMapping("/Certification")
+public class CertificationController {
+
+	/**
+	 * 一页显示条数
+	 */
+	private Integer number=10;
+	
+	/**
+	 * 起始数
+	 */
+	private Integer starNumber=0;
+	
+	/**
+	 * 总页数  
+	 */
+	private Integer pageCount=1;
+	
+	/**
+	 * 用户总数
+	 */
+	private Integer custCount=0;
+	
+	/**
+	 * 当前页数
+	 */
+	private Integer pageNow =0;
+	
+	String entityStatus="";
+	String selectMobile;
+	String pageCountt;
+	
+	@Autowired
+	private UserService userService;
+	
+	
+	/**
+	 * 改变认证级别
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/changeType.do")
+	public String changeType(HttpServletRequest request,String allIDCheck,RedirectAttributes attr) {
+	  String [] userIds = allIDCheck.split(",");
+	  String tag = request.getParameter("tag");
+	  boolean isdelete = true;
+	  if(null!=userIds&&userIds.length>0){
+		  for (String uid : userIds) {
+			  UserParams userPar = new UserParams();
+			  userPar.setUser_id(new Integer(uid));
+			  userPar.setUser_authentication(new Integer(tag));
+			  isdelete = this.userService.editUserActivities(userPar);
+			  if(!isdelete){
+					break;
+				}
+		}
+	  }
+	  if(isdelete){
+		  attr.addAttribute("message", "操作用户成功");
+		}else{
+			attr.addAttribute("message", "操作用户失败");
+		}
+	 return "redirect:/Certification/toCertificationList.do";
+	}
+	
+	
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectNextPage.do")
+	public String selectNextPage(HttpServletRequest request){
+		pageNow+=1;
+		return "redirect:/Certification/toCertificationList.do";
+	}
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectLastPage.do")
+	public String selectLastPage(HttpServletRequest request){
+		if(pageNow>0){
+			pageNow-=1;
+		}
+		return "redirect:/Certification/toCertificationList.do";
+	}
+	
+	
+	@RequestMapping("/toCertificationList.do")  
+	public String toCertificationList(HttpServletRequest request){
+		String returnStr="/jsp/user/certificationList";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			if(StringUtils.isNotEmpty(request.getParameter("pageCountt"))){
+				pageCountt = request.getParameter("pageCountt");
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("selectMobile"))){
+				selectMobile = request.getParameter("selectMobile");
+			}else{
+				selectMobile = null;
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("entityStatus"))){
+				entityStatus = request.getParameter("entityStatus");
+			}
+			if(StringUtils.isNotEmpty(pageCountt)){
+				pageNow = new Integer(pageCountt)-1;
+			}
+			UserParams userPar = new UserParams();
+			if(StringUtils.isNotEmpty(entityStatus.trim())){
+				userPar.setUser_authentication(new Integer(entityStatus));
+			}else{
+				userPar.setUser_authentication(null);
+			}
+			userPar.setMobile(selectMobile);
+			userPar.setNum(number);
+			if(null!=pageNow&&pageNow>=0){
+				starNumber = pageNow*number;
+			}
+			userPar.setStarNumber(starNumber);
+			List<UserInfo> userInfoList = this.userService.getCertificationActivities(userPar);
+			for (UserInfo ui : userInfoList) {
+				// 1等待认证  2通过认证  3认证失败
+				if(ui.getUser_authentication()==1){
+					ui.setAuthentication_string("等待认证");
+				}else if(ui.getUser_authentication()==2){
+					ui.setAuthentication_string("通过认证");
+				}else{
+					ui.setAuthentication_string("认证失败");
+				}
+			}
+			custCount = this.userService.getCountCertificationActivities(userPar);
+			Double c = Math.ceil(custCount/number.doubleValue());
+			pageCount = c.intValue();
+			request.setAttribute("infoList", userInfoList);
+			request.setAttribute("entityStatus", userPar.getUser_authentication());
+			request.setAttribute("selectMobile", selectMobile);
+			request.setAttribute("pageCount", pageCount);
+			request.setAttribute("number", number);
+			request.setAttribute("starNumber", starNumber);
+			request.setAttribute("custCount", custCount);
+			request.setAttribute("pageNow", pageNow);
+			
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+}

@@ -1,0 +1,19 @@
+package com.miaotu.orderActive.service;
+import java.util.List;
+
+import com.miaotu.orderActive.pojo.orderActiveParams;
+import com.miaotu.orderActive.vo.orderActiveInfo;
+
+public interface orderActiveService {
+	
+	public boolean deleteEntity(Integer a_order_id);
+	
+	public boolean editEntity(orderActiveParams par);
+	
+	public orderActiveInfo getEntityInfo(Integer a_order_id);
+	
+	public List<orderActiveInfo> getEntityList(orderActiveParams par);
+	
+	public Integer getCountEntity(orderActiveParams par);
+	
+}

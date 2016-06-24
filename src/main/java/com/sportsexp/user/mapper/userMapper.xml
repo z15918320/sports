@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="userDao">
+	
+	<select id="userDao.selectUserByUserId" parameterType="String"
+		resultType="com.sportsexp.user.vo.UserInfo">
+		select UI.* from USER_INFO UI
+		where UI.USER_INFO_ID=#{user_id} 
+	</select>
+	
+	<select id="userDao.selectUserByUserPar" parameterType="com.sportsexp.user.pojo.UserParams"
+		resultType="com.sportsexp.user.vo.UserInfo">
+		select * from
+	   (select a.*,rownum row_num from
+	      (select * from USER_INFO ui 
+	      <where>  
+	      <if test="login_code !=null and login_code !='' ">  
+	            ui.login_code LIKE CONCAT(CONCAT('%', #{login_code}),'%')   
+	        </if>
+	        <if test="user_name !=null and user_name !='' ">  
+	            AND ui.user_name LIKE CONCAT(CONCAT('%', #{user_name}),'%')   
+	        </if> 
+	        <if test="user_type !=null and user_type !='' ">  
+	            AND ui.user_type LIKE CONCAT(CONCAT('%', #{user_type}),'%')   
+	        </if> 
+	        <if test="nick_name !=null and nick_name !='' ">  
+	            AND ui.nick_name LIKE CONCAT(CONCAT('%', #{nick_name}),'%')   
+	        </if> 
+	        <if test="company_name!=null and company_name!= ''">  
+	            AND ui.company_name LIKE CONCAT(CONCAT('%', #{company_name}),'%') 
+	        </if>  
+	        <if test="starTime !=null and starTime !='' ">  
+		        AND ui.create_time &gt;= to_date(#{starTime},'yyyy-mm-dd')
+	        </if> 
+	        <if test="endTime !=null and endTime !='' ">  
+	            AND ui.create_time &lt;=  to_date(#{endTime},'yyyy-mm-dd')
+	        </if> 
+	        <if test="status !=null and status !='' ">  
+	            AND ui.status = #{status}   
+	        </if> 
+    	 </where> 
+	      order by ui.USER_INFO_ID desc) a
+	   ) b 
+	   <if test="starNumber !=null">  
+	   	where b.row_num between #{starNumber} and #{endNumber}
+	   </if> 
+    	  
+	</select>
+	
+	<select id="userDao.selectUserCount" parameterType="com.sportsexp.user.pojo.UserParams"
+		resultType="Integer">
+		select count(1) from USER_INFO ui 
+		<where>  
+	        <if test="login_code !=null and login_code !='' ">  
+	             ui.login_code LIKE CONCAT(CONCAT('%', #{login_code}),'%')   
+	        </if>
+	        <if test="user_name !=null and user_name !='' ">  
+	            AND ui.user_name LIKE CONCAT(CONCAT('%', #{user_name}),'%')   
+	        </if> 
+	        <if test="user_type !=null and user_type !='' ">  
+	            AND ui.user_type LIKE CONCAT(CONCAT('%', #{user_type}),'%')   
+	        </if> 
+	        <if test="nick_name !=null and nick_name !='' ">  
+	            AND ui.nick_name LIKE CONCAT(CONCAT('%', #{nick_name}),'%')   
+	        </if> 
+	        <if test="company_name!=null and company_name!= ''">  
+	            AND ui.company_name LIKE CONCAT(CONCAT('%', #{company_name}),'%') 
+	        </if>  
+	        <if test="starTime !=null and starTime !='' ">  
+		        AND ui.create_time &gt;= to_date(#{starTime},'yyyy-mm-dd')
+	        </if> 
+	        <if test="endTime !=null and endTime !='' ">  
+	            AND ui.create_time &lt;=  to_date(#{endTime},'yyyy-mm-dd')
+	        </if>  
+	        <if test="status !=null and status !='' ">  
+	            AND ui.status = #{status}   
+	        </if> 
+    	 </where>  
+	</select>
+	
+	<update id="userDao.deleteUser" parameterType="String">
+		update USER_INFO set status=(case when status = 0 then 1 when status = 1 then 0 end)
+		where USER_INFO_ID = #{userId}
+	</update>
+	
+	<insert id="userDao.addUserActivities"  parameterType="com.sportsexp.user.pojo.UserParams">
+		insert into USER_INFO(user_info_id,login_code,user_name,password,nick_name,dept_name,company_name,
+							company_addr,user_type,gender,birthday,status)
+		values
+		(SEQ_USERINFO.nextval,#{login_code},#{user_name},#{password},#{nick_name},#{dept_name},#{company_name},#{company_addr},#{user_type},
+		#{gender},to_date(#{birthday},'yyyy-mm-dd'),#{status})
+	</insert>
+	
+	<update id="userDao.editUserActivities" parameterType="com.sportsexp.user.pojo.UserParams">
+		update
+		USER_INFO 
+		<set>
+		  <if test="login_code != null and login_code != '' ">  
+	            login_code = #{login_code},
+	      </if>
+		  <if test="user_name != null and user_name != '' ">  
+	            user_name = #{user_name},
+	      </if>
+	      <if test="password !=null and password !='' ">  
+	            password = #{password},
+	      </if>
+	      <if test="last_login_time != null and last_login_time != '' ">  
+	            last_login_time = #{last_login_time},
+	      </if>
+	      <if test="pre_login_time != null and pre_login_time != '' ">  
+	            pre_login_time = #{pre_login_time},
+	      </if>
+	      <if test="company_name != null and company_name != '' ">  
+	            company_name = #{company_name},
+	      </if>
+	      <if test="company_addr != null and company_addr != '' ">  
+	            company_addr = #{company_addr},
+	      </if>
+	      <if test="status != null and status != '' ">  
+	            status = #{status},
+	      </if>
+	      <if test="create_time != null and create_time != '' ">  
+	            create_time = #{create_time},
+	      </if>
+	      <if test="gender != null and gender != '' ">  
+	            gender = #{gender},
+	      </if>
+	      <if test="birthday != null and birthday != '' ">  
+	            birthday = to_date(#{birthday},'yyyy-mm-dd'),
+	      </if>
+	      <if test="create_time != null and create_time != '' ">  
+	            create_time = #{create_time},
+	      </if>
+	      <if test="user_type != null and user_type != '' ">  
+	            user_type = #{user_type},
+	      </if>
+	      <if test="nick_name != null and nick_name != '' ">  
+	            nick_name = #{nick_name},
+	      </if>
+	      <if test="dept_name != null and dept_name != '' ">  
+	            dept_name = #{dept_name},
+	      </if>
+		</set>
+		where USER_INFO_ID = #{user_info_id}
+	</update>
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

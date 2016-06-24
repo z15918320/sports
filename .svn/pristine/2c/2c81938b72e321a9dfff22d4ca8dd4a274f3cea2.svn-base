@@ -1,0 +1,41 @@
+package com.miaotu.reportFrom.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.miaotu.common.service.impl.BaseServiceImpl;
+import com.miaotu.reportFrom.pojo.ReportFromParams;
+import com.miaotu.reportFrom.service.ReportFromService;
+import com.miaotu.reportFrom.vo.ReportFromInfo;
+@Service
+public class ReportFromServiceImpl extends BaseServiceImpl implements ReportFromService{
+
+	private static final String  SELECT_ENTITY= "reportFromDao.selectReportFromDao";
+	
+	private static final String  SELECT_COUNT_ENTITY= "reportFromDao.selectCountReportFromDao";
+	
+	private static final String  DELETE_ENTITY= "reportFromDao.deleteReportFromDao";
+
+	@Override
+	public List<ReportFromInfo> getEntityInfoActivities(ReportFromParams par) {
+		// TODO Auto-generated method stub
+		return baseDao.getList(SELECT_ENTITY, par);
+	}
+
+	@Override
+	public boolean deleteEntityActivities(Integer report_form_id) {
+		int i = baseDao.delete(DELETE_ENTITY, report_form_id);
+		if (i > 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public Integer getCountEntityInfoActivities(ReportFromParams par) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_COUNT_ENTITY, par);
+	}
+	
+	
+}

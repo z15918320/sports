@@ -1,0 +1,112 @@
+package com.sportsexp.common.util;
+
+public class Command {
+	
+	public static final String  responseMessage="登录返回成功为200,成功返回对应content字段,content为JSON对象,状态201,401,402,403,404因网络或者路径问题或者验证问题访问不到,其它状态为服务器返回对应errorNo和errorContent字段";
+	public static final String  responseHeaders=";\n 验证 TOKEN,根据登录时传入.setHeaders (Authorization : (base64(Json(user_name+authorization_code)))";
+ 
+	public static final int  System_Error = -1;
+	public static final String  System_Error_String = "系统异常";
+	
+	public static final int  Params_Error = 100;
+	public static final String  Params_Error_String = "参数错误";
+	
+	public static final int  SendSms_Net_Error = 101;
+	public static final String  SendSms_Net_Error_String = "短信发送网络错误";
+	
+	public static final int  SendSms_Parse_Error_1 = 102;//获取短信内容为空
+	public static final int  SendSms_Parse_Error_2 = 103;
+	public static final int  SendSms_Parse_Error_3 = 104;
+	public static final int  SendSms_Parse_Error_4 = 105;
+	public static final int  SendSms_Parse_Error_5 = 106;
+	public static final int  SendSms_Parse_Error_6 = 107;
+	public static final int  SendSms_Parse_Error_7 = 108;
+	public static final String  SendSms_Parse_Error_String = "获取sms内容失败";
+	
+	
+	public static final int  Register_User_Error_1 = 109;
+	public static final int  Register_User_Error_2 = 110;
+	public static final int  Register_User_Error_3 = 111;
+	public static final int  Register_User_Error_4 = 112;
+	public static final int  Register_User_Error_5 = 113;
+	public static final String Register_User_Error_String = "注册异常";
+	public static final String Register_User_Error_String_1 = "验证码错误";
+	public static final String Register_User_Error_String_2 = "注册环信失败";
+	public static final String Register_User_Error_String_3 = "用户名已注册";
+	
+	public static final int  Update_User_Error_1 = 114;
+	public static final String  Update_UserError_String_1 = "更新失败";
+	public static final int  Update_UserAddress_Error_1 = 115;
+	public static final String  Update_UserAddress_Error_String_1 = "更新地址失败";
+	public static final int  Delete_Address_Error_1 = 115;
+	public static final String  Delete_Address_Error_String_1 = "删除地址失败";
+
+	
+	public static final int  Login_Error_1 = 124;
+	public static final String  Login_Error_String_1 = "未注册或密码错误";
+	
+	public static final int  Upload_Images_Error_1 = 224;
+	public static final int  Upload_Images_Error_2 = 225;
+	public static final int  Upload_Images_Error_3 = 226;
+	public static final int  Upload_Images_Error_4 = 227;
+	public static final String Upload_Images_Error_String_1 = "上传头像IO异常";
+	public static final String Upload_Images_Error_String_2 =  "上传头像数量异常";
+	public static final String Upload_Images_Error_String_3 = "上传过多头像";
+	
+	public static final int  Supply_Delete_Error_1 = 330;
+	public static final String Supply_Delete_Error_String_1 = "供求删除失败";
+	
+	public static final int  Supply_save_Error_1 = 331;
+	public static final String Supply_save_Error_String_1 = "上传供求失败";
+	
+	public static final int  Supply_Upload_Error_1 = 332;
+	public static final String Supply_Upload_Error_String_1 = "修改供求失败";
+	
+	public static final int  Supply_Comment_save_Error_1 = 333;
+	public static final String Supply_Comment_save_Error_String_1 = "上传供求评论失败";
+	
+	public static final int  Supply_Collection_save_Error_1 = 334;
+	public static final String Supply_Collection_save_Error_String_1 = "供求收藏失败";
+	
+	public static final int  WantBuy_Delete_Error_1 = 340;
+	public static final String WantBuy_Delete_Error_String_1 = "求购删除失败";
+	
+	public static final int WantBuy_save_Error_1 = 341;
+	public static final String WantBuy_save_Error_String_1 = "上传求购失败";
+	
+	public static final int  WantBuy_Upload_Error_1 = 342;
+	public static final String WantBuy_Upload_Error_String_1 = "修改求购失败";
+	
+	public static final int  WantBuy_Comment_save_Error_1 = 343;
+	public static final String WantBuy_Comment_save_Error_String_1 = "上传求购评论失败";
+	
+	public static final int  WantBuy_Comment_save_Error_2 = 344;
+	public static final String  WantBuy_Comment_save_Error_String_2 = "收藏求购失败";
+	
+	public static final int Activities_Delete_Error_1 = 350;
+	public static final String Activities_Delete_Error_String_1 = "活动删除失败";
+	
+	public static final int Activities_save_Error_1 = 351;
+	public static final String Activities_save_Error_String_1 = "上传活动失败";
+	
+	public static final int Activities_Upload_Error_1 = 352;
+	public static final String Activities_Upload_Error_String_1 = "修改活动失败";
+	
+	
+	public static final int Topic_Delete_Error_1 = 360;
+	public static final String Topic_Delete_Error_String_1 = "话题删除失败";
+	
+	public static final int Topic_save_Error_1 = 361;
+	public static final String Topic_save_Error_String_1 = "上传话题失败";
+	
+	public static final int Topic_Upload_Error_1 = 362;
+	public static final String Topic_Upload_Error_String_1 = "修改话题失败";
+	
+	public static final int  Topic_Comment_save_Error_1 = 363;
+	public static final String Topic_Comment_save_Error_String_1 = "上传话题评论失败";
+	
+	public static final int  Topic_Comment_save_Error_2 = 364;
+	public static final String Topic_Comment_save_Error_String_2 = "收藏话题失败";
+	
+	
+}

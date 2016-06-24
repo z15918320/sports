@@ -1,0 +1,120 @@
+package com.miaotu.topic.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.miaotu.activities.vo.IdentityValue;
+import com.miaotu.common.service.impl.BaseServiceImpl;
+import com.miaotu.topic.pojo.TopicParams;
+import com.miaotu.topic.service.TopicService;
+import com.miaotu.topic.vo.TopicInfo;
+
+@Service
+public class TopicServiceImpl extends BaseServiceImpl implements TopicService {
+
+	private static final String SELECT_ENTITY = "topicDao.selectTopic";
+
+	private static final String SELECT_ENTITY_BY_ID = "topicDao.selectTopicById";
+
+	private static final String SELECT_ENTITY_COUNT = "topicDao.selectTopicCount";
+
+	private static final String CHANGE_STATUS = "topicDao.changeStatusTopicById";
+	
+	private static final String CHANGE_GREAT = "topicDao.changeGtreatTopicById";
+	
+	private static final String CHANGE_HOT = "topicDao.changeHotTopicById";
+
+	private static final String EDIT_ENTITY = "topicDao.editTopicById";
+
+	private static final String ADD_ENTITY = "topicDao.addTopicById";
+	
+	private static final String SELECT_TOP = "topicDao.selectTop";
+	
+	private static final String  CANCEL_TOP= "topicDao.cancelTop";
+	
+	private static final String  SELECT_THEME= "topicDao.selectTheme";
+	@Override
+	public List<TopicInfo> getEntityInfoActivities(TopicParams par) {
+		// TODO Auto-generated method stub
+		return baseDao.getList(SELECT_ENTITY, par);
+	}
+
+	@Override
+	public TopicInfo getEntityInfoByIdActivities(Integer topic_id) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_ENTITY_BY_ID, topic_id);
+	}
+
+	@Override
+	public Integer getCountEntityInfoActivities(TopicParams params) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_ENTITY_COUNT, params);
+	}
+
+	@Override
+	public boolean changeStautsActivities(Integer topic_id) {
+		int i = baseDao.update(CHANGE_STATUS, topic_id);
+		if (i > 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean editEntityActivities(TopicParams params) {
+		int count = baseDao.update(EDIT_ENTITY, params);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean addEntityActivities(TopicParams params) {
+		int count = baseDao.save(ADD_ENTITY, params);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Integer getTopActivities() {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_TOP,null);
+	}
+
+	@Override
+	public boolean cancelTopActivities(Integer topic_id) {
+		int count = baseDao.update(CANCEL_TOP, topic_id);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean changeGreatActivities(Integer topic_id) {
+		int count = baseDao.update(CHANGE_GREAT, topic_id);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean changeHotActivities(Integer topic_id) {
+		int count = baseDao.update(CHANGE_HOT, topic_id);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public List<IdentityValue> getTheme(Integer theme_id) {
+		// TODO Auto-generated method stub
+		return baseDao.getList(SELECT_THEME, theme_id);
+	}
+
+}

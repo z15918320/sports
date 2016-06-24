@@ -1,0 +1,230 @@
+package com.miaotu.user.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.miaotu.activities.vo.AdminUser;
+import com.miaotu.user.pojo.UserAddParams;
+import com.miaotu.user.service.UserService;
+import com.miaotu.user.vo.UserAddInfo;
+import com.miaotu.util.GaodeMapUtil;
+
+/**
+ * 用户地址管理controller
+ * @author zhijiang.zhang
+ * 2016-4-21 11:09:11
+ */
+@Controller 
+@RequestMapping("/UserAdd")
+public class UserAddController {
+
+	/**
+	 * 一页显示条数
+	 */
+	private Integer number=10;
+	
+	/**
+	 * 起始数
+	 */
+	private Integer starNumber=0;
+	
+	/**
+	 * 总页数  
+	 */
+	private Integer pageCount=1;
+	
+	/**
+	 * 用户总数
+	 */
+	private Integer custCount=0;
+	
+	/**
+	 * 当前页数
+	 */
+	private Integer pageNow =0;
+	
+	@Autowired
+	private UserService service;
+	
+	String selectUserName;
+	String pageCountt;
+	String selectCompanyName;
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectNextPage.do")
+	public String selectNextPage(HttpServletRequest request){
+		pageNow+=1;
+		return "redirect:/UserAdd/toUserAddList.do";
+	}
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectLastPage.do")
+	public String selectLastPage(HttpServletRequest request){
+		if(pageNow>0){
+			pageNow-=1;
+		}
+		return "redirect:/UserAdd/toUserAddList.do";
+	}
+	
+	
+	/**
+	 * 用户编辑页面
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toUserAddEdit.do")  
+	public String toUserAddEdit(HttpServletRequest request){
+		String returnStr="/jsp/user/userAddEdit";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			//获得用户ID
+			String entityId = request.getParameter("entityId");
+			UserAddInfo entityInfo = new UserAddInfo();
+			if(StringUtils.isNotEmpty(entityId)){
+				entityInfo = this.service.getUserAddFroId(new Integer(entityId));
+			}
+			request.setAttribute("entityInfo", entityInfo);
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	/**
+	 * 删除
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/deleteUserAdd.do")
+	public String deleteUserAdd(HttpServletRequest request,String allIDCheck,RedirectAttributes attr) {
+	  String [] userIds = allIDCheck.split(",");
+	  boolean isdelete = true;
+	  if(null!=userIds&&userIds.length>0){
+		  for (String uid : userIds) {
+			  isdelete = this.service.deleteUserAddActivities(new Integer(uid));
+			  if(!isdelete){
+					break;
+				}
+		}
+	  }
+	  if(isdelete){
+		  attr.addAttribute("message", "操作成功");
+		}else{
+			attr.addAttribute("message", "操作失败");
+		}
+	 return "redirect:/UserAdd/toUserAddList.do";
+	}
+	
+	/**
+	 * 用户编辑提交逻辑
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toUserAddSubmit.do")  
+	@ResponseBody
+	public Map toUserAddSubmit(HttpServletRequest request,@RequestBody  UserAddParams par){
+		Map<String,String> map = new HashMap<String,String>();
+		try{
+			request.setCharacterEncoding("UTF-8");
+			HttpSession session = request.getSession();
+			AdminUser userinfo = (AdminUser)session.getAttribute("user");
+			if(null!=userinfo){
+				boolean isadd=true;
+				String address = par.getCompany_province()+par.getCompany_city()+par.getCompany_area()+par.getCompany_street();
+				double[] xyDouble = GaodeMapUtil.addressToGPS(address);
+				if(null!=xyDouble&&xyDouble.length>1){
+					par.setCompany_lat(xyDouble[0]);
+					par.setCompany_lon(xyDouble[1]);
+				}else{
+					par.setCompany_lat(0.0);
+					par.setCompany_lon(0.0);
+				}
+				if(null!=par.getA_id()&&par.getA_id()>0){
+					isadd = this.service.editUserAddActivities(par);
+				}else{
+					isadd = this.service.addUserAddActivities(par);
+				}
+				
+				if(isadd){
+					map.put("message", "操作用户成功");
+				}else{
+					map.put("message", "操作用户失败");
+				}
+			}
+		}catch(Exception e){
+			map.put("message", "操作用户失败");
+		}
+		return map;
+	}
+	
+	
+	@RequestMapping("/toUserAddList.do")  
+	public String toUserAddList(HttpServletRequest request){
+		String returnStr="/jsp/user/userAddList";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			if(StringUtils.isNotEmpty(request.getParameter("selectUserName"))){
+				selectUserName = request.getParameter("selectUserName");
+			}else{
+				selectUserName = null;
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("pageCountt"))){
+				pageCountt = request.getParameter("pageCountt");
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("selectCompanyName"))){
+				selectCompanyName = request.getParameter("selectCompanyName");
+			}else{
+				selectCompanyName = null;
+			}
+			if(StringUtils.isNotEmpty(pageCountt)){
+				pageNow = new Integer(pageCountt)-1;
+			}
+			UserAddParams userPar = new UserAddParams();
+			userPar.setNum(number);
+			if(null!=pageNow&&pageNow>=0){
+				starNumber = pageNow*number;
+			}
+			userPar.setCompany_name(selectCompanyName);
+			userPar.setStarNumber(starNumber);
+			userPar.setUser_name(selectUserName);
+			List<UserAddInfo> userInfoList = this.service.getUserAddList(userPar);
+			custCount = this.service.getCountUserAddList(userPar);
+			Double c = Math.ceil(custCount/number.doubleValue());
+			pageCount = c.intValue();
+			request.setAttribute("infoList", userInfoList);
+			request.setAttribute("selectUserName", selectUserName);
+			request.setAttribute("selectCompanyName", selectCompanyName);
+			request.setAttribute("pageCount", pageCount);
+			request.setAttribute("number", number);
+			request.setAttribute("starNumber", starNumber);
+			request.setAttribute("custCount", custCount);
+			request.setAttribute("pageNow", pageNow);
+			
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+}

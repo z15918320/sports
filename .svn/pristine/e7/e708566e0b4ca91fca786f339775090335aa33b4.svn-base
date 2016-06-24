@@ -1,0 +1,76 @@
+package com.miaotu.reportFrom.pojo;
+
+public class ReportFromParams {
+
+	/**
+	 * 一页显示条数
+	 */
+	private static Integer num=10;
+	
+	/**
+	 * 起始数
+	 */
+	private static Integer starNumber=0;
+	
+	private Integer report_form_id;
+	private Integer user_id;
+	private String report_content;
+	private Integer report_type;
+	private Integer business_id;
+	private String uploadtime;
+	private String user_name;
+	public static Integer getNum() {
+		return num;
+	}
+	public static void setNum(Integer num) {
+		ReportFromParams.num = num;
+	}
+	public static Integer getStarNumber() {
+		return starNumber;
+	}
+	public static void setStarNumber(Integer starNumber) {
+		ReportFromParams.starNumber = starNumber;
+	}
+	public Integer getReport_form_id() {
+		return report_form_id;
+	}
+	public void setReport_form_id(Integer report_form_id) {
+		this.report_form_id = report_form_id;
+	}
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	public String getReport_content() {
+		return report_content;
+	}
+	public void setReport_content(String report_content) {
+		this.report_content = report_content;
+	}
+	public Integer getReport_type() {
+		return report_type;
+	}
+	public void setReport_type(Integer report_type) {
+		this.report_type = report_type;
+	}
+	public Integer getBusiness_id() {
+		return business_id;
+	}
+	public void setBusiness_id(Integer business_id) {
+		this.business_id = business_id;
+	}
+	public String getUploadtime() {
+		return uploadtime;
+	}
+	public void setUploadtime(String uploadtime) {
+		this.uploadtime = uploadtime;
+	}
+	public String getUser_name() {
+		return user_name;
+	}
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+}

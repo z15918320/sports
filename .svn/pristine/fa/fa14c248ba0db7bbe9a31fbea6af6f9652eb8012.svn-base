@@ -1,0 +1,105 @@
+package com.miaotu.orderActive.pojo;
+
+public class orderActiveParams {
+	/**
+	 * 一页显示条数
+	 */
+	private static Integer num = 10;
+	/**
+	 * 起始数
+	 */
+	private static Integer starNumber = 0;
+
+	private Integer a_order_id;
+	private String activities_titile;
+	private String activities_starttime;
+	private String activities_endtime;
+	private String contacts_people;
+	private String contacts_phone;
+	private String email;
+	private String starTime;
+	private String endTime;
+	private String order_no;
+	private Integer order_status;
+	
+	public String getOrder_no() {
+		return order_no;
+	}
+	public void setOrder_no(String order_no) {
+		this.order_no = order_no;
+	}
+	public Integer getOrder_status() {
+		return order_status;
+	}
+	public void setOrder_status(Integer order_status) {
+		this.order_status = order_status;
+	}
+	public static Integer getNum() {
+		return num;
+	}
+	public static void setNum(Integer num) {
+		orderActiveParams.num = num;
+	}
+	public static Integer getStarNumber() {
+		return starNumber;
+	}
+	public static void setStarNumber(Integer starNumber) {
+		orderActiveParams.starNumber = starNumber;
+	}
+	public Integer getA_order_id() {
+		return a_order_id;
+	}
+	public void setA_order_id(Integer a_order_id) {
+		this.a_order_id = a_order_id;
+	}
+	public String getActivities_titile() {
+		return activities_titile;
+	}
+	public void setActivities_titile(String activities_titile) {
+		this.activities_titile = activities_titile;
+	}
+	public String getActivities_starttime() {
+		return activities_starttime;
+	}
+	public void setActivities_starttime(String activities_starttime) {
+		this.activities_starttime = activities_starttime;
+	}
+	public String getActivities_endtime() {
+		return activities_endtime;
+	}
+	public void setActivities_endtime(String activities_endtime) {
+		this.activities_endtime = activities_endtime;
+	}
+	public String getContacts_people() {
+		return contacts_people;
+	}
+	public void setContacts_people(String contacts_people) {
+		this.contacts_people = contacts_people;
+	}
+	public String getContacts_phone() {
+		return contacts_phone;
+	}
+	public void setContacts_phone(String contacts_phone) {
+		this.contacts_phone = contacts_phone;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getStarTime() {
+		return starTime;
+	}
+	public void setStarTime(String starTime) {
+		this.starTime = starTime;
+	}
+	public String getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+	
+	
+}

@@ -1,0 +1,33 @@
+package com.sportsexp.common.util;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+
+public class PropertiesUtils {
+
+	public static PropertiesConfiguration smsPropertiesConfiguration = null;
+
+	public static PropertiesConfiguration configPropertiesConfiguration = null; 
+
+	public static PropertiesConfiguration getSmsroPertiesConfiguration() throws ConfigurationException
+	{
+		if(null == smsPropertiesConfiguration)
+		{
+			smsPropertiesConfiguration  = new PropertiesConfiguration("sms.properties"); 	
+		}
+		return smsPropertiesConfiguration;
+	}
+
+	public static PropertiesConfiguration getConfigPropertiesConfiguration() 
+	{
+		if(null == configPropertiesConfiguration)
+		{
+			try {
+				configPropertiesConfiguration  = new PropertiesConfiguration("config.properties");
+			} catch (ConfigurationException e) {
+			} 	
+		}
+		return configPropertiesConfiguration;
+	}
+
+}

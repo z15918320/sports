@@ -1,0 +1,46 @@
+package com.miaotu.feedBack.vo;
+
+public class FeedBackInfo {
+	private Integer user_id;
+	private String user_name;
+	private Integer feed_back_id;
+	private String feed_back_content;
+	private String phone;
+	private String updatetime="";
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	public String getUser_name() {
+		return user_name;
+	}
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+	public Integer getFeed_back_id() {
+		return feed_back_id;
+	}
+	public void setFeed_back_id(Integer feed_back_id) {
+		this.feed_back_id = feed_back_id;
+	}
+	public String getFeed_back_content() {
+		return feed_back_content;
+	}
+	public void setFeed_back_content(String feed_back_content) {
+		this.feed_back_content = feed_back_content;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getUpdatetime() {
+		return updatetime;
+	}
+	public void setUpdatetime(String updatetime) {
+		this.updatetime = updatetime.substring(0, 10).trim();
+	}
+}

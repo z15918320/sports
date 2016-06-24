@@ -1,0 +1,15 @@
+package com.miaotu.supplyComment.service;
+
+import java.util.List;
+
+import com.miaotu.supplyComment.pojo.SupplyCommentParams;
+import com.miaotu.supplyComment.vo.SupplyCommentInfo;
+
+public interface  SupplyCommentService {
+
+	public List<SupplyCommentInfo> getEntityInfoActivities(SupplyCommentParams params);
+	
+	public Integer getCountActivities(SupplyCommentParams params);
+	
+	public boolean deleteActivities(Integer supply_comment_id);
+}

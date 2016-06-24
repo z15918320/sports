@@ -1,0 +1,154 @@
+package com.miaotu.orderActive.vo;
+
+import com.miaotu.util.AmountUtils;
+
+public class orderActiveInfo {
+	private Integer a_order_id;
+	private Integer user_id;
+	private Integer order_status;
+	private Integer order_num;;
+	private String activities_titile;
+	private String activities_starttime;
+	private String activities_endtime;
+	private String activities_content;
+	private String activities_pic;
+	private String activities_expiretime;
+	private String activities_uploadtime;
+	private String activities_contacts;
+	private String activities_contact_phone;
+	private String order_no;
+	private String payment_amount;
+	private String unit_price;
+	private String contacts_people;
+	private String contacts_phone;
+	private String email;
+	private String uploadtime;
+	private String user_name;
+	
+	public String getUser_name() {
+		return user_name;
+	}
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+	public Integer getA_order_id() {
+		return a_order_id;
+	}
+	public void setA_order_id(Integer a_order_id) {
+		this.a_order_id = a_order_id;
+	}
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	public Integer getOrder_status() {
+		return order_status;
+	}
+	public void setOrder_status(Integer order_status) {
+		this.order_status = order_status;
+	}
+	public Integer getOrder_num() {
+		return order_num;
+	}
+	public void setOrder_num(Integer order_num) {
+		this.order_num = order_num;
+	}
+	public String getActivities_titile() {
+		return activities_titile;
+	}
+	public void setActivities_titile(String activities_titile) {
+		this.activities_titile = activities_titile;
+	}
+	public String getActivities_starttime() {
+		return activities_starttime;
+	}
+	public void setActivities_starttime(String activities_starttime) {
+		this.activities_starttime = activities_starttime.substring(0, 10).trim();
+	}
+	public String getActivities_endtime() {
+		return activities_endtime;
+	}
+	public void setActivities_endtime(String activities_endtime) {
+		this.activities_endtime = activities_endtime.substring(0, 10).trim();
+	}
+	public String getActivities_content() {
+		return activities_content;
+	}
+	public void setActivities_content(String activities_content) {
+		this.activities_content = activities_content;
+	}
+	public String getActivities_pic() {
+		return activities_pic;
+	}
+	public void setActivities_pic(String activities_pic) {
+		this.activities_pic = activities_pic;
+	}
+	public String getActivities_expiretime() {
+		return activities_expiretime;
+	}
+	public void setActivities_expiretime(String activities_expiretime) {
+		this.activities_expiretime = activities_expiretime.substring(0, 10).trim();
+	}
+	public String getActivities_uploadtime() {
+		return activities_uploadtime;
+	}
+	public void setActivities_uploadtime(String activities_uploadtime) {
+		this.activities_uploadtime = activities_uploadtime.substring(0, 10).trim();
+	}
+	public String getActivities_contacts() {
+		return activities_contacts;
+	}
+	public void setActivities_contacts(String activities_contacts) {
+		this.activities_contacts = activities_contacts;
+	}
+	public String getActivities_contact_phone() {
+		return activities_contact_phone;
+	}
+	public void setActivities_contact_phone(String activities_contact_phone) {
+		this.activities_contact_phone = activities_contact_phone;
+	}
+	public String getOrder_no() {
+		return order_no;
+	}
+	public void setOrder_no(String order_no) {
+		this.order_no = order_no;
+	}
+	public String getPayment_amount() {
+		return payment_amount;
+	}
+	public void setPayment_amount(String payment_amount) throws Exception {
+		this.payment_amount = AmountUtils.changeF2Y(payment_amount);
+	}
+	public String getUnit_price() {
+		return unit_price;
+	}
+	public void setUnit_price(String unit_price) {
+		this.unit_price = unit_price;
+	}
+	public String getContacts_people() {
+		return contacts_people;
+	}
+	public void setContacts_people(String contacts_people) {
+		this.contacts_people = contacts_people;
+	}
+	public String getContacts_phone() {
+		return contacts_phone;
+	}
+	public void setContacts_phone(String contacts_phone) {
+		this.contacts_phone = contacts_phone;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getUploadtime() {
+		return uploadtime;
+	}
+	public void setUploadtime(String uploadtime) {
+		this.uploadtime = uploadtime.substring(0, 10).trim();
+	}
+}

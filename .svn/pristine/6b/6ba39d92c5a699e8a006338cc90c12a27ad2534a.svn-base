@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ImageDao">
+
+	<select id="selectImageforId" parameterType="Integer"
+		resultType="com.miaotu.common.service.vo.ImageInfo">
+		select image_id,name,width,height,url,save_name from IMAGE b
+		where b.image_id = #{image_id};
+	</select>
+	
+		<select id="selectImageforUserId" parameterType="Integer"
+		resultType="Integer">
+		select image_id from IMAGE b
+		where b.user_id = #{user_id};
+	</select>
+
+	<select id="selectImages" parameterType="com.miaotu.common.service.pojo.Images"
+		resultType="com.miaotu.common.service.vo.ImageInfo">
+		select image_id,name,width,height,url,save_name from IMAGE i where 1 = 1
+		<if
+			test="null != commodity_id and  '' != commodity_id and 0!= commodity_id">
+			  <![CDATA[ and i.commodity_id = #{commodity_id} ]]>
+		</if>
+		<if test="null != topic_id and '' != topic_id and 0!= topic_id">
+			  <![CDATA[ and i.topic_id = #{topic_id} ]]>
+		</if>
+		<if test="null != campaign_id and '' != campaign_id and 0!= campaign_id">
+			  <![CDATA[ and i.campaign_id = #{campaign_id} ]]>
+		</if>
+	</select>
+
+	<insert id="addImage" parameterType="com.miaotu.common.service.vo.ImageInfo">
+		insert into
+		IMAGE(commodity_id,topic_id,campaign_id,user_id,name,save_name,height,width,url,size)
+		values
+		(#{commodity_id},#{topic_id},#{campaign_id},#{user_id},#{name},#{save_name},#{height},#{width},#{url},#{size});
+	</insert>
+
+
+    <update id="updateImageforUserId" parameterType="com.miaotu.common.service.vo.ImageInfo">
+        update IMAGE set  name = #{name},
+        save_name = #{save_name},
+        height = #{height},
+        width = #{width},
+        url = #{url},
+        size = #{size}   where 
+		user_id = #{user_id} 	
+    </update>
+    
+	<delete id="deleteImage" parameterType="com.miaotu.common.service.vo.ImageInfo">
+		delete from IMAGE i where 1=1
+		<if
+			test="null != commodity_id and  '' != commodity_id and 0!= commodity_id">
+			  <![CDATA[ and i.commodity_id = #{commodity_id} ]]>
+		</if>
+		<if test="null != topic_id and '' != topic_id and 0!= topic_id">
+			  <![CDATA[ and i.topic_id = #{topic_id} ]]>
+		</if>
+		<if test="null != campaign_id and '' != campaign_id and 0!= campaign_id">
+			  <![CDATA[ and i.campaign_id = #{campaign_id} ]]>
+		</if>
+	</delete>
+
+	<delete id="deleteImageforName" parameterType="String">
+		delete from IMAGE i where i.save_name = #{save_name}
+	</delete>
+
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

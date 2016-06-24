@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="publishThemeDao">
+
+	<select id="publishThemeDao.selectPublishTheme" parameterType="com.miaotu.publishTheme.pojo.PublishThemeParams"
+		resultType="com.miaotu.publishTheme.vo.PublishThemeInfo">
+		select c.* from PUBLISH_THEME c 
+		<where>
+				<if test="theme_id !=null and theme_id !='' ">  
+		            AND c.theme_id = #{theme_id}   
+		        </if>
+		        <if test="starTime !=null and starTime !='' ">  
+		            AND c.push_timer &gt;= date_format(#{starTime},'%Y-%c-%d %h:%i:%s')
+		        </if> 
+		        <if test="endTime !=null and endTime !='' ">  
+		            AND c.push_timer &lt;=  date_format(#{endTime},'%Y-%c-%d %h:%i:%s') 
+		        </if> 
+		        <if test="status !=null">  
+		            AND c.status = #{status}   
+		        </if> 
+	        </where>
+		
+	        ORDER BY c.theme_id desc limit #{starNumber}, #{num}
+	</select>
+	
+	<select id="publishThemeDao.selectPublishThemeCount" parameterType="com.miaotu.publishTheme.pojo.PublishThemeParams"
+		resultType="Integer">
+		select count(1) from PUBLISH_THEME c 
+		<where>
+		       
+		        <if test="starTime !=null and starTime !='' ">  
+		            AND c.push_timer &gt;= date_format(#{starTime},'%Y-%c-%d %h:%i:%s')
+		        </if> 
+		        <if test="endTime !=null and endTime !='' ">  
+		            AND c.push_timer &lt;=  date_format(#{endTime},'%Y-%c-%d %h:%i:%s') 
+		        </if> 
+		        <if test="status !=null">  
+		            AND c.status = #{status}   
+		        </if> 
+	        </where>
+	</select>
+	
+	<select id="publishThemeDao.selectPublishThemeById" parameterType="Integer"
+		resultType="com.miaotu.publishTheme.vo.PublishThemeInfo">
+		select * from PUBLISH_THEME c where c.theme_id = #{theme_id};
+	</select>
+
+	<update id="publishThemeDao.editPublishThemeById" parameterType="com.miaotu.publishTheme.pojo.PublishThemeParams">
+		update PUBLISH_THEME
+		<set>
+		  <if test="theme_header != null and theme_header != '' ">  
+	            theme_header = #{theme_header},
+	      </if>
+	      <if test="content_url !=null and content_url!='' ">  
+	            content_url = #{content_url},
+	      </if>
+	      <if test="theme_content != null and theme_content != '' ">  
+	            theme_content = #{theme_content},
+	      </if>
+	    </set>
+		where theme_id = #{theme_id}
+	</update>
+
+	<insert id="publishThemeDao.addPublishThemeById" keyProperty="theme_id"
+		useGeneratedKeys="true" parameterType="com.miaotu.publishTheme.pojo.PublishThemeParams">
+		insert into PUBLISH_THEME 
+		(
+		theme_header,
+		theme_content,
+		content_url,
+		push_timer
+		) 
+		values
+		(#{theme_header},
+		#{theme_content},
+		#{content_url},
+		now()
+		);
+		</insert>
+
+	<update id="publishThemeDao.changeStatusPublishThemeById" parameterType="Integer">
+		update PUBLISH_THEME set status=(case when status = 0 then 1 when status = 1 then 0 end)
+		where theme_id = #{theme_id};
+	</update>
+
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

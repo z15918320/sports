@@ -1,0 +1,33 @@
+package com.miaotu.activities.service;
+
+import java.util.List;
+
+import com.miaotu.activities.pojo.ActivitiesParams;
+import com.miaotu.activities.pojo.LoginParams;
+import com.miaotu.activities.vo.ActivitiesInfo;
+import com.miaotu.activities.vo.AdminUser;
+
+public interface ActivitiesService {
+	
+	public boolean changeStatusActivities(Integer activities_id);
+	
+	public Integer selectCountActivities(ActivitiesParams activities);
+	
+	public List<ActivitiesInfo> selectActivities(ActivitiesParams activities);
+	
+	public List<ActivitiesInfo> selectActivitiesForUserId(ActivitiesParams activities);
+
+	public boolean updateActivities(ActivitiesParams activitiesInfo);
+
+	public AdminUser loginActivities(LoginParams loginInfo);
+	
+	public boolean saveActivities(ActivitiesParams activitiesParams);
+
+	public boolean deleteActivities(Integer activities_id);
+	
+	public boolean deleteActivitiesFK(Integer activities_id);
+
+	public ActivitiesInfo selectActivitiesforAID(Integer activities_id);
+	
+
+}

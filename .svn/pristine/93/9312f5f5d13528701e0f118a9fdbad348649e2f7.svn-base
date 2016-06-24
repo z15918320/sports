@@ -1,0 +1,106 @@
+package com.miaotu.topicComment.pojo;
+
+public class TopicCommentParams {
+
+	/**
+	 * 一页显示条数
+	 */
+	private static Integer num = 10;
+
+	/**
+	 * 起始数
+	 */
+	private static Integer starNumber = 0;
+
+	private Integer topic_comment_id;
+	private Integer topic_id;
+	private Integer user_id;
+	private String topic_comment;
+	private String topic_comment_time;
+	private Integer reply_user_id;
+	private String reply_nickname;
+	private Integer comment_type;
+	private Integer reply_topic_comment_id;
+	private String starTime;
+	private String endTime;
+	public static Integer getNum() {
+		return num;
+	}
+	public static void setNum(Integer num) {
+		TopicCommentParams.num = num;
+	}
+	public static Integer getStarNumber() {
+		return starNumber;
+	}
+	public static void setStarNumber(Integer starNumber) {
+		TopicCommentParams.starNumber = starNumber;
+	}
+	public Integer getTopic_comment_id() {
+		return topic_comment_id;
+	}
+	public void setTopic_comment_id(Integer topic_comment_id) {
+		this.topic_comment_id = topic_comment_id;
+	}
+	public Integer getTopic_id() {
+		return topic_id;
+	}
+	public void setTopic_id(Integer topic_id) {
+		this.topic_id = topic_id;
+	}
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	public String getTopic_comment() {
+		return topic_comment;
+	}
+	public void setTopic_comment(String topic_comment) {
+		this.topic_comment = topic_comment;
+	}
+	public String getTopic_comment_time() {
+		return topic_comment_time;
+	}
+	public void setTopic_comment_time(String topic_comment_time) {
+		this.topic_comment_time = topic_comment_time;
+	}
+	public Integer getReply_user_id() {
+		return reply_user_id;
+	}
+	public void setReply_user_id(Integer reply_user_id) {
+		this.reply_user_id = reply_user_id;
+	}
+	public String getReply_nickname() {
+		return reply_nickname;
+	}
+	public void setReply_nickname(String reply_nickname) {
+		this.reply_nickname = reply_nickname;
+	}
+	public Integer getComment_type() {
+		return comment_type;
+	}
+	public void setComment_type(Integer comment_type) {
+		this.comment_type = comment_type;
+	}
+	public Integer getReply_topic_comment_id() {
+		return reply_topic_comment_id;
+	}
+	public void setReply_topic_comment_id(Integer reply_topic_comment_id) {
+		this.reply_topic_comment_id = reply_topic_comment_id;
+	}
+	public String getStarTime() {
+		return starTime;
+	}
+	public void setStarTime(String starTime) {
+		this.starTime = starTime;
+	}
+	public String getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+	
+
+}

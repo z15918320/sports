@@ -1,0 +1,73 @@
+package com.miaotu.userIdentity.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.miaotu.common.service.impl.BaseServiceImpl;
+import com.miaotu.userIdentity.pojo.UserIdentityParams;
+import com.miaotu.userIdentity.service.UserIdentityService;
+import com.miaotu.userIdentity.vo.UserIdentityInfo;
+@Service
+public class UserIdentityServiceImpl extends BaseServiceImpl implements UserIdentityService{
+
+	private static final String  SELECT_ENTITY= "userIdentityDao.selectUserIdentity";
+	
+	private static final String  SELECT_ENTITY_BY_ID= "userIdentityDao.selectUserIdentityById";
+	
+	private static final String  SELECT_ENTITY_COUNT= "userIdentityDao.selectUserIdentityCount";
+	
+	private static final String EDIT_ENTITY = "userIdentityDao.editUserIdentityById";
+	
+	private static final String ADD_ENTITY = "userIdentityDao.addUserIdentity";
+	
+	private static final String DELETE_ENTITY = "userIdentityDao.deleteUserIdentity";
+
+	@Override
+	public List<UserIdentityInfo> getEntityInfoActivities(UserIdentityParams par) {
+		// TODO Auto-generated method stub
+		return baseDao.getList(SELECT_ENTITY,par);
+	}
+
+	@Override
+	public UserIdentityInfo getEntityInfoByIdActivities(Integer identity_key) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_ENTITY_BY_ID, identity_key);
+	}
+
+	@Override
+	public Integer getCountEntityInfoActivities(UserIdentityParams params) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_ENTITY_COUNT, params);
+	}
+
+	@Override
+	public boolean editEntityActivities(UserIdentityParams params) {
+		int count = baseDao.update(EDIT_ENTITY, params);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean addEntityActivities(UserIdentityParams params) {
+		int count = baseDao.save(ADD_ENTITY, params);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean deleteEntityActivities(Integer identity_key) {
+		int count = baseDao.delete(DELETE_ENTITY, identity_key);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+
+	
+}

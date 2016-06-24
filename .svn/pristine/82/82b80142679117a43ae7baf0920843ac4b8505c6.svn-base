@@ -1,0 +1,16 @@
+package com.miaotu.reportFrom.service;
+
+import java.util.List;
+
+import com.miaotu.reportFrom.pojo.ReportFromParams;
+import com.miaotu.reportFrom.vo.ReportFromInfo;
+
+public interface ReportFromService {
+	public List<ReportFromInfo> getEntityInfoActivities(ReportFromParams par);
+	
+	public Integer getCountEntityInfoActivities(ReportFromParams par);
+	
+	public boolean deleteEntityActivities(Integer report_form_id);
+	
+
+}

@@ -1,0 +1,26 @@
+package com.miaotu.common.exception;
+
+/**
+ * 
+ * <p>DaoException.java</p> 
+ * <p>Title: Dao陈异常类</p>
+ * <p>Description: Dao层代码统一抛出的异常类，Service层必须对此类异常进行捕获和处理。 </p>
+ * <p>Department: 技术部 </p>
+ * @author 王海波
+ * @since 2013年8月21日  下午3:21:53
+ */
+public class DaoException extends RuntimeException {
+	private static final long serialVersionUID = -7645633187085897783L;
+	public DaoException() {
+		super();
+	}
+	public DaoException(String message) {
+		super(message);
+	}
+	public DaoException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	public DaoException(Throwable cause) {
+		super(cause);
+	}
+}

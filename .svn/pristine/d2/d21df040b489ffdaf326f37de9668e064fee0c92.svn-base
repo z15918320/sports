@@ -1,0 +1,199 @@
+package com.miaotu.user.service.impl;
+
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.miaotu.activities.vo.IdentityValue;
+import com.miaotu.common.service.impl.BaseServiceImpl;
+import com.miaotu.user.pojo.UserAddParams;
+import com.miaotu.user.pojo.UserBehaviorValueParams;
+import com.miaotu.user.pojo.UserParams;
+import com.miaotu.user.service.UserService;
+import com.miaotu.user.vo.UserAddInfo;
+import com.miaotu.user.vo.UserInfo;
+@Service
+public class UserServiceImpl extends BaseServiceImpl implements UserService{	
+	private static final String DELETE_CUSTINFO_ID="userDao.deleteUser";
+
+	private static final String SELECT_CUSTINFO_COUNT = "userDao.selectCustCount";
+	
+	private static final String SELECT_CUSTINFO_ID = "userDao.selectCustByUserId";
+	
+	private static final String ADD_CUSTINFO_ID = "userDao.addUserActivities";
+	
+	private static final String EDIT_CUSTINFO_ID = "userDao.editUserActivities";
+	
+	private static final String SELECT_CUSTINFO_PAR = "userDao.selectCustByUserPar";
+	
+	private static final String SELECT_CERTIFICATION_PAR = "userDao.selectCertificationByUserPar";
+	
+	private static final String SELECT_CERTIFICATION_COUNT = "userDao.selectCertificationCount";
+	
+	private static final String SELECT_IDENTITY = "userDao.selectIdeneity";
+	
+	private static final String SELECT_ITYPE = "userDao.selectITypeId";
+	
+	private static final String UPDATE_BEHAVIOR_VALUE = "userDao.updateBehaviorValue";
+	
+	private static final String ADD_BEHAVIOR_VALUE = "userDao.addBehaviorValue";
+	
+	
+	private static final String SELECT_USERADD_PAY = "userDao.selectUserAdd";
+	
+	private static final String SELECT_COUNT_USERADD = "userDao.selectCountUserAdd";
+	
+	private static final String SELECT_USERADD_ID = "userDao.selectUserAddById";
+	
+	private static final String EDIT_USERADD = "userDao.editUserAdd";
+	
+	private static final String ADD_USERADD = "userDao.addUserAdd";
+	
+	private static final String DELETE_USERADD = "userDao.deleteUserAdd";
+	
+	private static final String ADD_TASK_NEW_USER = "userDao.addTaskNewUser";
+	
+	@Override
+	public boolean deleteUserActivities(Integer userId) {
+		int count = baseDao.delete(DELETE_CUSTINFO_ID, userId);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Integer getCountUserInfoActivities(UserParams userPars) {
+		// TODO Auto-generated method stub
+		return this.baseDao.get(SELECT_CUSTINFO_COUNT, userPars);
+	}
+
+	@Override
+	public boolean addUserActivities(UserParams userPar) {
+		int count = baseDao.save(ADD_CUSTINFO_ID, userPar);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean editUserActivities(UserParams userPar) {
+		int count = baseDao.update(EDIT_CUSTINFO_ID, userPar);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public UserInfo getUserInfoFroIdActivities(Integer userId) {
+		return baseDao.get(SELECT_CUSTINFO_ID, userId);
+	}
+
+	@Override
+	public List<UserInfo> getUserInfoFroParActivities(UserParams userPar) {
+		// TODO Auto-generated method stub
+		List<UserInfo> userInfoList = baseDao.getList(SELECT_CUSTINFO_PAR, userPar);
+		return userInfoList;
+	}
+
+	@Override
+	public List<IdentityValue> getUserIdentityActivities(Integer identity_key) {
+		return baseDao.getList(SELECT_IDENTITY, identity_key);
+	}
+
+	@Override
+	public boolean updateUserBehaviorValueActivities(UserBehaviorValueParams par) {
+		// TODO Auto-generated method stub
+		int count = baseDao.update(UPDATE_BEHAVIOR_VALUE, par);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean addUserBehaviorValueActivities(UserParams userPar) {
+		int count = baseDao.update(ADD_BEHAVIOR_VALUE, userPar);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public List<UserInfo> getCertificationActivities(UserParams userPar) {
+		List<UserInfo> userInfoList = baseDao.getList(SELECT_CERTIFICATION_PAR, userPar);
+		return userInfoList;
+	}
+
+	@Override
+	public Integer getCountCertificationActivities(UserParams userPar) {
+		return this.baseDao.get(SELECT_CERTIFICATION_COUNT, userPar);
+	}
+
+	@Override
+	public List<IdentityValue> getUserITypeIdActivities(Integer i_type_id) {
+		return baseDao.getList(SELECT_ITYPE, i_type_id);
+	}
+
+	@Override
+	public List<UserAddInfo> getUserAddList(UserAddParams pars) {
+		// TODO Auto-generated method stub
+		return baseDao.getList(SELECT_USERADD_PAY, pars);
+	}
+
+	@Override
+	public Integer getCountUserAddList(UserAddParams pars) {
+		// TODO Auto-generated method stub
+		return this.baseDao.get(SELECT_COUNT_USERADD, pars);
+	}
+
+	@Override
+	public UserAddInfo getUserAddFroId(Integer a_id) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_USERADD_ID, a_id);
+	}
+
+	@Override
+	public boolean editUserAddActivities(UserAddParams pars) {
+		int count = baseDao.update(EDIT_USERADD, pars);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean deleteUserAddActivities(Integer a_id) {
+		// TODO Auto-generated method stub
+		int count = baseDao.update(DELETE_USERADD, a_id);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean addUserAddActivities(UserAddParams pars) {
+		int count = baseDao.save(ADD_USERADD, pars);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean addTaskNewUser(Integer user_id) {
+		int count = baseDao.save(ADD_TASK_NEW_USER, user_id);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+
+ 
+}

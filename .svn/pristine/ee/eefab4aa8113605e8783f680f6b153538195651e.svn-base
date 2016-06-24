@@ -1,0 +1,106 @@
+package com.miaotu.wantbuyComment.pojo;
+
+public class WantBuyCommentParams {
+
+	/**
+	 * 一页显示条数
+	 */
+	private static Integer num = 10;
+
+	/**
+	 * 起始数
+	 */
+	private static Integer starNumber = 0;
+
+	private Integer want_buy_comment_id;
+	private Integer want_buy_id;
+	private Integer user_id;
+	private String want_buy_comment;
+	private String want_buy_comment_time;
+	private Integer reply_user_id;
+	private String reply_nickname;
+	private Integer comment_type;
+	private Integer reply_want_buy_comment_id;
+	private String starTime;
+	private String endTime;
+	public static Integer getNum() {
+		return num;
+	}
+	public static void setNum(Integer num) {
+		WantBuyCommentParams.num = num;
+	}
+	public static Integer getStarNumber() {
+		return starNumber;
+	}
+	public static void setStarNumber(Integer starNumber) {
+		WantBuyCommentParams.starNumber = starNumber;
+	}
+	public Integer getWant_buy_comment_id() {
+		return want_buy_comment_id;
+	}
+	public void setWant_buy_comment_id(Integer want_buy_comment_id) {
+		this.want_buy_comment_id = want_buy_comment_id;
+	}
+	public Integer getWant_buy_id() {
+		return want_buy_id;
+	}
+	public void setWant_buy_id(Integer want_buy_id) {
+		this.want_buy_id = want_buy_id;
+	}
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	public String getWant_buy_comment() {
+		return want_buy_comment;
+	}
+	public void setWant_buy_comment(String want_buy_comment) {
+		this.want_buy_comment = want_buy_comment;
+	}
+	public String getWant_buy_comment_time() {
+		return want_buy_comment_time;
+	}
+	public void setWant_buy_comment_time(String want_buy_comment_time) {
+		this.want_buy_comment_time = want_buy_comment_time;
+	}
+	public Integer getReply_user_id() {
+		return reply_user_id;
+	}
+	public void setReply_user_id(Integer reply_user_id) {
+		this.reply_user_id = reply_user_id;
+	}
+	public String getReply_nickname() {
+		return reply_nickname;
+	}
+	public void setReply_nickname(String reply_nickname) {
+		this.reply_nickname = reply_nickname;
+	}
+	public Integer getComment_type() {
+		return comment_type;
+	}
+	public void setComment_type(Integer comment_type) {
+		this.comment_type = comment_type;
+	}
+	public Integer getReply_want_buy_comment_id() {
+		return reply_want_buy_comment_id;
+	}
+	public void setReply_want_buy_comment_id(Integer reply_want_buy_comment_id) {
+		this.reply_want_buy_comment_id = reply_want_buy_comment_id;
+	}
+	public String getStarTime() {
+		return starTime;
+	}
+	public void setStarTime(String starTime) {
+		this.starTime = starTime;
+	}
+	public String getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+	
+
+}

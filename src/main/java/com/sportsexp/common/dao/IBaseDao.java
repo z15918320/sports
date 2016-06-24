@@ -1,0 +1,23 @@
+package com.sportsexp.common.dao;
+
+import java.io.Serializable;
+import java.util.List;
+
+import com.sportsexp.common.exception.DaoException;
+
+public interface IBaseDao {
+	
+	public int save(String key, Object params) throws DaoException;
+	
+	public int update(String key, Object params) throws DaoException;
+	
+	public int delete(String key, Object params) throws DaoException;
+	
+	public int delete(String key, Serializable id) throws DaoException;
+	
+	public <T> T get(String key, Serializable id) throws DaoException;
+	
+	public <T> T get(String key, Object params) throws DaoException;
+	
+	public <T> List<T> getList(String key, Object params) throws DaoException;
+}

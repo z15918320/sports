@@ -1,0 +1,75 @@
+package com.miaotu.publishTheme.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.miaotu.common.service.impl.BaseServiceImpl;
+import com.miaotu.publishTheme.pojo.PublishThemeParams;
+import com.miaotu.publishTheme.service.PublishThemeService;
+import com.miaotu.publishTheme.vo.PublishThemeInfo;
+@Service
+public class PublishThemeServiceImpl extends BaseServiceImpl implements PublishThemeService{
+
+	private static final String  SELECT_ENTITY= "publishThemeDao.selectPublishTheme";
+	
+	private static final String  SELECT_ENTITY_BY_ID= "publishThemeDao.selectPublishThemeById";
+	
+	private static final String  SELECT_ENTITY_COUNT= "publishThemeDao.selectPublishThemeCount";
+	
+	private static final String CHANGE_STATUS = "publishThemeDao.changeStatusPublishThemeById";
+	
+	private static final String EDIT_ENTITY = "publishThemeDao.editPublishThemeById";
+	
+	private static final String ADD_ENTITY = "publishThemeDao.addPublishThemeById";
+	@Override
+	public List<PublishThemeInfo> getEntityInfoActivities(PublishThemeParams par) {
+		// TODO Auto-generated method stub
+		return baseDao.getList(SELECT_ENTITY,par);
+	}
+
+
+	@Override
+	public PublishThemeInfo getEntityInfoByIdActivities(Integer theme_id) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_ENTITY_BY_ID, theme_id);
+	}
+
+
+	@Override
+	public Integer getCountEntityInfoActivities(PublishThemeParams params) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_ENTITY_COUNT, params);
+	}
+
+
+	@Override
+	public boolean changeStautsActivities(Integer theme_id) {
+		int i = baseDao.delete(CHANGE_STATUS, theme_id);
+		if (i > 0)
+			return true;
+		return false;
+	}
+
+
+	@Override
+	public boolean editEntityActivities(PublishThemeParams params) {
+		int count = baseDao.update(EDIT_ENTITY, params);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+
+	@Override
+	public boolean addEntityActivities(PublishThemeParams params) {
+		int count = baseDao.save(ADD_ENTITY, params);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	
+}

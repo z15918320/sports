@@ -1,0 +1,398 @@
+package com.miaotu.activities.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.aliyun.oss.ClientConfiguration;
+import com.miaotu.activities.pojo.ActivitiesParams;
+import com.miaotu.activities.pojo.LoginParams;
+import com.miaotu.activities.service.ActivitiesService;
+import com.miaotu.activities.vo.ActivitesPar;
+import com.miaotu.activities.vo.ActivitiesInfo;
+import com.miaotu.activities.vo.AdminUser;
+import com.miaotu.activities.vo.SelectValue;
+import com.miaotu.common.util.MD5Utils;
+import com.miaotu.supply.pojo.SupplyParams;
+import com.miaotu.supply.service.SupplyService;
+import com.miaotu.supply.vo.SupplyInfo;
+import com.miaotu.topic.pojo.TopicParams;
+import com.miaotu.topic.service.TopicService;
+import com.miaotu.topic.vo.TopicInfo;
+import com.miaotu.wantbuy.pojo.WantBuyParams;
+import com.miaotu.wantbuy.service.WantBuyService;
+import com.miaotu.wantbuy.vo.WantBuyInfo;
+
+import net.sf.json.JSONArray;
+@Controller 
+public class ActivitiesController {
+	
+	/**
+	 * 一页显示条数
+	 */
+	private Integer number=10;
+	
+	/**
+	 * 起始数
+	 */
+	private Integer starNumber=0;
+	
+	/**
+	 * 总页数  
+	 */
+	private Integer pageCount=1;
+	
+	/**
+	 * 用户总数
+	 */
+	private Integer custCount=0;
+	
+	/**
+	 * 当前页数
+	 */
+	private Integer pageNow =0;
+	@Autowired
+	private ActivitiesService ActivitiesService;
+
+	@Autowired
+	private TopicService topicService;
+	
+	@Autowired
+	private WantBuyService wantBuyService;
+	
+	@Autowired
+	private SupplyService supplyService;
+	/**
+	 * 根据或用类别加载用户类别主键
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectBusinessid.do")
+	@ResponseBody
+	public String selectBusinessidActivity(HttpServletRequest request,@RequestBody  ActivitesPar par) {
+		Integer modeId = par.getModeId();
+		List<SelectValue> users = new ArrayList<SelectValue>();
+		if(modeId.equals(1)){
+			List<SupplyInfo> supplyInfos = supplyService.getSupplyInfoActivities(new SupplyParams());
+			for (SupplyInfo supplyInfo : supplyInfos) {
+				SelectValue selectPar = new SelectValue();
+				selectPar.setId(supplyInfo.getSupply_id());
+				selectPar.setValue(supplyInfo.getVarieties());
+				users.add(selectPar);
+			}
+		}else if(modeId.equals(2)){
+			List<TopicInfo> topicInfos = topicService.getEntityInfoActivities(new TopicParams());
+			for (TopicInfo topicInfo : topicInfos) {
+				SelectValue selectPar = new SelectValue();
+				selectPar.setId(topicInfo.getTopic_id());
+				selectPar.setValue(topicInfo.getTopic_content());
+				users.add(selectPar);
+			}
+		}else{
+			List<WantBuyInfo> wantBuyInfos = wantBuyService.getEntityInfoActivities(new WantBuyParams());
+			for (WantBuyInfo wantBuyInfo : wantBuyInfos) {
+				SelectValue selectPar = new SelectValue();
+				selectPar.setId(wantBuyInfo.getWant_buy_id());
+				selectPar.setValue(wantBuyInfo.getVarieties());
+				users.add(selectPar);
+			}
+		}
+		String json = JSONArray.fromObject(users).toString();  
+		 return json;
+	}
+	
+	/**
+	 * 发布活动
+	 * @param request
+	 * @param activitiesParams 活动参数
+	 * @return
+	 */
+	@RequestMapping("/publishActivity.do")
+	@ResponseBody
+	public Map publishActivity(HttpServletRequest request,@RequestBody  ActivitiesParams activitiesParams) {
+	  ClientConfiguration conf = new ClientConfiguration();
+	  conf.setSupportCname(true);
+	  conf.setMaxConnections(100);
+	  conf.setConnectionTimeout(5000);
+	  conf.setMaxErrorRetry(3);
+	  conf.setSocketTimeout(2000);
+	  boolean isadd;
+      Map map = new HashMap();
+      Integer businessid = activitiesParams.getBusinessid();
+      if(null!=businessid){
+    	  if(activitiesParams.getModel().equals(1)){
+        	  SupplyInfo supplyInfo = supplyService.getSupplyInfoByIdActivities(businessid);
+        	  activitiesParams.setBusinessInfo(supplyInfo.getVarieties());
+        	  activitiesParams.setBusinessid(supplyInfo.getSupply_id());
+          }else if(activitiesParams.getModel().equals(2)){
+        	  TopicInfo topic = topicService.getEntityInfoByIdActivities(businessid);
+        	  activitiesParams.setBusinessInfo(topic.getTopic_content());
+        	  activitiesParams.setBusinessid(topic.getTopic_id());
+          }else if(activitiesParams.getModel().equals(3)){
+        	  WantBuyInfo wantBuy = wantBuyService.getEntityInfoByIdActivities(businessid);
+        	  activitiesParams.setBusinessInfo(wantBuy.getVarieties());
+        	  activitiesParams.setBusinessid(wantBuy.getWant_buy_id());
+          }
+      }
+      if(activitiesParams.getModel().equals(0)||activitiesParams.getModel().equals(4)){
+    	  activitiesParams.setBusinessInfo("");
+    	  activitiesParams.setBusinessid(0);
+      }
+      if(null!=activitiesParams.getActivities_id()&&activitiesParams.getActivities_id()>0){
+			isadd = this.ActivitiesService.updateActivities(activitiesParams);
+		}else{
+			isadd = this.ActivitiesService.saveActivities(activitiesParams);
+		}
+		if(isadd){
+			map.put("message", "操作用户成功");
+		}else{
+			map.put("message", "操作用户失败");
+		}
+	 return map;
+	}
+	
+	/**
+	 * 删除
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toDelete.do")
+	public String toDeleteActivity(HttpServletRequest request,String allIDCheck,RedirectAttributes attr) {
+	  String [] activitiesIds = allIDCheck.split(",");
+	  boolean ischange = true;
+	  if(null!=activitiesIds&&activitiesIds.length>0){
+		  for (String activitiesId : activitiesIds) {
+			  ischange = this.ActivitiesService.deleteActivitiesFK(new Integer(activitiesId));
+			  ischange = this.ActivitiesService.deleteActivities(new Integer(activitiesId));
+		}
+	  }
+	  if(ischange){
+		  attr.addAttribute("message", "操作成功");
+		}else{
+			attr.addAttribute("message", "操作失败");
+		}
+	 return "redirect:/toPublishActivityList.do";
+	}
+	
+	/**
+	 * 改变状态
+	 * @param request
+	 * @param allIDCheck
+	 * @param attr
+	 * @return
+	 */
+	@RequestMapping("/toChangeStatus.do")
+	public String toChangeStatusActivity(HttpServletRequest request,String allIDCheck,RedirectAttributes attr) {
+	  String [] userIds = allIDCheck.split(",");
+	  boolean ischange = true;
+	  if(null!=userIds&&userIds.length>0){
+		  for (String uid : userIds) {
+			  ischange = this.ActivitiesService.changeStatusActivities(new Integer(uid));
+			  if(!ischange){
+					break;
+				}
+		}
+	  }
+	  if(ischange){
+		  attr.addAttribute("message", "操作用户成功");
+		}else{
+			attr.addAttribute("message", "操作用户失败");
+		}
+	 return "redirect:/toPublishActivityList.do";
+	}
+	
+	
+	/**
+	 * 跳转到活动列表页面
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toPublishActivityList.do")  
+	public String toPublishActivityList(HttpServletRequest request){
+		String returnStr="/jsp/activity/activityList";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			String pageCountt = request.getParameter("pageCountt");
+			String selectTitile = request.getParameter("selectTitile");
+			String selectContacts = request.getParameter("selectContacts");
+			String modelSelect = request.getParameter("modelSelect");
+			String entityStatus = request.getParameter("entityStatus");
+			if(StringUtils.isNotEmpty(pageCountt)){
+				pageNow = new Integer(pageCountt)-1;
+			}
+			ActivitiesParams activities = new ActivitiesParams();
+			if(StringUtils.isNotEmpty(modelSelect)){
+				activities.setModel(new Integer(modelSelect));
+			}
+			if(StringUtils.isNotEmpty(entityStatus)){
+				activities.setStatus(new Integer(entityStatus));
+			}
+			activities.setActivities_titile(selectTitile);
+			activities.setActivities_contacts(selectContacts);
+			activities.setNum(number);
+			if(null!=pageNow&&pageNow>=0){
+				starNumber = pageNow*number;
+			}
+			activities.setStarNumber(starNumber);
+			List<ActivitiesInfo> infoList = this.ActivitiesService.selectActivities(activities);
+			custCount = this.ActivitiesService.selectCountActivities(activities);
+			Double c = Math.ceil(custCount/number.doubleValue());
+			pageCount = c.intValue();
+			request.setAttribute("infoList", infoList);
+			request.setAttribute("pageCount", pageCount);
+			request.setAttribute("selectTitile", selectTitile);
+			request.setAttribute("selectContacts", selectContacts);
+			request.setAttribute("modelSelect", activities.getModel());
+			request.setAttribute("entityStatus", activities.getStatus());
+			request.setAttribute("number", number);
+			request.setAttribute("starNumber", starNumber);
+			request.setAttribute("custCount", custCount);
+			request.setAttribute("pageNow", pageNow);
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	/**
+	 * 跳转到新增活动页面
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toPublishActivity.do")  
+	public String toPublishActivity(HttpServletRequest request){
+		String returnStr="/jsp/activity/publishActivity"; 
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			String activityId = request.getParameter("activityId");
+			if(StringUtils.isNotEmpty(activityId)&&!"".equals(activityId)){
+				ActivitiesInfo entityInfo = this.ActivitiesService.selectActivitiesforAID(new Integer(activityId));
+				request.setAttribute("entityInfo", entityInfo);
+			}
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	/**
+	 * 跳转到编辑活动页面
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toEditActivity.do")  
+	public String toEditActivity(HttpServletRequest request){
+		String returnStr="/jsp/activity/editActivity"; 
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			//获得用户ID
+			String activityId = request.getParameter("activityId");
+			if(StringUtils.isNotEmpty(activityId)&&!"".equals(activityId)){
+				ActivitiesInfo entityInfo = this.ActivitiesService.selectActivitiesforAID(new Integer(activityId));
+				request.setAttribute("entityInfo", entityInfo);
+			}
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectNextPage.do")
+	public String selectNextPage(HttpServletRequest request){
+		pageNow+=1;
+		return "redirect:/toPublishActivityList.do";
+	}
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectLastPage.do")
+	public String selectLastPage(HttpServletRequest request){
+		if(pageNow>0){
+			pageNow-=1;
+		}
+		return "redirect:/toPublishActivityList.do";
+	}
+	
+	
+	
+	/**
+	 * 登陆控制
+	 * @param request
+	 * @param username
+	 * @param password
+	 * @param attr
+	 * @return
+	 */
+	@RequestMapping("/login.do")  
+    public String login(HttpServletRequest request,String username,String password,RedirectAttributes attr){ 
+		String returnStr="login";
+		HttpSession session = request.getSession();
+		if(!StringUtils.isEmpty(username)){
+			LoginParams loginInfo = new LoginParams();
+			loginInfo.setPassword(MD5Utils.GetMD5Code(MD5Utils.GetMD5Code(password.trim())));
+			loginInfo.setUsername(username.trim());
+			AdminUser userinfo = this.ActivitiesService.loginActivities(loginInfo);
+			if(null!=userinfo){
+				session.setAttribute("user", userinfo);
+				attr.addAttribute("username", username);  
+				returnStr = "redirect:/toIndex.do";
+			}else{
+				attr.addAttribute("message", "登录失败");  
+				
+			}
+		}else{
+			number=10;
+			starNumber=0;
+			pageCount=1;
+			custCount=0;
+			pageNow = 0;
+			session.invalidate();
+		}
+		return returnStr;
+    }
+	
+	/**
+	 * 跳转到首页
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toIndex.do")  
+	public String toIndex(HttpServletRequest request){
+		String returnStr="/jsp/index"; 
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			request.setAttribute("username", request.getParameter("username"));
+		}else{
+			
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	
+}

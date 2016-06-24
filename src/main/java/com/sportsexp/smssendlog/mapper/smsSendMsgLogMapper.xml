@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="smsSendLog">
+
+	<select id="smsSendLog.selectEntityForId" parameterType="String"
+		resultType="com.sportsexp.smssendlog.vo.SmsSendLog">
+		select sd.sms_send_id,ssd.sms_send_detail_id,sd.sms_send_content,sd.sms_send_time,ui.USER_INFO_ID,
+	   ui.USER_NAME,ssd.SEND_MOBILE,ssd.send_status,ssd.SEND_REMARK 
+			from SMS_SEND sd 
+			left join sms_send_detail ssd on ssd.SMS_SEND_ID = sd.SMS_SEND_ID
+			left join user_info ui on sd.USER_INFO_ID = ui.USER_INFO_ID
+			where sd.sms_send_id = #{sms_send_id}
+	</select>
+	
+	<select id="smsSendLog.selectLoopEntity" parameterType="String"
+		resultType="com.sportsexp.smssendlog.vo.SmsSendLog">
+		select  sd.sms_send_id,ssd.sms_send_detail_id,sd.sms_send_content,ssd.send_time,ssd.SEND_MOBILE,ssd.send_status,ssd.SEND_REMARK,ui.USER_INFO_ID,ui.USER_NAME 
+		from sms_send_detail ssd ,sms_send sd,user_info ui  where ssd.sms_send_id = sd.sms_send_id and sd.USER_INFO_ID = ui.USER_INFO_ID and
+		to_char(ssd.send_time, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd') and ssd.send_status = #{status}
+		and ssd.send_mobile is not null 
+	</select>
+
+	<select id="smsSendLog.selectEntityForPar" parameterType="com.sportsexp.smssendlog.pojo.SmsSendLogParams"
+		resultType="com.sportsexp.smssendlog.vo.SmsSendLog">
+		select * from
+	   (select a.*,rownum row_num from
+	      (select sd.sms_send_id,ssd.sms_send_detail_id,sd.sms_send_content,ssd.send_time,ui.USER_INFO_ID,
+	   ui.USER_NAME,ssd.SEND_MOBILE,ssd.send_status,ssd.SEND_REMARK 
+			from SMS_SEND sd 
+			left join sms_send_detail ssd on ssd.SMS_SEND_ID = sd.SMS_SEND_ID
+			left join user_info ui on sd.USER_INFO_ID = ui.USER_INFO_ID 
+	      <where>  
+	        <if test="sms_send_content !=null and sms_send_content !='' ">  
+	            sd.sms_send_content LIKE CONCAT(CONCAT('%', #{sms_send_content}),'%')   
+	        </if>
+	        <if test="send_mobile !=null and send_mobile !='' ">  
+	            AND ssd.send_mobile LIKE CONCAT(CONCAT('%', #{send_mobile}),'%')   
+	        </if>
+	        <if test="send_status !=null and send_status !='' ">  
+	            AND ssd.send_status = #{send_status}  
+	        </if>
+	        <if test="starTime !=null and starTime !='' ">  
+		        AND ssd.send_time &gt;= to_date(#{starTime},'yyyy-mm-dd')
+	        </if> 
+	        <if test="endTime !=null and endTime !='' ">  
+	            AND ssd.send_time &lt;=  to_date(#{endTime},'yyyy-mm-dd')
+	        </if> 
+    	 </where> 
+	      order by ssd.send_time desc) a
+	   ) b 
+	   <if test="starNumber !=null">  
+	   	where b.row_num between #{starNumber} and #{endNumber}
+	   </if> 
+	</select>
+	
+	<select id="smsSendLog.selectCountEntity" parameterType="com.sportsexp.smssendlog.pojo.SmsSendLogParams"
+		resultType="Integer">
+		select count(1) from SMS_SEND sd 
+			left join sms_send_detail ssd on ssd.SMS_SEND_ID = sd.SMS_SEND_ID
+		<where>  
+	        <if test="sms_send_content !=null and sms_send_content !='' ">  
+	            sd.sms_send_content LIKE CONCAT(CONCAT('%', #{sms_send_content}),'%')   
+	        </if>
+	        <if test="send_mobile !=null and send_mobile !='' ">  
+	            AND ssd.send_mobile LIKE CONCAT(CONCAT('%', #{send_mobile}),'%')   
+	        </if>
+	        <if test="send_status !=null and send_status !='' ">  
+	            AND ssd.send_status = #{send_status}  
+	        </if>
+	        <if test="starTime !=null and starTime !='' ">  
+		        AND ssd.send_time &gt;= to_date(#{starTime},'yyyy-mm-dd')
+	        </if> 
+	        <if test="endTime !=null and endTime !='' ">  
+	            AND ssd.send_time &lt;=  to_date(#{endTime},'yyyy-mm-dd')
+	        </if> 
+	    </where>
+	</select>
+	
+	<insert id="smsSendLog.addSmsSendDetail" parameterType="com.sportsexp.smssendlog.pojo.SmsSendDetailParams">  
+	    insert into sms_send_detail  
+	    (sms_send_detail_id,send_mobile,send_status,sms_send_id)
+	    values
+	    (SEQ_SMSSENDDETAIL.Nextval,#{send_mobile},#{send_status},#{sms_send_id})
+	</insert> 
+	
+	<insert id="smsSendLog.addSmsSend" parameterType="com.sportsexp.smssendlog.pojo.SmsSendParams">  
+	    <selectKey resultType="String" order="BEFORE" keyProperty="sms_send_id">  
+	       SELECT SEQ_SMSSEND.Nextval as sms_send_id from DUAL  
+	    </selectKey>  
+	    insert into sms_send 
+	    (sms_send_id,sms_send_content,sms_send_time,user_info_id)
+	    values
+	    (#{sms_send_id},#{sms_send_content},#{sms_send_time},#{user_info_id})
+	</insert> 
+	
+	<update id="smsSendLog.editEntity" parameterType="com.sportsexp.smssendlog.pojo.SmsSendLogParams">
+		update
+		sms_send_detail
+		<set>
+			<if test="send_status != null and send_status != '' ">  
+	            send_status = #{send_status},
+	        </if>
+	        <if test="send_time != null and send_time != '' ">  
+	            send_time = #{send_time},
+	        </if>
+		</set> 
+		where sms_send_detail_id=#{sms_send_detail_id}
+	</update>
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

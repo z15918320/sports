@@ -1,0 +1,228 @@
+package com.miaotu.topic.vo;
+
+import java.util.List;
+
+import com.miaotu.util.PicJsonPojo;
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
+public class TopicInfo {
+	private Integer topic_id;
+	private Integer user_id;
+	private Integer clickLikeTotal;
+	private Integer collectionTotal;
+	private Integer commentTotal;
+	private Integer shareTotal;
+	private String topic_url;
+	private String topic_content;
+	private String uploadtime;
+	private String address;
+	private String user_name;
+	private Integer status;
+	List<PicJsonPojo> picList;
+	private String theme_header;
+	private String topic_url1;
+	private String topic_url2;
+	private String topic_url3;
+	private String topic_url4;
+	private String topic_url5;
+	private String topic_url6;
+	private Integer isTop;
+	private Integer isGreat;
+	private Integer isHot;
+	@ApiModelProperty(value = "", required = true)
+	private Integer theme_id=0;
+	
+	
+	public String getTheme_header() {
+		return theme_header;
+	}
+
+	public void setTheme_header(String theme_header) {
+		this.theme_header = theme_header;
+	}
+
+	public Integer getTheme_id() {
+		return theme_id;
+	}
+
+	public void setTheme_id(Integer theme_id) {
+		this.theme_id = theme_id;
+	}
+
+	public Integer getIsHot() {
+		return isHot;
+	}
+
+	public void setIsHot(Integer isHot) {
+		this.isHot = isHot;
+	}
+
+	public Integer getIsGreat() {
+		return isGreat;
+	}
+
+	public void setIsGreat(Integer isGreat) {
+		this.isGreat = isGreat;
+	}
+
+	public String getTopic_url1() {
+		return topic_url1;
+	}
+
+	public void setTopic_url1(String topic_url1) {
+		this.topic_url1 = topic_url1;
+	}
+
+	public String getTopic_url2() {
+		return topic_url2;
+	}
+
+	public void setTopic_url2(String topic_url2) {
+		this.topic_url2 = topic_url2;
+	}
+
+	public String getTopic_url3() {
+		return topic_url3;
+	}
+
+	public void setTopic_url3(String topic_url3) {
+		this.topic_url3 = topic_url3;
+	}
+
+	public String getTopic_url4() {
+		return topic_url4;
+	}
+
+	public void setTopic_url4(String topic_url4) {
+		this.topic_url4 = topic_url4;
+	}
+
+	public String getTopic_url5() {
+		return topic_url5;
+	}
+
+	public void setTopic_url5(String topic_url5) {
+		this.topic_url5 = topic_url5;
+	}
+
+	public String getTopic_url6() {
+		return topic_url6;
+	}
+
+	public void setTopic_url6(String topic_url6) {
+		this.topic_url6 = topic_url6;
+	}
+
+	public Integer getIsTop() {
+		return isTop;
+	}
+
+	public void setIsTop(Integer isTop) {
+		this.isTop = isTop;
+	}
+
+	public List<PicJsonPojo> getPicList() {
+		return picList;
+	}
+
+	public void setPicList(List<PicJsonPojo> picList) {
+		this.picList = picList;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+
+	public Integer getTopic_id() {
+		return topic_id;
+	}
+
+	public void setTopic_id(Integer topic_id) {
+		this.topic_id = topic_id;
+	}
+
+	public Integer getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+
+	public Integer getClickLikeTotal() {
+		return clickLikeTotal;
+	}
+
+	public void setClickLikeTotal(Integer clickLikeTotal) {
+		this.clickLikeTotal = clickLikeTotal;
+	}
+
+	public Integer getCollectionTotal() {
+		return collectionTotal;
+	}
+
+	public void setCollectionTotal(Integer collectionTotal) {
+		this.collectionTotal = collectionTotal;
+	}
+
+	public Integer getCommentTotal() {
+		return commentTotal;
+	}
+
+	public void setCommentTotal(Integer commentTotal) {
+		this.commentTotal = commentTotal;
+	}
+
+	public Integer getShareTotal() {
+		return shareTotal;
+	}
+
+	public void setShareTotal(Integer shareTotal) {
+		this.shareTotal = shareTotal;
+	}
+
+	public String getTopic_url() {
+		return topic_url;
+	}
+
+	public void setTopic_url(String topic_url) {
+		this.topic_url = topic_url;
+	}
+
+	public String getTopic_content() {
+		return topic_content;
+	}
+
+	public void setTopic_content(String topic_content) {
+		this.topic_content = topic_content;
+	}
+
+	public String getUploadtime() {
+		return uploadtime;
+	}
+
+	public void setUploadtime(String uploadtime) {
+		this.uploadtime = uploadtime.substring(0, 10).trim();
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+}

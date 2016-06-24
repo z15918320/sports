@@ -1,0 +1,93 @@
+package com.miaotu.common.util;
+
+import java.util.regex.Pattern;
+
+ 
+
+
+ 
+public class StringUtil {
+
+	public static boolean isMobile(String mobile) {
+
+		return Pattern.matches("^1\\d{10}$", mobile);
+	}
+
+	public static boolean isEmail(String email) {
+
+		return email.contains("@");
+	}
+
+	public static boolean isNull(String str) {
+
+		if (str == null) {
+			return true;
+		}
+        if(str.equals("null"))
+        {
+        	return true;
+        }
+		if (str.trim().length() == 0) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public static float parseToFloat(String str, float defValue) {
+
+		if (isNull(str)) {
+			return defValue;
+		}
+		try {
+			return Float.parseFloat(str);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return defValue;
+	}
+
+	public static int parseToInt(String str, int defValue) {
+
+		if (isNull(str)) {
+			return defValue;
+		}
+		try {
+			return Integer.parseInt(str);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return defValue;
+	}
+
+	public static String parseToString(String str, String defValue) {
+
+		if (isNull(str)) {
+			return defValue;
+		}
+		return str;
+	}
+
+	public static String getValidUrl(String host, String url) {
+		String uri = "";
+		if (url.startsWith("http://")) {
+			return url;
+		} else {
+			if (url.startsWith("/")) {
+
+				uri = host + url;
+			} else {
+				uri = host + "/" + url;
+			}
+		}
+		System.out.println("uri \\" + uri);
+		return uri;
+	}
+
+	 
+
+ 
+
+}

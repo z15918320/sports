@@ -1,0 +1,446 @@
+package com.miaotu.topic.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.miaotu.activities.vo.ActivitesPar;
+import com.miaotu.activities.vo.AdminUser;
+import com.miaotu.activities.vo.IdentityValue;
+import com.miaotu.topic.pojo.TopicParams;
+import com.miaotu.topic.service.TopicService;
+import com.miaotu.topic.vo.TopicInfo;
+import com.miaotu.util.PicJsonPojo;
+
+import net.sf.json.JSONArray;
+
+@Controller
+@RequestMapping("/Topic")
+public class TopicController{
+
+	private static final Logger logger=LoggerFactory.getLogger(TopicController.class);
+	
+	/**
+	 * 一页显示条数
+	 */
+	private Integer number=10;
+	
+	/**
+	 * 起始数
+	 */
+	private Integer starNumber=0;
+	
+	/**
+	 * 总页数  
+	 */
+	private Integer pageCount=1;
+	
+	/**
+	 * 用户总数
+	 */
+	private Integer custCount=0;
+	
+	/**
+	 * 当前页数
+	 */
+	private Integer pageNow =0;
+	
+	String pageCountt;
+	String entityStatus="";
+	String starTime;
+	String endTime;
+	String entityTag;
+	
+	@Autowired
+	private TopicService service;
+
+	@RequestMapping("/toTopicCommentList.do")
+	public String toSupplyCommentList(HttpServletRequest request){
+		HttpSession session = request.getSession();
+		String entityId = request.getParameter("entityId");
+		session.setAttribute("topicIdforPage", entityId);
+		return "redirect:/topicComment/toTopicCommentList.do";
+		
+	}
+	
+	
+	
+	@RequestMapping("/setTop.do")
+	public String setTop(HttpServletRequest request){
+		String entityId = request.getParameter("entityId");
+		if(StringUtils.isNotEmpty(entityId)){
+			Integer isTop = service.getTopActivities();
+			if(null==isTop){
+				isTop=0;
+			}
+			TopicParams pars = new TopicParams();
+			pars.setIsTop(isTop+1);
+			pars.setTopic_id(new Integer(entityId));
+			this.service.editEntityActivities(pars);
+		}
+		return "redirect:/Topic/toTopicList.do";
+	}
+	
+	/**
+	 * 取消置顶
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/cancelTop.do")
+	public String cancelTop(HttpServletRequest request){
+		String entityId = request.getParameter("entityId");
+		if(StringUtils.isNotEmpty(entityId)){
+			boolean cancelTop = service.cancelTopActivities(new Integer(entityId));
+		}
+		return "redirect:/Topic/toTopicList.do";
+	}
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectNextPage.do")
+	public String selectNextPage(HttpServletRequest request){
+		pageNow+=1;
+		return "redirect:/Topic/toTopicList.do";
+	}
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectLastPage.do")
+	public String selectLastPage(HttpServletRequest request){
+		if(pageNow>0){
+			pageNow-=1;
+		}
+		return "redirect:/Topic/toTopicList.do";
+	}
+	
+	
+	@RequestMapping("/toTopicList.do")  
+	public String toTopicList(HttpServletRequest request) throws JsonParseException, JsonMappingException, IOException{
+		String returnStr="/jsp/topic/topicList";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			if(StringUtils.isNotEmpty(request.getParameter("pageCountt"))){
+				pageCountt = request.getParameter("pageCountt");
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("entityStatus"))){
+				entityStatus = request.getParameter("entityStatus");
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("starTime"))){
+				starTime = request.getParameter("starTime");
+			}else{
+				starTime=null;
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("endTime"))){
+				endTime = request.getParameter("endTime");
+			}else{
+				endTime = null;
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("entityTag"))){
+				entityTag = request.getParameter("entityTag");
+			}
+			TopicParams par = new TopicParams();
+			if(StringUtils.isNotEmpty(entityTag)){
+				if("1".equals(entityTag.trim())){
+					par.setIsHot(1);
+				}else if("0".equals(entityTag.trim())){
+					par.setIsGreat(1);
+				}else{
+					entityTag=null;
+				}
+			}
+			if(StringUtils.isNotEmpty(pageCountt)){
+				pageNow = new Integer(pageCountt)-1;
+			}
+			
+			if(StringUtils.isNotEmpty(request.getParameter("selectUserId"))){
+				par.setUser_id(new Integer(request.getParameter("selectUserId")));
+			}
+			if(StringUtils.isNotEmpty(entityStatus.trim())){
+				par.setStatus(new Integer(entityStatus));
+			}else{
+				par.setStatus(null);
+			}
+			par.setStarTime(starTime);
+			par.setEndTime(endTime);
+			par.setNum(number);
+			if(null!=pageNow&&pageNow>=0){
+				starNumber = pageNow*number;
+			}
+			par.setStarNumber(starNumber);
+			List<TopicInfo> infoList = this.service.getEntityInfoActivities(par);
+			for (TopicInfo entity : infoList) {
+				String url = entity.getTopic_url();
+				if(StringUtils.isNotEmpty(url)){
+					ObjectMapper mapper = new ObjectMapper();  
+					JavaType javaType =mapper.getTypeFactory().constructParametricType(ArrayList.class, PicJsonPojo.class);
+					List<PicJsonPojo> picList =  (List<PicJsonPojo>)mapper.readValue(url, javaType);
+					entity.setPicList(picList);
+					if(null!=picList&&picList.size()>0){
+						entity.setTopic_url(picList.get(0).getT_url());
+					}
+				}
+				if(StringUtils.isNotEmpty(entity.getTopic_content())){
+					if(entity.getTopic_content().length()>20){
+						entity.setTopic_content(entity.getTopic_content().substring(0, 20)+"...");
+					}
+				}
+			}
+			custCount = this.service.getCountEntityInfoActivities(par);
+			Double c = Math.ceil(custCount/number.doubleValue());
+			pageCount = c.intValue();
+			request.setAttribute("infoList", infoList);
+			request.setAttribute("entityTag", entityTag);
+			request.setAttribute("pageCount", pageCount);
+			request.setAttribute("number", number);
+			request.setAttribute("starNumber", starNumber);
+			request.setAttribute("custCount", custCount);
+			request.setAttribute("pageNow", pageNow);
+			request.setAttribute("selectUserId", request.getParameter("selectUserId"));
+			request.setAttribute("starTime", starTime);
+			request.setAttribute("endTime", endTime);
+			request.setAttribute("entityStatus", par.getStatus());
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	/**
+	 * 改变加精状态
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/TopicchangeGreat.do")
+	public String TopicchangeGreat(HttpServletRequest request,String allIDCheck,RedirectAttributes attr) {
+	  String [] ids = allIDCheck.split(",");
+	  boolean isdelete = true;
+	  if(null!=ids&&ids.length>0){
+		  for (String uid : ids) {
+			  isdelete = this.service.changeGreatActivities(new Integer(uid));
+			  if(!isdelete){
+					break;
+				}
+		}
+	  }
+	  if(isdelete){
+		  attr.addAttribute("message", "操作成功");
+		}else{
+			attr.addAttribute("message", "操作失败");
+		}
+	 return "redirect:/Topic/toTopicList.do";
+	}
+	
+	/**
+	 * 改变热门状态
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/TopicchangeHot.do")
+	public String TopicchangeHot(HttpServletRequest request,String allIDCheck,RedirectAttributes attr) {
+	  String [] ids = allIDCheck.split(",");
+	  boolean isdelete = true;
+	  if(null!=ids&&ids.length>0){
+		  for (String uid : ids) {
+			  isdelete = this.service.changeHotActivities(new Integer(uid));
+			  if(!isdelete){
+					break;
+				}
+		}
+	  }
+	  if(isdelete){
+		  attr.addAttribute("message", "操作成功");
+		}else{
+			attr.addAttribute("message", "操作失败");
+		}
+	 return "redirect:/Topic/toTopicList.do";
+	}
+	
+	/**
+	 * 改变状态
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/TopicchangeStauts.do")
+	public String TopicchangeStauts(HttpServletRequest request,String allIDCheck,RedirectAttributes attr) {
+	  String [] ids = allIDCheck.split(",");
+	  boolean isdelete = true;
+	  if(null!=ids&&ids.length>0){
+		  for (String uid : ids) {
+			  isdelete = this.service.changeStautsActivities(new Integer(uid));
+			  if(!isdelete){
+					break;
+				}
+		}
+	  }
+	  if(isdelete){
+		  attr.addAttribute("message", "操作成功");
+		}else{
+			attr.addAttribute("message", "操作失败");
+		}
+	 return "redirect:/Topic/toTopicList.do";
+	}
+	
+	
+	/**
+	 * 编辑页面
+	 * @param request
+	 * @return
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
+	 */
+	@RequestMapping("/toTopicEdit.do")  
+	public String toTopicEdit(HttpServletRequest request) throws JsonParseException, JsonMappingException, IOException{
+		String returnStr="/jsp/topic/topicEdit";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		List<PicJsonPojo> picList = new ArrayList<PicJsonPojo>();
+		if(null!=userinfo){
+			//获得供应ID
+			TopicInfo entityInfo = new TopicInfo();
+			String entityId = request.getParameter("entityId");
+			if(StringUtils.isNotEmpty(entityId)){
+				entityInfo = this.service.getEntityInfoByIdActivities(new Integer(entityId));
+				picList = initEntity(entityInfo);
+			}
+			request.setAttribute("entityInfo", entityInfo);
+			request.setAttribute("picList", picList);
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	/**
+	 * 话题编辑提交逻辑
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toTopicSubmit.do")  
+	@ResponseBody
+	public Map toTopicSubmit(HttpServletRequest request,@RequestBody  TopicParams pars){
+		Map<String,String> map = new HashMap<String,String>();
+		try{
+			request.setCharacterEncoding("UTF-8");
+			HttpSession session = request.getSession();
+			ObjectMapper mapper = new ObjectMapper();
+			List<PicJsonPojo> picList = new ArrayList<PicJsonPojo>();
+			AdminUser userinfo = (AdminUser)session.getAttribute("user");
+			boolean isadd;
+			if(null!=userinfo){
+				if(null!=pars.getTopic_id()&&pars.getTopic_id()>0){
+					TopicInfo entityInfo = this.service.getEntityInfoByIdActivities(pars.getTopic_id());
+					if(StringUtils.isNotEmpty(entityInfo.getTopic_url())){
+						JavaType javaType =mapper.getTypeFactory().constructParametricType(ArrayList.class, PicJsonPojo.class);
+						//获得原来的图片列表
+						picList =  (List<PicJsonPojo>)mapper.readValue(entityInfo.getTopic_url(), javaType);
+						//判断是否是删除 
+						if(StringUtils.isNotEmpty(pars.getIsdelete())){
+							String[]delete = pars.getIsdelete().split(",");
+							int i=0;
+							for (String deleteTag : delete) {
+								if(0==i){
+									picList.remove(new Integer(deleteTag).intValue()-1);
+								}else{
+									picList.remove(new Integer(deleteTag).intValue()-1-i);
+								}
+								i++;
+							}
+						}else{//修改
+							if(StringUtils.isNotEmpty(pars.getTopic_url())){
+								intPicList(pars.getTopic_url(), picList);
+							}
+						}
+						pars.setTopic_url(mapper.writeValueAsString(picList));
+					}else{
+						if(StringUtils.isNotEmpty(pars.getTopic_url())){
+							intPicList(pars.getTopic_url(), picList);
+							pars.setTopic_url(mapper.writeValueAsString(picList));
+						}
+					}
+					isadd = this.service.editEntityActivities(pars);
+				}else{
+					if(StringUtils.isNotEmpty(pars.getTopic_url())){
+						intPicList(pars.getTopic_url(), picList);
+						pars.setTopic_url(mapper.writeValueAsString(picList));
+					}
+					isadd = this.service.addEntityActivities(pars);
+				}
+				if(isadd){
+					map.put("message", "操作供应成功");
+				}else{
+					map.put("message", "操作供应失败");
+				}
+				
+			}
+		}catch(Exception e){
+			map.put("message", "操作失败");
+		}
+		return map;
+	}
+	
+	/**
+	 * 加载链接
+	 * @param pars
+	 * @param picList
+	 * @param status 1:修改  2:新增
+	 */
+	private void intPicList(String url, List<PicJsonPojo> picList) {
+		//获取前台传过来的url组
+		String[] urls = url.split(",");
+		int k = 9-picList.size();
+		for(int i=0;i<k;i++){
+			if(urls.length>i){
+				PicJsonPojo pojo = new PicJsonPojo();
+				pojo.setT_url(urls[i]);
+				picList.add(pojo);	
+			}
+		}
+	}
+	
+	private List<PicJsonPojo> initEntity(TopicInfo entityInfo) throws IOException, JsonParseException, JsonMappingException {
+		String entity_url = entityInfo.getTopic_url();
+		List<PicJsonPojo> picList = new ArrayList<PicJsonPojo>();
+		if(StringUtils.isNotEmpty(entity_url)){
+			ObjectMapper mapper = new ObjectMapper();  
+			JavaType javaType =mapper.getTypeFactory().constructParametricType(ArrayList.class, PicJsonPojo.class);
+			picList =  (List<PicJsonPojo>)mapper.readValue(entity_url, javaType);
+		}
+		return picList;
+	}
+	
+	@RequestMapping("/selectTheme.do")
+	@ResponseBody
+	public String selectTheme(HttpServletRequest request,@RequestBody  ActivitesPar par){
+		List<IdentityValue> userIdentityList = this.service.getTheme(null);
+		String json = JSONArray.fromObject(userIdentityList).toString();
+		 return json;
+	}
+	
+}

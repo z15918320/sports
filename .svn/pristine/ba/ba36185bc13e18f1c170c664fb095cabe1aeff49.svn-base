@@ -1,0 +1,19 @@
+package com.miaotu.feedBack.service;
+
+import java.util.List;
+
+import com.miaotu.feedBack.pojo.FeedBackParams;
+import com.miaotu.feedBack.vo.FeedBackInfo;
+
+public interface FeedBackService {
+	public List<FeedBackInfo> getEntityInfoActivities(FeedBackParams par);
+	
+	public FeedBackInfo getEntityInfoByIdActivities(Integer id);
+	
+	public Integer getCountEntityInfoActivities(FeedBackParams params);
+	
+	public boolean editEntityActivities(FeedBackParams params);
+	
+	public boolean addEntityActivities(FeedBackParams params);
+
+}

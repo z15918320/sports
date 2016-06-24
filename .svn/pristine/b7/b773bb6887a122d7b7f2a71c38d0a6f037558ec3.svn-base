@@ -1,0 +1,107 @@
+package com.miaotu.publishTheme.pojo;
+
+public class PublishThemeParams {
+
+	/**
+	 * 一页显示条数
+	 */
+	private static Integer num = 10;
+
+	/**
+	 * 起始数
+	 */
+	private static Integer starNumber = 0;
+
+	private Integer theme_id;
+	private Integer user_id;
+	private Integer click_like;
+	private String theme_header;
+	private String theme_content;
+	private String head_url;
+	private String content_url;
+	private String push_timer;
+	private Integer status;
+	private String starTime;
+	private String endTime;
+	
+	 
+	public String getStarTime() {
+		return starTime;
+	}
+	public void setStarTime(String starTime) {
+		this.starTime = starTime;
+	}
+	public String getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+	public static Integer getNum() {
+		return num;
+	}
+	public static void setNum(Integer num) {
+		PublishThemeParams.num = num;
+	}
+	public static Integer getStarNumber() {
+		return starNumber;
+	}
+	public static void setStarNumber(Integer starNumber) {
+		PublishThemeParams.starNumber = starNumber;
+	}
+	public Integer getTheme_id() {
+		return theme_id;
+	}
+	public void setTheme_id(Integer theme_id) {
+		this.theme_id = theme_id;
+	}
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	public Integer getClick_like() {
+		return click_like;
+	}
+	public void setClick_like(Integer click_like) {
+		this.click_like = click_like;
+	}
+	public String getTheme_header() {
+		return theme_header;
+	}
+	public void setTheme_header(String theme_header) {
+		this.theme_header = theme_header;
+	}
+	public String getTheme_content() {
+		return theme_content;
+	}
+	public void setTheme_content(String theme_content) {
+		this.theme_content = theme_content;
+	}
+	public String getHead_url() {
+		return head_url;
+	}
+	public void setHead_url(String head_url) {
+		this.head_url = head_url;
+	}
+	public String getContent_url() {
+		return content_url;
+	}
+	public void setContent_url(String content_url) {
+		this.content_url = content_url;
+	}
+	public String getPush_timer() {
+		return push_timer;
+	}
+	public void setPush_timer(String push_timer) {
+		this.push_timer = push_timer;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+}

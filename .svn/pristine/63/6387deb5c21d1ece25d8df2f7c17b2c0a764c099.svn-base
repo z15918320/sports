@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="feedBackDao">
+
+	<select id="feedBackDao.selectFeedBack" parameterType="com.miaotu.feedBack.pojo.FeedBackParams"
+		resultType="com.miaotu.feedBack.vo.FeedBackInfo">
+		select c.*,us.user_name from FEED_BACK c 
+		inner join USER_INFO us on us.user_id=c.user_id 
+		<where>
+			<if test="feed_back_id !=null and feed_back_id !='' ">  
+	            AND c.feed_back_id =  #{feed_back_id}
+	        </if> 
+			<if test="starTime !=null and starTime !='' ">  
+	            AND c.updatetime &gt;= date_format(#{starTime},'%Y-%c-%d %h:%i:%s')
+	        </if> 
+	        <if test="endTime !=null and endTime !='' ">  
+	            AND c.updatetime &lt;=  date_format(#{endTime},'%Y-%c-%d %h:%i:%s') 
+	        </if> 
+		</where>
+	    ORDER BY c.feed_back_id desc limit #{starNumber}, #{num}
+	</select>
+	
+	<select id="feedBackDao.selectFeedBackCount" parameterType="com.miaotu.feedBack.pojo.FeedBackParams"
+		resultType="Integer">
+		select count(1) from FEED_BACK c
+		<where>
+			<if test="starTime !=null and starTime !='' ">  
+	            AND c.updatetime &gt;= date_format(#{starTime},'%Y-%c-%d %h:%i:%s')
+	        </if> 
+	        <if test="endTime !=null and endTime !='' ">  
+	            AND c.updatetime &lt;=  date_format(#{endTime},'%Y-%c-%d %h:%i:%s') 
+	        </if> 
+		</where>
+	</select>
+	
+	<select id="feedBackDao.selectFeedBackById" parameterType="Integer"
+		resultType="com.miaotu.feedBack.vo.FeedBackInfo">
+		select * from FEED_BACK c where c.feed_back_id = #{feed_back_id};
+	</select>
+
+	<update id="feedBackDao.editFeedBackById" parameterType="com.miaotu.feedBack.pojo.FeedBackParams">
+		update FEED_BACK 
+		<set>
+		  <if test="feed_back_content !=null and feed_back_content !='' ">  
+	            feed_back_content = #{feed_back_content},
+	      </if>
+	      <if test="phone !=null and phone !='' ">  
+	            phone = #{phone},
+	      </if>
+	      <if test="user_id !=null and user_id !='' ">  
+	            user_id = #{user_id},
+	      </if>
+	      <if test="updatetime !=null and updatetime !='' ">  
+	            updatetime = date_format(#{updatetime},'%Y-%c-%d %h:%i:%s')
+	      </if>
+	     </set>
+		where feed_back_id = #{feed_back_id}
+	</update>
+
+	<insert id="feedBackDao.addFeedBack" keyProperty="feed_back_id"
+		useGeneratedKeys="true" parameterType="com.miaotu.feedBack.pojo.FeedBackParams">
+		insert into FEED_BACK 
+		(feed_back_content,
+		phone,
+		user_id,
+		updatetime) 
+		values
+		(#{feed_back_content},
+		#{phone},
+		#{user_id},
+		now());
+		</insert>
+
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

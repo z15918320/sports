@@ -1,0 +1,39 @@
+package com.miaotu.common.exception;
+
+/**
+ * 基础异常类
+ * <p>
+ * Title:
+ * </p> 
+ * <p>
+ * Description:
+ * </p> 
+ * <p>
+ * Author: 王海波   2013-8-27  下午03:37:00
+ * </p> 
+ * <p>
+ * Department: 技术部
+ * </p> 
+  * <p>
+ 
+ * </p> 
+ *
+ */
+public class BaseException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3003875530686425353L;
+	public BaseException() {
+		super();
+	}
+	public BaseException(String message) {
+		super(message);
+	}
+	public BaseException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	public BaseException(Throwable cause) {
+		super(cause);
+	}
+}

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="topicDao">
+	
+	<select id="topicDao.selectTheme" parameterType="Integer" 
+		resultType="com.miaotu.activities.vo.IdentityValue">
+		select a.theme_id as selectkey,a.theme_header as selectvalue from PUBLISH_THEME a 
+		<where>
+		  <if test="theme_id !=null and theme_id !='' ">  
+	            a.theme_id = #{theme_id}
+	      </if>
+		</where>
+	</select>
+	
+	<select id="topicDao.selectTop" resultType="Integer">
+		select MAX(isTop) from TOPIC_INFO;
+	</select>
+	<update id="topicDao.cancelTop" parameterType="Integer">
+		UPDATE TOPIC_INFO SET isTop=0 where topic_id=#{topic_id};
+	</update>
+	
+	<select id="topicDao.selectTopic" parameterType="com.miaotu.topic.pojo.TopicParams" resultType="com.miaotu.topic.vo.TopicInfo">
+		select c.*,us.user_name,ph.theme_header from TOPIC_INFO c 
+		inner join USER_INFO us on c.user_id = us.user_id
+		left join PUBLISH_THEME ph on c.theme_id = ph.theme_id
+		<where>
+				<if test="topic_id !=null and topic_id !='' ">  
+		            AND c.topic_id = #{topic_id}   
+		        </if> 
+		        <if test="user_id!=null and user_id!='' ">  
+		            AND c.user_id = #{user_id}   
+		        </if> 
+		        <if test="starTime !=null and starTime !='' ">  
+		            AND c.uploadtime &gt;= date_format(#{starTime},'%Y-%c-%d %h:%i:%s')
+		        </if> 
+		        <if test="endTime !=null and endTime !='' ">  
+		            AND c.uploadtime &lt;=  date_format(#{endTime},'%Y-%c-%d %h:%i:%s') 
+		        </if>
+		        <if test="status !=null">  
+		            AND c.status = #{status}   
+		        </if>
+		        <if test="isGreat !=null">  
+		            AND c.isGreat = #{isGreat}   
+		        </if> 
+		        <if test="isHot !=null">  
+		            AND c.isHot = #{isHot}   
+		        </if> 
+	        </where> 
+		order by c.isTop desc,c.topic_id desc limit #{starNumber}, #{num};
+	</select>
+	
+	<select id="topicDao.selectTopicCount" parameterType="com.miaotu.topic.pojo.TopicParams" resultType="Integer">
+		select count(1) from TOPIC_INFO c
+		  <where>
+		        <if test="topic_id !=null and topic_id !='' ">  
+		            AND c.topic_id = #{topic_id}   
+		        </if> 
+		        <if test="user_id!=null and user_id!='' ">  
+		            AND c.user_id = #{user_id}   
+		        </if> 
+		        <if test="starTime !=null and starTime !='' ">  
+		            AND c.uploadtime &gt;= date_format(#{starTime},'%Y-%c-%d %h:%i:%s')
+		        </if> 
+		        <if test="endTime !=null and endTime !='' ">  
+		            AND c.uploadtime &lt;=  date_format(#{endTime},'%Y-%c-%d %h:%i:%s') 
+		        </if>
+		        <if test="status !=null">  
+		            AND c.status = #{status}   
+		        </if>
+		        <if test="isGreat !=null">  
+		            AND c.isGreat = #{isGreat}   
+		        </if> 
+		        <if test="isHot !=null">  
+		            AND c.isHot = #{isHot}   
+		        </if>  
+	        </where> 
+	</select>
+
+	<select id="topicDao.selectTopicById" parameterType="Integer" resultType="com.miaotu.topic.vo.TopicInfo">
+		select * from TOPIC_INFO where topic_id = #{topic_id};
+	</select>
+	
+	<update id="topicDao.changeStatusTopicById" parameterType="Integer">
+		update TOPIC_INFO set status=(case when status = 0 then 1 when status = 1 then 0 end)
+		where topic_id = #{topic_id};
+	</update>
+	
+	<update id="topicDao.changeGtreatTopicById" parameterType="Integer">
+		update TOPIC_INFO set isGreat=(case when isGreat = 0 then 1 when isGreat = 1 then 0 end)
+		where topic_id = #{topic_id};
+	</update>
+	
+	<update id="topicDao.changeHotTopicById" parameterType="Integer">
+		update TOPIC_INFO set isHot=(case when isHot = 0 then 1 when isHot = 1 then 0 end)
+		where topic_id = #{topic_id};
+	</update>
+	
+	<update id="topicDao.editTopicById" parameterType="com.miaotu.topic.pojo.TopicParams">
+		update TOPIC_INFO 
+		<set>
+			<if test="topic_url!=null and topic_url!='' ">  
+		         topic_url = #{topic_url},
+		    </if>
+		    <if test="topic_content!=null and topic_content != '' ">  
+		         topic_content = #{topic_content},
+		    </if>
+		    <if test="address != null and address != '' ">  
+		         address = #{address},
+		    </if>
+		    <if test="user_id != null and user_id != '' ">  
+		         user_id = #{user_id},
+		    </if>
+		    <if test="isTop != null and isTop != '' ">  
+		         isTop = #{isTop},
+		    </if>
+		    <if test="theme_id != null">  
+		         theme_id = #{theme_id},
+		    </if>
+		    <if test="commentTotal !=null and commentTotal !='' ">  
+	            commentTotal = #{commentTotal},
+	      </if>
+		</set>
+		where topic_id = #{topic_id}
+	</update>
+
+	<insert id="topicDao.addTopicById" keyProperty="topic_id"
+		useGeneratedKeys="true" parameterType="com.miaotu.topic.pojo.TopicParams">
+		insert into TOPIC_INFO 
+		(topic_url,
+		topic_content,
+		address,
+		user_id,clickLikeTotal,collectionTotal,
+		uploadtime,
+		theme_id) 
+		values
+		(#{topic_url},
+		#{topic_content},
+		#{address},
+		#{user_id},#{clickLikeTotal},#{collectionTotal},
+		now(),
+		theme_id
+		);
+		</insert>
+	
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

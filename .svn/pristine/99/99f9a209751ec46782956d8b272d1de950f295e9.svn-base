@@ -1,0 +1,178 @@
+package com.miaotu.feedBack.controller;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.miaotu.activities.vo.AdminUser;
+import com.miaotu.feedBack.pojo.FeedBackParams;
+import com.miaotu.feedBack.service.FeedBackService;
+import com.miaotu.feedBack.vo.FeedBackInfo;
+
+@Controller
+@RequestMapping("/feedBack")
+public class feedBackController{
+	private static final Logger logger=LoggerFactory.getLogger(feedBackController.class);
+	/**
+	 * 一页显示条数
+	 */
+	private Integer number=10;
+	
+	/**
+	 * 起始数
+	 */
+	private Integer starNumber=0;
+	
+	/**
+	 * 总页数  
+	 */
+	private Integer pageCount=1;
+	
+	/**
+	 * 用户总数
+	 */
+	private Integer custCount=0;
+	
+	/**
+	 * 当前页数
+	 */
+	private Integer pageNow =0;
+	
+	@Autowired
+	private FeedBackService service;
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectNextPage.do")
+	public String selectNextPage(HttpServletRequest request){
+		pageNow+=1;
+		return "redirect:/feedBack/toFeedBackList.do";
+	}
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectLastPage.do")
+	public String selectLastPage(HttpServletRequest request){
+		if(pageNow>0){
+			pageNow-=1;
+		}
+		return "redirect:/feedBack/toFeedBackList.do";
+	}
+	
+	
+	@RequestMapping("/toFeedBackList.do")  
+	public String toFeedBackList(HttpServletRequest request){
+		String returnStr="/jsp/feedBack/feedBackList";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			String pageCountt = request.getParameter("pageCountt");
+			String starTime = request.getParameter("starTime");
+			String endTime = request.getParameter("endTime");
+			if(StringUtils.isNotEmpty(pageCountt)){
+				pageNow = new Integer(pageCountt)-1;
+			}
+			FeedBackParams par = new FeedBackParams();
+			par.setNum(number);
+			if(null!=pageNow&&pageNow>=0){
+				starNumber = pageNow*number;
+			}
+			par.setStarNumber(starNumber);
+			par.setStarTime(starTime);
+			par.setEndTime(endTime);
+			List<FeedBackInfo> infoList = this.service.getEntityInfoActivities(par);
+			custCount = this.service.getCountEntityInfoActivities(par);
+			Double c = Math.ceil(custCount/number.doubleValue());
+			pageCount = c.intValue();
+			request.setAttribute("infoList", infoList);
+			request.setAttribute("pageCount", pageCount);
+			request.setAttribute("number", number);
+			request.setAttribute("starNumber", starNumber);
+			request.setAttribute("custCount", custCount);
+			request.setAttribute("pageNow", pageNow);
+			request.setAttribute("starTime", starTime);
+			request.setAttribute("endTime", endTime);
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	/**
+	 * 编辑页面
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toFeedBackEdit.do")  
+	public String toFeedBackEdit(HttpServletRequest request){
+		String returnStr="/jsp/feedBack/feedBackEdit";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			//获得供应ID
+			String entityId = request.getParameter("entityId");
+			if(StringUtils.isNotEmpty(entityId)){
+				FeedBackInfo entityInfo = this.service.getEntityInfoByIdActivities(new Integer(entityId));
+				request.setAttribute("entityInfo", entityInfo);
+			}
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	/**
+	 * 供应编辑提交逻辑
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toFeedBackSubmit.do")  
+	@ResponseBody
+	public Map toFeedBackSubmit(HttpServletRequest request,@RequestBody  FeedBackParams pars){
+		Map<String,String> map = new HashMap<String,String>();
+		try{
+			request.setCharacterEncoding("UTF-8");
+			HttpSession session = request.getSession();
+			AdminUser userinfo = (AdminUser)session.getAttribute("user");
+			boolean isadd;
+			if(null!=userinfo){
+				
+				
+				if(null!=pars.getFeed_back_id()&&pars.getFeed_back_id()>0){
+					isadd = this.service.editEntityActivities(pars);
+				}else{
+					isadd = this.service.addEntityActivities(pars);
+				}
+				if(isadd){
+					map.put("message", "操作成功");
+				}else{
+					map.put("message", "操作失败");
+				}
+				
+			}
+		}catch(Exception e){
+			map.put("message", "操作失败");
+		}
+		return map;
+	}
+	
+}

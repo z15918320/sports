@@ -1,0 +1,378 @@
+package com.miaotu.wantbuy.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.miaotu.activities.vo.AdminUser;
+import com.miaotu.activities.vo.SelectValue;
+import com.miaotu.util.PicJsonPojo;
+import com.miaotu.wantbuy.pojo.WantBuyParams;
+import com.miaotu.wantbuy.service.WantBuyService;
+import com.miaotu.wantbuy.vo.WantBuyInfo;
+
+import net.sf.json.JSONArray;
+
+@Controller
+@RequestMapping("/wantBuy")
+public class WantBuyController{
+	private static final Logger logger=LoggerFactory.getLogger(WantBuyController.class);
+	/**
+	 * 一页显示条数
+	 */
+	private Integer number=10;
+	
+	/**
+	 * 起始数
+	 */
+	private Integer starNumber=0;
+	
+	/**
+	 * 总页数  
+	 */
+	private Integer pageCount=1;
+	
+	/**
+	 * 用户总数
+	 */
+	private Integer custCount=0;
+	
+	/**
+	 * 当前页数
+	 */
+	private Integer pageNow =0;
+	
+	String entityStatus="";
+	String starTime;
+	String endTime;
+	String pageCountt;
+	
+	@Autowired
+	private WantBuyService service;
+	
+	@RequestMapping("/setTop.do")
+	public String setTop(HttpServletRequest request){
+		String entityId = request.getParameter("entityId");
+		if(StringUtils.isNotEmpty(entityId)){
+			Integer isTop = service.getTopActivities();
+			if(null==isTop){
+				isTop=0;
+			}
+			WantBuyParams pars = new WantBuyParams();
+			pars.setIsTop(isTop+1);
+			pars.setWant_buy_id(new Integer(entityId));
+			this.service.editEntityActivities(pars);
+		}
+		return "redirect:/wantBuy/toWantBuyList.do";
+	}
+	
+	/**
+	 * 取消置顶
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/cancelTop.do")
+	public String cancelTop(HttpServletRequest request){
+		String entityId = request.getParameter("entityId");
+		if(StringUtils.isNotEmpty(entityId)){
+			boolean cancelTop = service.cancelTopActivities(new Integer(entityId));
+		}
+		return "redirect:/wantBuy/toWantBuyList.do";
+	}
+	
+	@RequestMapping("/toWantbuyCommentList.do")
+	public String toWantbuyCommentList(HttpServletRequest request){
+		HttpSession session = request.getSession();
+		String entityId = request.getParameter("entityId");
+		session.setAttribute("wantbuyIdforPage", entityId);
+		return "redirect:/wantbuyComment/toWantbuyCommentList.do";
+	}
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectNextPage.do")
+	public String selectNextPage(HttpServletRequest request){
+		pageNow+=1;
+		return "redirect:/wantBuy/toWantBuyList.do";
+	}
+	
+	/**
+	 * index页面查询下一页用户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectLastPage.do")
+	public String selectLastPage(HttpServletRequest request){
+		if(pageNow>0){
+			pageNow-=1;
+		}
+		return "redirect:/wantBuy/toWantBuyList.do";
+	}
+	
+	
+	@RequestMapping("/toWantBuyList.do")  
+	public String toWantBuyList(HttpServletRequest request) throws JsonParseException, JsonMappingException, IOException{
+		String returnStr="/jsp/wantBuy/wantBuyList";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			if(StringUtils.isNotEmpty(request.getParameter("pageCountt"))){
+				pageCountt = request.getParameter("pageCountt");
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("endTime"))){
+				endTime = request.getParameter("endTime");
+			}else{
+				endTime=null;
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("starTime"))){
+				starTime = request.getParameter("starTime");
+			}else{
+				starTime=null;
+			}
+			if(StringUtils.isNotEmpty(request.getParameter("entityStatus"))){
+				entityStatus = request.getParameter("entityStatus");
+			}
+			if(StringUtils.isNotEmpty(pageCountt)){
+				pageNow = new Integer(pageCountt)-1;
+			}
+			WantBuyParams par = new WantBuyParams();
+			par.setVarieties(request.getParameter("selectVarieties"));
+			if(StringUtils.isNotEmpty(request.getParameter("selectUserId"))){
+				par.setUser_id(new Integer(request.getParameter("selectUserId")));
+			}
+			if(StringUtils.isNotEmpty(entityStatus.trim())){
+				par.setStatus(new Integer(entityStatus));
+			}else{
+				par.setStatus(null);
+			}
+			par.setStarTime(starTime);
+			par.setEndTime(endTime);
+			par.setNum(number);
+			if(null!=pageNow&&pageNow>=0){
+				starNumber = pageNow*number;
+			}
+			par.setStarNumber(starNumber);
+			List<WantBuyInfo> infoList = this.service.getEntityInfoActivities(par);
+			for (WantBuyInfo entity : infoList) {
+				String url = entity.getWant_buy_url();
+				if(StringUtils.isNotEmpty(url)){
+					ObjectMapper mapper = new ObjectMapper();  
+					JavaType javaType =mapper.getTypeFactory().constructParametricType(ArrayList.class, PicJsonPojo.class);
+					List<PicJsonPojo> picList =  (List<PicJsonPojo>)mapper.readValue(url, javaType);
+					entity.setPicList(picList);
+					if(null!=picList&&picList.size()>0){
+						entity.setWant_buy_url(picList.get(0).getT_url());
+					}
+				}
+			}
+			custCount = this.service.getCountEntityInfoActivities(par);
+			Double c = Math.ceil(custCount/number.doubleValue());
+			pageCount = c.intValue();
+			request.setAttribute("infoList", infoList);
+			request.setAttribute("pageCount", pageCount);
+			request.setAttribute("number", number);
+			request.setAttribute("starNumber", starNumber);
+			request.setAttribute("custCount", custCount);
+			request.setAttribute("pageNow", pageNow);
+			request.setAttribute("selectVarieties", request.getParameter("selectVarieties"));
+			request.setAttribute("selectUserId", request.getParameter("selectUserId"));
+			request.setAttribute("starTime", starTime);
+			request.setAttribute("endTime", endTime);
+			request.setAttribute("entityStatus", par.getStatus());
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	/**
+	 * 改变状态
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/wantBuychangeStauts.do")
+	public String wantBuychangeStauts(HttpServletRequest request,String allIDCheck,RedirectAttributes attr) {
+	  String [] ids = allIDCheck.split(",");
+	  boolean isdelete = true;
+	  if(null!=ids&&ids.length>0){
+		  for (String uid : ids) {
+			  isdelete = this.service.changeStautsActivities(new Integer(uid));
+			  if(!isdelete){
+					break;
+				}
+		}
+	  }
+	  if(isdelete){
+		  attr.addAttribute("message", "操作成功");
+		}else{
+			attr.addAttribute("message", "操作失败");
+		}
+	 return "redirect:/wantBuy/toWantBuyList.do";
+	}
+	
+	
+	/**
+	 * 编辑页面
+	 * @param request
+	 * @return
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
+	 */
+	@RequestMapping("/toWantBuyEdit.do")  
+	public String toWantBuyEdit(HttpServletRequest request) throws JsonParseException, JsonMappingException, IOException{
+		String returnStr="/jsp/wantBuy/wantBuyEdit";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		List<PicJsonPojo> picList = new ArrayList<PicJsonPojo>();
+		if(null!=userinfo){
+			//获得供应ID
+			WantBuyInfo entityInfo = new WantBuyInfo();
+			String entityId = request.getParameter("entityId");
+			if(StringUtils.isNotEmpty(entityId)){
+				entityInfo = this.service.getEntityInfoByIdActivities(new Integer(entityId));
+				picList = initEntity(entityInfo);
+				
+			}
+			request.setAttribute("entityInfo", entityInfo);
+			request.setAttribute("picList", picList);
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	private List<PicJsonPojo> initEntity(WantBuyInfo entityInfo) throws IOException, JsonParseException, JsonMappingException {
+		String Want_buy_ur = entityInfo.getWant_buy_url();
+		List<PicJsonPojo> picList = new ArrayList<PicJsonPojo>();
+		if(StringUtils.isNotEmpty(Want_buy_ur)){
+			ObjectMapper mapper = new ObjectMapper();  
+			JavaType javaType =mapper.getTypeFactory().constructParametricType(ArrayList.class, PicJsonPojo.class);
+			picList =  (List<PicJsonPojo>)mapper.readValue(Want_buy_ur, javaType);
+		}
+		return picList;
+	}
+	
+	/**
+	 * 供应编辑提交逻辑
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toWantBuySubmit.do")  
+	@ResponseBody
+	public Map toWantBuySubmit(HttpServletRequest request,@RequestBody  WantBuyParams pars){
+		Map<String,String> map = new HashMap<String,String>();
+		try{
+			request.setCharacterEncoding("UTF-8");
+			HttpSession session = request.getSession();
+			ObjectMapper mapper = new ObjectMapper();
+			List<PicJsonPojo> picList = new ArrayList<PicJsonPojo>();
+			AdminUser userinfo = (AdminUser)session.getAttribute("user");
+			boolean isadd;
+			if(null!=userinfo){
+				if(null!=pars.getWant_buy_id()&&pars.getWant_buy_id()>0){
+					WantBuyInfo entityInfo = this.service.getEntityInfoByIdActivities(pars.getWant_buy_id());
+					if(StringUtils.isNotEmpty(entityInfo.getWant_buy_url())){
+						JavaType javaType =mapper.getTypeFactory().constructParametricType(ArrayList.class, PicJsonPojo.class);
+						//获得原来的图片列表
+						picList =  (List<PicJsonPojo>)mapper.readValue(entityInfo.getWant_buy_url(), javaType);
+						//判断是否是删除 
+						if(StringUtils.isNotEmpty(pars.getIsdelete())){
+							String[]delete = pars.getIsdelete().split(",");
+							int i=0;
+							for (String deleteTag : delete) {
+								if(0==i){
+									picList.remove(new Integer(deleteTag).intValue()-1);
+								}else{
+									picList.remove(new Integer(deleteTag).intValue()-1-i);
+								}
+								i++;
+							}
+						}else{//修改
+							if(StringUtils.isNotEmpty(pars.getWant_buy_url())){
+								intPicList(pars.getWant_buy_url(), picList);
+							}
+						}
+						pars.setWant_buy_url(mapper.writeValueAsString(picList));
+					}else{
+						if(StringUtils.isNotEmpty(pars.getWant_buy_url())){
+							intPicList(pars.getWant_buy_url(), picList);
+							pars.setWant_buy_url(mapper.writeValueAsString(picList));
+						}
+					}
+					isadd = this.service.editEntityActivities(pars);
+				}else{
+					if(StringUtils.isNotEmpty(pars.getWant_buy_url())){
+						intPicList(pars.getWant_buy_url(), picList);
+						pars.setWant_buy_url(mapper.writeValueAsString(picList));
+					}
+					isadd = this.service.addEntityActivities(pars);
+				}
+				if(isadd){
+					map.put("message", "操作供应成功");
+				}else{
+					map.put("message", "操作供应失败");
+				}
+				
+			}
+		}catch(Exception e){
+			map.put("message", "操作失败");
+		}
+		return map;
+	}
+	
+	/**
+	 * 加载链接
+	 * @param url
+	 * @param picList
+	 */
+	private void intPicList(String url, List<PicJsonPojo> picList) {
+		//获取前台传过来的url组
+		String[] urls = url.split(",");
+		int k = 6-picList.size();
+		for(int i=0;i<k;i++){
+			if(urls.length>i){
+				PicJsonPojo pojo = new PicJsonPojo();
+				pojo.setT_url(urls[i]);
+				picList.add(pojo);	
+			}
+			
+		}
+		
+	}
+	
+	/**
+	 * 加载付款方式
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectPMD.do")
+	public String selectPMD(HttpServletRequest request){
+		List<SelectValue> pmds = new ArrayList<SelectValue>();
+		
+		String json = JSONArray.fromObject(pmds).toString();  
+		 return json;
+	}
+}

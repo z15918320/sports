@@ -1,0 +1,331 @@
+package com.miaotu.information.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.miaotu.activities.vo.AdminUser;
+import com.miaotu.information.pojo.InformationParams;
+import com.miaotu.information.service.InformationService;
+import com.miaotu.information.vo.InformationInfo;
+import com.miaotu.util.PicJsonPojo;
+
+/**
+ * 资讯管理controller
+ * @author zhijiang.zhang
+ * 2016-05-06 09:35:20
+ */
+@Controller 
+@RequestMapping("/information")
+public class InformationController {
+
+	/**
+	 * 一页显示条数
+	 */
+	private Integer number=10;
+	
+	/**
+	 * 起始数
+	 */
+	private Integer starNumber=0;
+	
+	/**
+	 * 总页数  
+	 */
+	private Integer pageCount=1;
+	
+	/**
+	 * 资讯总数
+	 */
+	private Integer custCount=0;
+	
+	/**
+	 * 当前页数
+	 */
+	private Integer pageNow =0;
+	
+	@Autowired
+	private InformationService service;
+	
+	
+	/**
+	 * 操作资讯
+	 * 1:改变资讯状态
+	 * 2:删除资讯
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/changeInformation.do")
+	public String changeInformation(HttpServletRequest request,String allIDCheck,RedirectAttributes attr) {
+	  Integer tag = new Integer(request.getParameter("tag"));
+	  String [] ids = allIDCheck.split(",");
+	  boolean isdelete = true;
+	  if(null!=ids&&ids.length>0){
+		  for (String id : ids) {
+			  if(1==tag){
+				  isdelete = this.service.changeEntityStatus(new Integer(id));
+			  }else{
+				  isdelete = this.service.deleteEntity(new Integer(id));
+			  }
+			  
+			  if(!isdelete){
+					break;
+				}
+		}
+	  }
+	  if(isdelete){
+		  attr.addAttribute("message", "操作资讯成功");
+		}else{
+			attr.addAttribute("message", "操作资讯失败");
+		}
+	 return "redirect:/information/toInformationList.do";
+	}
+	
+	
+	
+	/**
+	 * 资讯编辑提交逻辑
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toInformationSubmit.do")  
+	@ResponseBody
+	public Map toInformationSubmit(HttpServletRequest request,@RequestBody  InformationParams par){
+		Map<String,String> map = new HashMap<String,String>();
+		try{
+			request.setCharacterEncoding("UTF-8");
+			ObjectMapper mapper = new ObjectMapper();
+			List<PicJsonPojo> picList = new ArrayList<PicJsonPojo>();
+			HttpSession session = request.getSession();
+			AdminUser userinfo = (AdminUser)session.getAttribute("user");
+			boolean isadd=true;
+			Integer img_type = par.getImg_type();
+			if(null!=userinfo){
+				if(StringUtils.isNotEmpty(par.getInfo_url())){
+					intPicList(par.getInfo_url(), picList,img_type);
+					par.setInfo_url(mapper.writeValueAsString(picList));
+				}
+				//判断是否新增
+				if(null!=par.getInfo_id()&&par.getInfo_id()>0){
+					/*//判断原数据是否有图片
+					if(StringUtils.isNotEmpty(entityInfo.getInfo_url())){
+						JavaType javaType =mapper.getTypeFactory().constructParametricType(ArrayList.class, PicJsonPojo.class);
+						//获得原来的图片列表
+						picList =  (List<PicJsonPojo>)mapper.readValue(entityInfo.getInfo_url(), javaType);
+						//判断是否是删除 
+						if(StringUtils.isNotEmpty(par.getIsdelete())){
+							String[]delete = par.getIsdelete().split(",");
+							int i=0;
+							for (String deleteTag : delete) {
+								if(0==i){
+									picList.remove(new Integer(deleteTag).intValue()-1);
+								}else{
+									picList.remove(new Integer(deleteTag).intValue()-1-i);
+								}
+								i++;
+							}
+						}else{//修改
+							if(StringUtils.isNotEmpty(par.getInfo_url())){
+								intPicList(par.getInfo_url(), picList);
+							}
+						}
+						updatePicListByImgType(picList, img_type);
+						par.setInfo_url(mapper.writeValueAsString(picList));
+					}else{
+						if(StringUtils.isNotEmpty(par.getInfo_url())){
+							intPicList(par.getInfo_url(), picList);
+							updatePicListByImgType(picList, img_type);
+							par.setInfo_url(mapper.writeValueAsString(picList));
+						}
+					}*/
+					isadd = this.service.editEntity(par);
+				}else{
+					/*if(StringUtils.isNotEmpty(par.getInfo_url())){
+						intPicList(par.getInfo_url(), picList,img_type);
+						par.setInfo_url(mapper.writeValueAsString(picList));
+					}*/
+					isadd = this.service.addEntity(par);
+				}
+				if(isadd){
+					map.put("message", "操作资讯成功");
+				}else{
+					map.put("message", "操作资讯失败");
+				}
+				
+			}
+		}catch(Exception e){
+			map.put("message", "操作资讯失败");
+		}
+		return map;
+	}	
+	
+	/**
+	 * 资讯编辑页面
+	 * @param request
+	 * @return
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
+	 */
+	@RequestMapping("/toInformationEdit.do")  
+	public String toInformationEdit(HttpServletRequest request) throws JsonParseException, JsonMappingException, IOException{
+		String returnStr="/jsp/information/informationEdit";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		List<PicJsonPojo> picList = new ArrayList<PicJsonPojo>();
+		if(null!=userinfo){
+			//获得资讯ID
+			String entityId = request.getParameter("entityId");
+			InformationInfo entityInfo = new InformationInfo();
+			if(StringUtils.isNotEmpty(entityId)){
+				entityInfo = this.service.getEntityInfo(new Integer(entityId));
+				picList = initEntity(entityInfo);
+			}
+			request.setAttribute("entityInfo", entityInfo);
+			request.setAttribute("picList", picList);
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	/**
+	 * index页面查询下一页资讯
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectNextPage.do")
+	public String selectNextPage(HttpServletRequest request){
+		pageNow+=1;
+		return "redirect:/information/toInformationList.do";
+	}
+	
+	/**
+	 * index页面查询下一页资讯
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectLastPage.do")
+	public String selectLastPage(HttpServletRequest request){
+		if(pageNow>0){
+			pageNow-=1;
+		}
+		return "redirect:/information/toInformationList.do";
+	}
+	
+	
+	@RequestMapping("/toInformationList.do")  
+	public String toInformationList(HttpServletRequest request) throws JsonParseException, JsonMappingException, IOException{
+		String returnStr="/jsp/information/informationList";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			String pageCountt = request.getParameter("pageCountt");
+			String selectInfoTitle = request.getParameter("selectInfoTitle");
+			String selectInfoFrom = request.getParameter("selectInfoFrom");
+			String starTime = request.getParameter("starTime");
+			String endTime = request.getParameter("endTime");
+			String entityStatus = request.getParameter("entityStatus");
+			if(StringUtils.isNotEmpty(pageCountt)){
+				pageNow = new Integer(pageCountt)-1;
+			}
+			InformationParams par = new InformationParams();
+			par.setInfo_title(selectInfoTitle);
+			par.setInfo_from(selectInfoFrom);
+			par.setStarTime(starTime);
+			par.setEndTime(endTime);
+			if(StringUtils.isNotEmpty(entityStatus)){
+				par.setStatus(new Integer(entityStatus));
+			}
+			par.setNum(number);
+			if(null!=pageNow&&pageNow>=0){
+				starNumber = pageNow*number;
+			}
+			par.setStarNumber(starNumber);
+			List<InformationInfo> entityList = this.service.getEntityList(par);
+			for (InformationInfo entityInfo : entityList) {
+				List<PicJsonPojo> picList = initEntity(entityInfo);
+				entityInfo.setPicList(picList);
+				if(null!=picList&&picList.size()>0){
+					entityInfo.setInfo_url(picList.get(0).getT_url());
+				}
+			}
+			custCount = this.service.getCountEntity(par);
+			Double c = Math.ceil(custCount/number.doubleValue());
+			pageCount = c.intValue();
+			
+			
+			request.setAttribute("infoList", entityList);
+			request.setAttribute("entityStatus", par.getStatus());
+			request.setAttribute("selectInfoTitle", selectInfoTitle);
+			request.setAttribute("selectInfoFrom", selectInfoFrom);
+			request.setAttribute("starTime", starTime);
+			request.setAttribute("endTime", endTime);
+			request.setAttribute("pageCount", pageCount);
+			request.setAttribute("number", number);
+			request.setAttribute("starNumber", starNumber);
+			request.setAttribute("custCount", custCount);
+			request.setAttribute("pageNow", pageNow);
+			
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	private List<PicJsonPojo> initEntity(InformationInfo entityInfo) throws IOException, JsonParseException, JsonMappingException {
+		String info_url = entityInfo.getInfo_url();
+		List<PicJsonPojo> picList = new ArrayList<PicJsonPojo>();
+		if(StringUtils.isNotEmpty(info_url)){
+			ObjectMapper mapper = new ObjectMapper();  
+			JavaType javaType =mapper.getTypeFactory().constructParametricType(ArrayList.class, PicJsonPojo.class);
+			picList =  (List<PicJsonPojo>)mapper.readValue(info_url, javaType);
+		}
+		return picList;
+	}
+	
+	/**
+	 * 加载链接
+	 * @param url
+	 * @param picList
+	 */
+	private void intPicList(String url, List<PicJsonPojo> picList,int tag) {
+		//获取前台传过来的url组
+		String[] urls = url.split(",");
+		//如果是多图
+		if(2==tag){
+			int k = 3-picList.size();
+			for(int i=0;i<k;i++){
+				if(urls.length>i){
+					PicJsonPojo pojo = new PicJsonPojo();
+					pojo.setT_url(urls[i]);
+					picList.add(pojo);	
+				}
+				
+			}
+		}else{
+			PicJsonPojo pojo = new PicJsonPojo();
+			pojo.setT_url(urls[0]);
+			picList.add(pojo);
+		}
+		
+	}
+	
+}

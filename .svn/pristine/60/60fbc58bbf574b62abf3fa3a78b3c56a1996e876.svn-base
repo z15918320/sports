@@ -1,0 +1,149 @@
+package com.miaotu.user.pojo;
+
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
+public class UserAddParams {
+	/**
+	 * 一页显示条数
+	 */
+	private static Integer num = 10;
+
+	/**
+	 * 起始数
+	 */
+	private static Integer starNumber = 0;
+	
+	@ApiModelProperty(value = "公司名称", required = true)
+	private String company_name;
+	private Integer a_id;
+	private Integer user_id;
+	private Double longitude;
+	private Double latitude;
+	private Double company_lon;
+	private Double company_lat;
+	private String country;
+	private String province="";
+	private String city="";
+	private String area="";
+	private String street="";
+	private String company_province="";
+	private String company_city="";
+	private String company_area="";
+	private String company_street="";
+	private String user_name;
+	
+	public String getUser_name() {
+		return user_name;
+	}
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+	public Double getLongitude() {
+		return longitude;
+	}
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
+	public Double getLatitude() {
+		return latitude;
+	}
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+	public Double getCompany_lon() {
+		return company_lon;
+	}
+	public void setCompany_lon(Double company_lon) {
+		this.company_lon = company_lon;
+	}
+	public Double getCompany_lat() {
+		return company_lat;
+	}
+	public void setCompany_lat(Double company_lat) {
+		this.company_lat = company_lat;
+	}
+	public static Integer getNum() {
+		return num;
+	}
+	public static void setNum(Integer num) {
+		UserAddParams.num = num;
+	}
+	public static Integer getStarNumber() {
+		return starNumber;
+	}
+	public static void setStarNumber(Integer starNumber) {
+		UserAddParams.starNumber = starNumber;
+	}
+	public String getCompany_name() {
+		return company_name;
+	}
+	public void setCompany_name(String company_name) {
+		this.company_name = company_name;
+	}
+	public Integer getA_id() {
+		return a_id;
+	}
+	public void setA_id(Integer a_id) {
+		this.a_id = a_id;
+	}
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	public String getCountry() {
+		return country;
+	}
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	public String getProvince() {
+		return province;
+	}
+	public void setProvince(String province) {
+		this.province = province;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public String getArea() {
+		return area;
+	}
+	public void setArea(String area) {
+		this.area = area;
+	}
+	public String getStreet() {
+		return street;
+	}
+	public void setStreet(String street) {
+		this.street = street;
+	}
+	public String getCompany_province() {
+		return company_province;
+	}
+	public void setCompany_province(String company_province) {
+		this.company_province = company_province;
+	}
+	public String getCompany_city() {
+		return company_city;
+	}
+	public void setCompany_city(String company_city) {
+		this.company_city = company_city;
+	}
+	public String getCompany_area() {
+		return company_area;
+	}
+	public void setCompany_area(String company_area) {
+		this.company_area = company_area;
+	}
+	public String getCompany_street() {
+		return company_street;
+	}
+	public void setCompany_street(String company_street) {
+		this.company_street = company_street;
+	}
+}

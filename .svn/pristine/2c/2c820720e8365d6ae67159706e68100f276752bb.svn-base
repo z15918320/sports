@@ -1,0 +1,154 @@
+package com.miaotu.wantbuyComment.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.miaotu.activities.vo.AdminUser;
+import com.miaotu.wantbuyComment.pojo.WantBuyCommentParams;
+import com.miaotu.wantbuyComment.service.WantBuyCommentService;
+import com.miaotu.wantbuyComment.vo.WantBuyCommentInfo;
+
+/**
+ * 供应评论Controller
+ * @author Administrator
+ */
+@Controller
+@RequestMapping("/wantbuyComment")
+public class WantBuyCommentController {
+	private static final Logger logger=LoggerFactory.getLogger(WantBuyCommentController.class);
+	@Autowired
+	private WantBuyCommentService service;
+	/**
+	 * 一页显示条数
+	 */
+	private Integer number=10;
+	
+	/**
+	 * 起始数
+	 */
+	private Integer starNumber=0;
+	
+	/**
+	 * 总页数  
+	 */
+	private Integer pageCount=1;
+	
+	/**
+	 * 供应总数
+	 */
+	private Integer custCount=0;
+	
+	/**
+	 * 当前页数
+	 */
+	private Integer pageNow =0;
+	
+	private String entityId=null;
+	
+	/**
+	 * index页面查询下一页供应
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectNextPage.do")
+	public String selectNextPage(HttpServletRequest request){
+		pageNow+=1;
+		return "redirect:/wantbuyComment/toSupplyCommentList.do";
+	}
+	
+	/**
+	 * index页面查询下一页供应
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/selectLastPage.do")
+	public String selectLastPage(HttpServletRequest request){
+		if(pageNow>0){
+			pageNow-=1;
+		}
+		return "redirect:/wantbuyComment/toSupplyCommentList.do";
+	}
+	
+	/**
+	 * 跳转到供應列表页面
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/toWantbuyCommentList.do")  
+	public String toWantbuyCommentList(HttpServletRequest request){
+		String returnStr="/jsp/wantBuyComment/wantBuyCommentList";
+		HttpSession session = request.getSession();
+		AdminUser userinfo = (AdminUser)session.getAttribute("user");
+		if(null!=userinfo){
+			String pageCountt = request.getParameter("pageCountt");
+			String starTime = request.getParameter("starTime");
+			String endTime = request.getParameter("endTime");
+			if(StringUtils.isNotEmpty(pageCountt)){
+				pageNow = new Integer(pageCountt)-1;
+			}
+			WantBuyCommentParams params = new WantBuyCommentParams();
+			params.setNum(number);
+			if(null!=pageNow&&pageNow>=0){
+				starNumber = pageNow*number;
+			}
+			params.setStarNumber(starNumber);
+			entityId = session.getAttribute("wantbuyIdforPage")+"";
+			params.setWant_buy_id(new Integer(entityId));
+			params.setStarNumber(starNumber);
+			params.setNum(number);
+			params.setStarTime(starTime);
+			params.setEndTime(endTime);
+			List<WantBuyCommentInfo> infoList = this.service.getEntityInfoActivities(params);
+			custCount = this.service.getCountActivities(params);
+			Double c = Math.ceil(custCount/number.doubleValue());
+			pageCount = c.intValue();
+			request.setAttribute("starTime", starTime);
+			request.setAttribute("endTime", endTime);
+			request.setAttribute("infoList", infoList);
+			request.setAttribute("pageCount", pageCount);
+			request.setAttribute("number", number);
+			request.setAttribute("starNumber", starNumber);
+			request.setAttribute("custCount", custCount);
+			request.setAttribute("pageNow", pageNow);
+		}else{
+			returnStr = "login";
+		}
+		return returnStr;
+	}
+	
+	/**
+	 * 删除评论
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/deleteEntity.do")
+	public String deleteEntity(HttpServletRequest request,String allIDCheck,RedirectAttributes attr) {
+	  String [] userIds = allIDCheck.split(",");
+	  boolean isdelete = true;
+	  if(null!=userIds&&userIds.length>0){
+		  for (String uid : userIds) {
+			  isdelete = this.service.deleteActivities(new Integer(uid));
+			  if(!isdelete){
+					break;
+				}
+		}
+	  }
+	  if(isdelete){
+		  attr.addAttribute("message", "操作成功");
+		}else{
+			attr.addAttribute("message", "操作失败");
+		}
+	 return "redirect:/wantbuyComment/toSupplyCommentList.do";
+	}
+}

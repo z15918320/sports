@@ -1,0 +1,39 @@
+package com.miaotu.supplyComment.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.miaotu.common.service.impl.BaseServiceImpl;
+import com.miaotu.supplyComment.pojo.SupplyCommentParams;
+import com.miaotu.supplyComment.service.SupplyCommentService;
+import com.miaotu.supplyComment.vo.SupplyCommentInfo;
+@Service
+public class SupplyCommentServiceImpl extends BaseServiceImpl implements SupplyCommentService{
+
+	private static final String  SELECT_ENEITY= "supplyCommentDao.selectEntity";
+	
+	private static final String SELECT_ENEITY_COUNT="supplyCommentDao.selectEntityCount";
+	
+	private static final String  DELETE_ENEITY_BY_ID= "supplyCommentDao.deleteEntityById";
+	
+	@Override
+	public List<SupplyCommentInfo> getEntityInfoActivities(SupplyCommentParams params) {
+		return baseDao.getList(SELECT_ENEITY,params);
+	}
+
+	@Override
+	public Integer getCountActivities(SupplyCommentParams params) {
+		return baseDao.get(SELECT_ENEITY_COUNT,params);
+	}
+
+	@Override
+	public boolean deleteActivities(Integer supply_comment_id) {
+		int i = baseDao.delete(DELETE_ENEITY_BY_ID, supply_comment_id);
+		if (i > 0)
+			return true;
+		return false;
+	}
+
+	
+}

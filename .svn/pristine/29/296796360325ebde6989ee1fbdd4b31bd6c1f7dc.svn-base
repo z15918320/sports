@@ -1,0 +1,247 @@
+package com.miaotu.supply.pojo;
+
+public class SupplyParams {
+ 
+	/**
+	 * 一页显示条数
+	 */
+	private static Integer num=10;
+	
+	/**
+	 * 起始数
+	 */
+	private static Integer starNumber=0;
+	
+	private Double unit_price;
+	private Double rod_diameter;
+	private Double branch_point;
+	private Double crown_width_e;
+	private Double height_s;
+	private Double crown_width_s;
+	private Double height_e;
+	private Integer supply_id;
+	private Integer user_id;
+	private Integer number;
+	private Integer clickLikeTotal;
+	private Integer collectionTotal;
+	private Integer commentTotal;
+	private Integer shareTotal;
+	private String address;
+	private String selling_point;
+	private String supply_url;
+	private String uploadtime;
+	private String varieties;
+	private String seedling_source_address;
+	private Integer isTop;
+	private String supply_url1;
+	private String supply_url2;
+	private String supply_url3;
+	private String supply_url4;
+	private String supply_url5;
+	private String supply_url6;
+	private String isdelete;
+	private String starTime;
+	private String endTime;
+	private Integer status;
+	
+	public String getStarTime() {
+		return starTime;
+	}
+	public void setStarTime(String starTime) {
+		this.starTime = starTime;
+	}
+	public String getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	public String getIsdelete() {
+		return isdelete;
+	}
+	public void setIsdelete(String isdelete) {
+		this.isdelete = isdelete;
+	}
+	public String getSupply_url1() {
+		return supply_url1;
+	}
+	public void setSupply_url1(String supply_url1) {
+		this.supply_url1 = supply_url1;
+	}
+	public String getSupply_url2() {
+		return supply_url2;
+	}
+	public void setSupply_url2(String supply_url2) {
+		this.supply_url2 = supply_url2;
+	}
+	public String getSupply_url3() {
+		return supply_url3;
+	}
+	public void setSupply_url3(String supply_url3) {
+		this.supply_url3 = supply_url3;
+	}
+	public String getSupply_url4() {
+		return supply_url4;
+	}
+	public void setSupply_url4(String supply_url4) {
+		this.supply_url4 = supply_url4;
+	}
+	public String getSupply_url5() {
+		return supply_url5;
+	}
+	public void setSupply_url5(String supply_url5) {
+		this.supply_url5 = supply_url5;
+	}
+	public String getSupply_url6() {
+		return supply_url6;
+	}
+	public void setSupply_url6(String supply_url6) {
+		this.supply_url6 = supply_url6;
+	}
+	public static Integer getNum() {
+		return num;
+	}
+	public static void setNum(Integer num) {
+		SupplyParams.num = num;
+	}
+	public static Integer getStarNumber() {
+		return starNumber;
+	}
+	public static void setStarNumber(Integer starNumber) {
+		SupplyParams.starNumber = starNumber;
+	}
+	public Double getUnit_price() {
+		return unit_price;
+	}
+	public void setUnit_price(Double unit_price) {
+		this.unit_price = unit_price;
+	}
+	public Double getRod_diameter() {
+		return rod_diameter;
+	}
+	public void setRod_diameter(Double rod_diameter) {
+		this.rod_diameter = rod_diameter;
+	}
+	public Double getBranch_point() {
+		return branch_point;
+	}
+	public void setBranch_point(Double branch_point) {
+		this.branch_point = branch_point;
+	}
+	public Double getCrown_width_e() {
+		return crown_width_e;
+	}
+	public void setCrown_width_e(Double crown_width_e) {
+		this.crown_width_e = crown_width_e;
+	}
+	public Double getHeight_s() {
+		return height_s;
+	}
+	public void setHeight_s(Double height_s) {
+		this.height_s = height_s;
+	}
+	public Double getCrown_width_s() {
+		return crown_width_s;
+	}
+	public void setCrown_width_s(Double crown_width_s) {
+		this.crown_width_s = crown_width_s;
+	}
+	public Double getHeight_e() {
+		return height_e;
+	}
+	public void setHeight_e(Double height_e) {
+		this.height_e = height_e;
+	}
+	public Integer getSupply_id() {
+		return supply_id;
+	}
+	public void setSupply_id(Integer supply_id) {
+		this.supply_id = supply_id;
+	}
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	public Integer getNumber() {
+		return number;
+	}
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+	public Integer getClickLikeTotal() {
+		return clickLikeTotal;
+	}
+	public void setClickLikeTotal(Integer clickLikeTotal) {
+		this.clickLikeTotal = clickLikeTotal;
+	}
+	public Integer getCollectionTotal() {
+		return collectionTotal;
+	}
+	public void setCollectionTotal(Integer collectionTotal) {
+		this.collectionTotal = collectionTotal;
+	}
+	public Integer getCommentTotal() {
+		return commentTotal;
+	}
+	public void setCommentTotal(Integer commentTotal) {
+		this.commentTotal = commentTotal;
+	}
+	public Integer getShareTotal() {
+		return shareTotal;
+	}
+	public void setShareTotal(Integer shareTotal) {
+		this.shareTotal = shareTotal;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getSelling_point() {
+		return selling_point;
+	}
+	public void setSelling_point(String selling_point) {
+		this.selling_point = selling_point;
+	}
+	public String getSupply_url() {
+		return supply_url;
+	}
+	public void setSupply_url(String supply_url) {
+		this.supply_url = supply_url;
+	}
+	public String getUploadtime() {
+		return uploadtime;
+	}
+	public void setUploadtime(String uploadtime) {
+		this.uploadtime = uploadtime;
+	}
+	public String getVarieties() {
+		return varieties;
+	}
+	public void setVarieties(String varieties) {
+		this.varieties = varieties;
+	}
+	public String getSeedling_source_address() {
+		return seedling_source_address;
+	}
+	public void setSeedling_source_address(String seedling_source_address) {
+		this.seedling_source_address = seedling_source_address;
+	}
+	public Integer getIsTop() {
+		return isTop;
+	}
+	public void setIsTop(Integer isTop) {
+		this.isTop = isTop;
+	}
+	
+	
+}

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="supplyCommentDao">
+	<select id="supplyCommentDao.selectEntity" parameterType="com.miaotu.supplyComment.pojo.SupplyCommentParams" resultType="com.miaotu.supplyComment.vo.SupplyCommentInfo">
+		select su.*,us.user_name from SUPPLY_COMMENT su inner join USER_INFO us ON su.user_id=us.user_id 
+	        <where>
+		        <if test="reply_user_id!=null and reply_user_id!='' ">  
+		            AND su.reply_user_id = #{reply_user_id}
+		        </if>  
+		        <if test="user_id!=null and user_id!='' ">  
+		            AND su.user_id = #{user_id}   
+		        </if> 
+		        <if test="supply_id!=null and supply_id!='' ">  
+		            AND su.supply_id = #{supply_id}   
+		        </if>
+		        <if test="starTime!=null and starTime!='' ">  
+		            AND su.supply_comment_time &gt;= #{starTime}   
+		        </if> 
+		        <if test="endTime!=null and endTime!='' ">  
+		            AND su.supply_comment_time &lt;= #{endTime}   
+		        </if>
+	        </where> 
+        ORDER BY su.supply_comment_time desc limit #{starNumber}, #{num}
+	</select>
+	
+	<select id="supplyCommentDao.selectEntityCount" parameterType="com.miaotu.supplyComment.pojo.SupplyCommentParams" resultType="Integer">
+		select count(1) from SUPPLY_COMMENT su
+		<where>  
+	        <if test="reply_user_id!=null and reply_user_id!='' ">  
+	            AND su.reply_user_id = #{reply_user_id}
+	        </if>  
+	        <if test="user_id!=null and user_id!='' ">  
+	            AND su.user_id = #{user_id}   
+	        </if> 
+	        <if test="supply_id!=null and supply_id!='' ">  
+	            AND su.supply_id = #{supply_id}   
+	        </if>
+	        <if test="starTime!=null and starTime!='' ">  
+	            AND su.supply_comment_time &gt;= #{starTime}   
+	        </if> 
+	        <if test="endTime!=null and endTime!='' ">  
+	            AND su.supply_comment_time &lt;= #{endTime}   
+	        </if>
+    	 </where>
+	</select>
+	
+	<update id="supplyCommentDao.deleteEntityById" parameterType="Integer">
+		delete from SUPPLY_COMMENT where supply_comment_id = #{supply_comment_id};
+	</update>
+	
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

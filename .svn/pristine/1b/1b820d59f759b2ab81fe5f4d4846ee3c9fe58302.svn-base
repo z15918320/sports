@@ -1,0 +1,555 @@
+package com.miaotu.common.dao;
+
+ 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.object.BatchSqlUpdate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+
+import com.miaotu.common.exception.DaoException;
+/**
+ * <p>
+ * BaseJdbcDaoSupport.java
+ * </p>
+ * <p>
+ * Title: Spring Jdbc工具
+ * </p>
+ * <p>
+ * Description: Detail Description
+ * </p>
+ * <p>
+ * Department: 技术部
+ * </p>
+ * <p>
+ * Company: 湖南金诚信通信股份有限公司
+ * </p>
+ * <p>
+ * Copyright (c)@2009-2013 湖南金诚信通信股份有限公司
+ * </p>
+ * @author  
+ * @since  
+ */
+public class BaseJdbcDaoSupport extends JdbcDaoSupport {
+	protected final Log logger = LogFactory.getLog(getClass());
+	/**
+	 * 获取原生的connection
+	 * @return
+	 * @author liutao
+	 * @see
+	 */
+	public Connection getBaseConnect() {
+		try {
+			return this.getJdbcTemplate().getDataSource().getConnection();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.error("获取原生connection链接出错:" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	public void close(ResultSet rs) {
+		try {
+			if (rs != null)
+				rs.close();
+		} catch (SQLException e) {
+			logger.warn("sql warn", e);
+		}
+	}
+	/**
+	 * @param stmt
+	 * @author liutao
+	 * @see
+	 */
+	public void close(Statement stmt) {
+		try {
+			if (stmt != null)
+				stmt.close();
+		} catch (SQLException e) {
+			logger.warn("sql warn", e);
+		}
+	}
+	/**
+	 * 关闭连接
+	 * @param conn
+	 * @author liutao
+	 * @see
+	 */
+	public void close(Connection conn) {
+		try {
+			if (conn != null && conn.getAutoCommit())
+				conn.close();
+		} catch (SQLException e) {
+			logger.warn("sql warn", e);
+		}
+	}
+	/**
+	 * 更新操作，支持insert、update、delete操作
+	 * @param sql
+	 * @return dozer spring data //PagingAndSortingRepository
+	 * @throws DaoException
+	 */
+	public int update(String sql)
+		throws DaoException {
+		if (logger.isDebugEnabled()) {
+			logger.debug("执行更新SQL语句：" + sql);
+		}
+		try {
+			return this.getJdbcTemplate().update(sql);
+		} catch (DataAccessException e) {
+			logger.warn(e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	/**
+	 * 带参数的更新，支持insert、update、delete操作
+	 * @param sql
+	 * @param args
+	 * @return
+	 * @throws DaoException
+	 */
+	public int update(String sql, Object[] args)
+		throws DaoException {
+		if (logger.isDebugEnabled()) {
+			logger.debug("执行带参数的更新SQL语句：[" + sql + "],参数[" + args + "]");
+		}
+		try {
+			return this.getJdbcTemplate().update(sql, args);
+		} catch (DataAccessException e) {
+			logger.warn("执行带参数的更新语句出错:" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	/**
+	 * 带参数和参数类型的更新，支持insert、update、delete操作 参数sql例如:insert into table(a,b) values (?,?) 参数args例如:new
+	 * Object[]{a1,b1} 参数argTypes例如:参见java.sql.Types
+	 * @param sql
+	 * @param args
+	 * @param argTypes
+	 * @return
+	 * @throws DaoException
+	 */
+	public int update(String sql, Object[] args, int[] argTypes)
+		throws DaoException {
+		if (logger.isDebugEnabled()) {
+			logger.debug("执行带参数和参数类型的更新SQL语句：[" + sql + "],参数[" + args + "],参数类型[" + argTypes + "]");
+		}
+		try {
+			return this.getJdbcTemplate().update(sql, args, argTypes);
+		} catch (DataAccessException e) {
+			logger.warn("执行带参数和参数类型的更新语句出错：" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	
+	/**
+	 * 查询操作，返回记录数
+	 * @param sql
+	 * @return
+	 * @throws DaoException
+	 */
+	public int queryForInt(String sql)
+		throws DaoException {
+		if (logger.isDebugEnabled()) {
+			logger.debug("执行查询SQL语句，返回int值，SQL=[" + sql + "]");
+		}
+		try {
+			Number number = this.getJdbcTemplate().queryForObject(sql, Integer.class);
+			return (number != null ? number.intValue() : 0);
+		} catch (DataAccessException e) {
+			logger.warn("执行查询语句出错:" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	/**
+	 * 查询操作，返回记录数
+	 * @param sql
+	 * @return
+	 * @throws DaoException
+	 */
+	public long queryForLong(String sql)
+		throws DaoException {
+		if (logger.isDebugEnabled()) {
+			logger.debug("执行查询SQL语句，返回long值，SQL=[" + sql + "]");
+		}
+		try {
+			Number number = this.getJdbcTemplate().queryForObject(sql, Long.class);
+			return (number != null ? number.longValue() : 0);
+		} catch (DataAccessException e) {
+			logger.warn("执行查询语句出错:" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	/**
+	 * 查询操作，返回String类型的值
+	 * @param sql
+	 * @return
+	 * @throws DaoException
+	 */
+	public String queryForString(String sql)
+		throws DaoException {
+		if (logger.isDebugEnabled()) {
+			logger.debug("执行查询SQL语句，返回String值，SQL=[" + sql + "]");
+		}
+		try {
+			return (String)this.getJdbcTemplate().queryForObject(sql, String.class);
+		} catch (DataAccessException e) {
+			logger.warn("执行查询语句出错:" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	public Object queryForObject(String sql, Class<?> objClass)
+		throws DaoException {
+		if (logger.isDebugEnabled()) {
+			logger.debug("执行查询SQL语句，返回Class的对象，SQL=[" + sql + "]");
+		}
+		try {
+			return this.getJdbcTemplate().queryForObject(sql, objClass);
+		} catch (DataAccessException e) {
+			logger.warn("执行查询语句出错:" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	/**
+	 * 实体Bean查询
+	 * @param sql
+	 * @param returnType
+	 * @return
+	 * @throws DaoException
+	 * @author liutao
+	 * @see
+	 */
+	@SuppressWarnings("unchecked")
+	public Object queryForObjectBean(String sql, Class<?> returnType)
+		throws DaoException {
+		RowMapper<?> rowMapper = new BeanPropertyRowMapper(returnType);
+		try {
+			return (Object)this.getJdbcTemplate().queryForObject(sql, rowMapper);
+		} catch (DataAccessException e) {
+			logger.warn("执行查询语句出错:" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	public Object queryForObjectBean(String sql, RowMapper<?> rowMapper)
+		throws DaoException {
+		try {
+			return (Object)this.getJdbcTemplate().queryForObject(sql, rowMapper);
+		} catch (DataAccessException e) {
+			logger.warn("执行查询语句出错:" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	/**
+	 * 查询操作 Map中的key不区分大小写
+	 * @param sql
+	 * @return
+	 * @throws DaoException
+	 */
+	public List<Map<String,Object>> queryForList(String sql)
+		throws DaoException {
+		try {
+			List<Map<String,Object>> list = this.getJdbcTemplate().queryForList(sql);
+			if (logger.isDebugEnabled()) {
+				if (list.size() > 0) {
+					logger.debug("执行查询SQL语句:\n" + sql);
+					logger.debug("返回结果列表:" + list.size() + "\n");
+				}
+			}
+			return list;
+		} catch (DataAccessException e) {
+			logger.warn("执行查询语句出错:" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	/**
+	 * @param sql
+	 * @return
+	 * @throws DaoException
+	 * @author liutao
+	 * @see
+	 */
+	public List<?> queryForListObject(String sql)
+		throws DaoException {
+		try {
+			List<?> list = this.getJdbcTemplate().queryForList(sql);
+			if (logger.isDebugEnabled()) {
+				if (list.size() > 0) {
+					logger.debug("执行查询SQL语句:\n" + sql);
+					logger.debug("返回结果列表:" + list.size() + "\n");
+				}
+			}
+			return list;
+		} catch (DataAccessException e) {
+			logger.warn("执行查询语句出错:" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	/**
+	 * 带参数的查询操作 Map中的key不区分大小写 参数sql例如:select * from table where a1 = ? and a2 = ? 参数args例如:new
+	 * Object[]{a1,a2}
+	 * @param sql
+	 * @param args
+	 * @return
+	 * @throws DaoException
+	 */
+	public List<Map<String,Object>> queryForList(String sql, Object[] args)
+		throws DaoException {
+		try {
+			List<Map<String,Object>> list = this.getJdbcTemplate().queryForList(sql, args);
+			if (logger.isDebugEnabled()) {
+				if (list.size() > 0) {
+					logger.debug("执行带参数的查询SQL语句，SQL=[" + sql + "],参数=[" + args + "]");
+					logger.debug("返回结果列表:" + list.size());
+				}
+			}
+			return list;
+		} catch (DataAccessException e) {
+			logger.warn("执行带参数的查询语句出错:" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	/**
+	 * 带参数的查询操作 Map中的key不区分大小写 参数sql例如:select * from table where a1 = ? and a2 = ? 参数args例如:new
+	 * Object[]{a1,a2} 参数argTypes例如:参见java.sql.Types
+	 * @param sql
+	 * @param args
+	 * @param argTypes
+	 * @return
+	 * @throws DaoException
+	 */
+	public List<Map<String,Object>> queryForList(String sql, Object[] args, int[] argTypes)
+		throws DaoException {
+		try {
+			List<Map<String,Object>> list = this.getJdbcTemplate().queryForList(sql, args, argTypes);
+			if (logger.isDebugEnabled()) {
+				if (list.size() > 0) {
+					logger.debug("执行带参数的查询SQL语句，SQL=[" + sql + "],参数=[" + args + "],参数类型=[" + argTypes + "]");
+					logger.debug("返回结果列表:" + list.size());
+				}
+			}
+			return list;
+		} catch (DataAccessException e) {
+			logger.warn("执行带参数的查询语句出错:" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	/**
+	 * 从数据库中查询记录
+	 * @param sql
+	 * @return ResultSet
+	 * @throws DaoException
+	 */
+	public SqlRowSet queryForResultSet(String sql)
+		throws DaoException {
+		try {
+			return getJdbcTemplate().queryForRowSet(sql);
+		} catch (DataAccessException e) {
+			logger.warn("查询resultset出错:" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	/**
+	 * 执行SQL语句
+	 * @param sql
+	 * @throws DaoException
+	 */
+	public void execute(String sql)
+		throws DaoException {
+		if (logger.isDebugEnabled()) {
+			logger.debug("执行SQL语句，SQL=[" + sql + "]");
+		}
+		try {
+			this.getJdbcTemplate().execute(sql);
+		} catch (DataAccessException e) {
+			logger.warn("执行SQL语句出错:" + e.getMessage());
+			throw new DaoException(e.getMessage(), e);
+		}
+	}
+	/**
+	 * 批量操作(小批量) insert、update、delete 语句数组
+	 * @param sqls
+	 * @throws DaoException
+	 */
+	public int[] batchUpdate(String[] sqls)
+		throws DaoException {
+		try {
+			return this.getJdbcTemplate().batchUpdate(sqls);
+		} catch (DataAccessException e) {
+			logger.warn("执行批量操作语句出错:" + e.getMessage());
+			throw new DaoException("执行批量操作语句出错" + e.getMessage(), e);
+		}
+	}
+	/**
+	 * 批量操作(小批量) insert、update、delete 语句集合
+	 * @param list
+	 * @throws DaoException
+	 */
+	public void batchUpdate(List<?> list)
+		throws DaoException {
+		try {
+			String[] sqls = new String[list.size()];
+			for (int i = 0; i < list.size(); i++) {
+				sqls[i] = (String)list.get(i);
+			}
+			this.getJdbcTemplate().batchUpdate(sqls);
+		} catch (DataAccessException e) {
+			logger.warn("执行批量操作语句出错:" + e.getMessage());
+			throw new DaoException("执行批量操作语句出错" + e.getMessage(), e);
+		}
+	}
+	/**
+	 * 带参数批量操作(中等)
+	 * @param sql 预编译sql 占位符 ?
+	 * @param list1 参数值集合
+	 * @return
+	 * @throws DaoException
+	 */
+	public int[] batchUpdate(String sql, List<Object[]> list)
+		throws DaoException {
+		try {
+			final List<Object[]> temList = list;
+			BatchPreparedStatementSetter setter = new BatchPreparedStatementSetter() {
+				public void setValues(PreparedStatement ps, int i)
+					throws SQLException {
+					Object[] obj = temList.get(i);
+					for (int j = 0; j < obj.length; j++) {
+						ps.setObject(j + 1, obj[j]);
+					}
+				}
+				public int getBatchSize() {
+					return temList.size();
+				}
+			};
+			return this.getJdbcTemplate().batchUpdate(sql, setter);
+		} catch (DataAccessException e) {
+			logger.warn("执行批量操作语句出错:" + e.getMessage());
+			throw new DaoException("执行批量操作语句出错" + e.getMessage(), e);
+		}
+	}
+	/**
+	 * 带参数批量操作
+	 * @param sql
+	 * @param BatchPreparedStatementSetter
+	 * @return int[]
+	 * @throws DaoException
+	 */
+	public int[] batchUpdate(String sql, final BatchPreparedStatementSetter pss)
+		throws DaoException {
+		try {
+			return this.getJdbcTemplate().batchUpdate(sql, pss);
+		} catch (DataAccessException e) {
+			logger.warn("执行批量操作语句出错：" + e.getMessage());
+			throw new DaoException("执行批量操作语句出错" + e.getMessage(), e);
+		}
+	}
+	/**
+	 * 带参数批量操作(中等)
+	 * @param sql 预编译sql 占位符 ?
+	 * @param list1 参数值集合
+	 * @param sqlTypes 参数对应的java.sql.Types
+	 * @return
+	 * @throws DaoException
+	 */
+	public int[] batchUpdate(String sql, List<Object[]> list, int[] sqlTypes)
+		throws DaoException {
+		try {
+			final List<Object[]> temList = list;
+			final int[] type = sqlTypes;
+			BatchPreparedStatementSetter setter = new BatchPreparedStatementSetter() {
+				public void setValues(PreparedStatement ps, int i)
+					throws SQLException {
+					Object[] obj = temList.get(i);
+					for (int j = 0; j < obj.length; j++) {
+						ps.setObject(j + 1, obj[j], type[j]);
+					}
+				}
+				public int getBatchSize() {
+					return temList.size();
+				}
+			};
+			return this.getJdbcTemplate().batchUpdate(sql, setter);
+		} catch (DataAccessException e) {
+			logger.warn("执行批量操作语句出错:" + e.getMessage());
+			throw new DaoException("执行批量操作语句出错" + e.getMessage(), e);
+		}
+	}
+	/**
+	 * 带参数批量更新(大批量)
+	 * @param sql 预编译sql 占位符 ?
+	 * @param list 参数值集合
+	 * @param sqlTypes 参数对应的java.sql.Types
+	 * @return
+	 * @throws DaoException
+	 */
+	public void batchSqlUpdate(String sql, List<Object[]> list, int[] sqlTypes)
+		throws DaoException {
+		try {
+			final List<Object[]> temList = list;
+			final int[] types = sqlTypes;
+			BatchSqlUpdate bsu = new BatchSqlUpdate(this.getDataSource(), sql);
+			bsu.setBatchSize(100);
+			bsu.setTypes(types);
+			for (int i = 0; i < temList.size(); ++i) {
+				bsu.update(temList.get(i));
+			}
+			bsu.flush();
+		} catch (DataAccessException e) {
+			logger.warn("执行批量操作语句出错:" + e.getMessage());
+			throw new DaoException("执行批量操作语句出错" + e.getMessage(), e);
+		} catch (Exception e) {
+			logger.warn("执行批量操作语句出错:" + e.getMessage());
+			throw new DaoException("执行批量操作语句出错" + e.getMessage(), e);
+		}
+	}
+	/**
+	 * 查询对象列表
+	 * @param sql
+	 * @param rowMapper
+	 * @return
+	 * @throws DaoException
+	 */
+	public List<?> queryForList(String sql, RowMapper<?> rowMapper)
+		throws DaoException {
+		try {
+			return getJdbcTemplate().query(sql, rowMapper);
+		} catch (DataAccessException e) {
+			logger.warn("执行查询出错:" + e.getMessage());
+			throw new DaoException("执行查询出错", e);
+		}
+	}
+	public List<?> queryForList(String sql, Object[] args, RowMapper<?> rowMapper)
+		throws DaoException {
+		try {
+			return getJdbcTemplate().query(sql, args, rowMapper);
+		} catch (DataAccessException e) {
+			logger.warn("执行查询出错:" + e.getMessage());
+			throw new DaoException("执行查询出错", e);
+		}
+	}
+	/**
+	 * 获取 oracle sequence
+	 * @param seqName
+	 * @return
+	 * @throws DaoException
+	 */
+	public int getSequence(String seqName)
+		throws DaoException {
+		String sql = "SELECT " + seqName + ".NEXTVAL SEQ FROM DUAL";
+		List<Map<String,Object>> result = this.queryForList(sql);
+		if (result == null || result.isEmpty()) {
+			throw new DaoException("查询oracle sequence出错 :" + seqName);
+		}
+		return Integer.parseInt(result.get(0).get("SEQ") + "");
+	}
+}

@@ -1,0 +1,32 @@
+package com.miaotu.topic.service;
+
+import java.util.List;
+
+import com.miaotu.activities.vo.IdentityValue;
+import com.miaotu.topic.pojo.TopicParams;
+import com.miaotu.topic.vo.TopicInfo;
+
+public interface TopicService {
+
+	public List<TopicInfo> getEntityInfoActivities(TopicParams par);
+	
+	public TopicInfo getEntityInfoByIdActivities(Integer topic_id);
+	
+	public Integer getCountEntityInfoActivities(TopicParams params);
+	
+	public boolean changeStautsActivities(Integer topic_id);
+	
+	public boolean changeGreatActivities(Integer topic_id);
+	
+	public boolean changeHotActivities(Integer topic_id);
+	
+	public boolean editEntityActivities(TopicParams params);
+	
+	public boolean addEntityActivities(TopicParams params);
+	
+	public Integer getTopActivities();
+	
+	public boolean cancelTopActivities(Integer topic_id);
+	
+	public List<IdentityValue> getTheme(Integer theme_id);
+}

@@ -1,0 +1,63 @@
+package com.miaotu.common.swagger;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
+import com.mangofactory.swagger.models.dto.ApiInfo;
+import com.mangofactory.swagger.plugin.EnableSwagger;
+import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
+
+/**
+ * 项目名称：apidoc
+ *
+ * @description:
+ * @author Wind-spg
+ * @create_time：2015年2月10日 上午10:27:51
+ * @version V1.0.0
+ *
+ */
+ 
+//@Configuration
+//@EnableWebMvc
+//@EnableSwagger
+//@ComponentScan("com.miaotu")  
+// Loads the spring beans required by the framework
+public class MvcSwaggerConfig extends WebMvcConfigurerAdapter
+{
+
+    private SpringSwaggerConfig springSwaggerConfig;
+
+    /**
+     * Required to autowire SpringSwaggerConfig
+     */
+    @Autowired
+    public void setSpringSwaggerConfig(SpringSwaggerConfig springSwaggerConfig)
+    {
+        this.springSwaggerConfig = springSwaggerConfig;
+    }
+
+    /**
+     * Every SwaggerSpringMvcPlugin bean is picked up by the swagger-mvc
+     * framework - allowing for multiple swagger groups i.e. same code base
+     * multiple swagger resource listings.
+     */
+    @Bean
+	public SwaggerSpringMvcPlugin customImplementation() {
+    	
+    	  return new SwaggerSpringMvcPlugin(this.springSwaggerConfig).apiInfo(apiInfo()).includePatterns(
+                  ".*?");
+	}
+
+	private ApiInfo apiInfo() {
+		ApiInfo apiInfo = new ApiInfo("苗途resetApi接口平台",
+				"访问地址格式:http://{serverIp}/zmh   s标注参数为服务器返回,客户端不需上传"  , null,
+				"66202558@qq.com", "苗途官网", "http://miaoto.net");
+		return apiInfo;
+	}
+ 
+}

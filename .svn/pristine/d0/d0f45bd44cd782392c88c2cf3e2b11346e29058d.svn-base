@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="userIdentityDao">
+
+	<select id="userIdentityDao.selectUserIdentity" parameterType="com.miaotu.userIdentity.pojo.UserIdentityParams"
+		resultType="com.miaotu.userIdentity.vo.UserIdentityInfo">
+		select * from USER_IDENTITY c
+	    ORDER BY c.identity_key limit #{starNumber}, #{num}
+	</select>
+	
+	<select id="userIdentityDao.selectUserIdentityCount" parameterType="com.miaotu.userIdentity.pojo.UserIdentityParams"
+		resultType="Integer">
+		select count(1) from USER_IDENTITY c
+	</select>
+	
+	<select id="userIdentityDao.selectUserIdentityById" parameterType="Integer"
+		resultType="com.miaotu.userIdentity.vo.UserIdentityInfo">
+		select * from USER_IDENTITY c where c.identity_key = #{identity_key};
+	</select>
+
+	<update id="userIdentityDao.editUserIdentityById" parameterType="com.miaotu.userIdentity.pojo.UserIdentityParams">
+		update USER_IDENTITY 
+		<set>
+		  <if test="identity_value !=null and identity_value !='' ">  
+	            identity_value = #{identity_value},
+	      </if>
+	      <if test="topic_num !=null">  
+	            topic_num = #{topic_num},
+	      </if>
+	      <if test="wantbuy_num !=null">  
+	            wantbuy_num = #{wantbuy_num},
+	      </if>
+	      <if test="supply_num !=null">  
+	            supply_num = #{supply_num},
+	      </if>
+	     </set>
+		where identity_key = #{identity_key}
+	</update>
+
+	<insert id="userIdentityDao.addUserIdentity" keyProperty="identity_key"
+		useGeneratedKeys="true" parameterType="com.miaotu.userIdentity.pojo.UserIdentityParams">
+		insert into USER_IDENTITY 
+		(identity_value,
+		topic_num,
+		wantbuy_num,
+		supply_num) 
+		values
+		(#{identity_value},
+		#{topic_num},
+		#{wantbuy_num},
+		#{supply_num});
+	</insert>
+	
+	<delete id="userIdentityDao.deleteUserIdentity" parameterType="Integer">
+		delete from USER_IDENTITY where identity_key = #{identity_key};
+	</delete>
+
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

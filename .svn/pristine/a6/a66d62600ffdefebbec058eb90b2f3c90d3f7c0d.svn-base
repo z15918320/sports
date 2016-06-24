@@ -1,0 +1,104 @@
+package com.miaotu.activities.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.miaotu.activities.pojo.ActivitiesParams;
+import com.miaotu.activities.pojo.LoginParams;
+import com.miaotu.activities.service.ActivitiesService;
+import com.miaotu.activities.vo.ActivitiesInfo;
+import com.miaotu.activities.vo.AdminUser;
+import com.miaotu.common.service.impl.BaseServiceImpl;
+
+@Service
+public class ActivitiesServiceImpl extends BaseServiceImpl implements ActivitiesService {
+
+	private static final String SELECT_ACTIVITIES = "activitiesDao.selectActivities";
+	private static final String SELECT_COUNT_ACTIVITIES = "activitiesDao.selectCountActivities";
+	private static final String UPDATE_ACTIVITIES = "activitiesDao.updateActivities";
+	private static final String DELETE_ACTIVITIES = "activitiesDao.deleteActivities";
+	private static final String DELETE_ACTIVITIES_FK = "activitiesDao.deleteActivitiesFK";
+	private static final String SELECT_ACTIVITIES_FOR_ID = "activitiesDao.selectActivitiesforId";
+	private static final String SELECT_ACTIVITIES_FOR_USERID = "activitiesDao.selectActivitiesforUserId";
+	private static final String INSERT_ACTIVITIES_FOR_PARAMS = "activitiesDao.saveActivitiesByParams";
+	private static final String SELECT_USERINFO = "activitiesDao.selectUserByNamePassword";
+	private static final String CHANGE_STATUS = "activitiesDao.changeStatus";
+	
+	@Override
+	public Integer selectCountActivities(ActivitiesParams activities) {
+		return this.baseDao.get(SELECT_COUNT_ACTIVITIES, activities);
+	}
+	
+	@Override
+	public List<ActivitiesInfo> selectActivities(ActivitiesParams activities) {
+
+		return this.baseDao.getList(SELECT_ACTIVITIES, activities);
+	}
+
+	@Override
+	public ActivitiesInfo selectActivitiesforAID(Integer activities_id) {
+
+		return this.baseDao.get(SELECT_ACTIVITIES_FOR_ID, activities_id);
+	}
+
+
+	@Override
+	public boolean updateActivities(ActivitiesParams activitiesInfo) {
+		
+		int i = baseDao.update(UPDATE_ACTIVITIES, activitiesInfo);
+		if (i > 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean deleteActivities(Integer activities_id) {
+		int i = baseDao.delete(DELETE_ACTIVITIES, activities_id);
+		if (i > 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public List<ActivitiesInfo> selectActivitiesForUserId(ActivitiesParams activities) {
+		return this.baseDao.getList(SELECT_ACTIVITIES_FOR_USERID, activities);
+	}
+
+	@Override
+	public boolean saveActivities(ActivitiesParams activitiesParams) {
+		int count = baseDao.save(INSERT_ACTIVITIES_FOR_PARAMS, activitiesParams);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean changeStatusActivities(Integer activities_id) {
+		int count = baseDao.save(CHANGE_STATUS, activities_id);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 获取登录用户信息
+	 */
+	@Override
+	public AdminUser loginActivities(LoginParams loginInfo) {
+		// TODO Auto-generated method stub
+		AdminUser userInfo = baseDao.get(SELECT_USERINFO, loginInfo);
+		return userInfo;
+	}
+
+	@Override
+	public boolean deleteActivitiesFK(Integer activities_id) {
+		int i = baseDao.delete(DELETE_ACTIVITIES_FK, activities_id);
+		if (i > 0)
+			return true;
+		return false;
+	}
+	
+}

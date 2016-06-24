@@ -1,0 +1,247 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ page language="java" import="java.util.*"%>
+<%@page contentType="text/html; charset=utf-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>资讯编辑</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../../..${pageContext.request.contextPath}/style/authority/basic_layout.css" rel="stylesheet" type="text/css">
+<link href="../../..${pageContext.request.contextPath}/style/authority/common_style.css" rel="stylesheet" type="text/css">
+<link href="../../..${pageContext.request.contextPath}/plugs/uploadify/uploadify.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../..${pageContext.request.contextPath}/scripts/authority/commonAll.js"></script>
+<script type="text/javascript" src="../../..${pageContext.request.contextPath}/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="../../..${pageContext.request.contextPath}/plugs/uploadify/jquery.uploadify.min.js"></script>
+<script type="text/javascript" src="../../..${pageContext.request.contextPath}/scripts/My97DatePicker/WdatePicker.js" defer="defer"></script>
+<script type="text/javascript" src="../../..${pageContext.request.contextPath}/scripts/artDialog/artDialog.js?skin=default"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		var modelselect = ${entityInfo.img_type };
+
+		var EmergencyObj = document.getElementById("img_type").options;
+	  for (var i=0; i<EmergencyObj.length; i++) {
+	            if (EmergencyObj[i].value == modelselect) {
+	                  EmergencyObj[i].selected = true;
+	                  break;
+	               }
+	         }
+	  
+		/*
+		 * 提交
+		 */
+		$("#submitbutton").click(function() {
+			if(validateForm()){
+				checkUserSubmit();
+			}
+		});
+		
+		/*
+		 * 取消
+		 */
+		$("#cancelbutton").click(function() {
+			/**  关闭弹出iframe  **/
+			window.parent.$.fancybox.close();
+		});
+		
+		var result = 'null';
+		if(result =='success'){
+			/**  关闭弹出iframe  **/
+			window.parent.$.fancybox.close();
+		}
+	});
+	
+	/** 提交form  **/
+	function checkUserSubmit(){
+		var reqParam = {};
+		reqParam.info_id = $('#info_id').val();
+		reqParam.info_title = $('#info_title').val();
+		reqParam.info_from = $('#info_from').val();
+		reqParam.view_Total = $("#view_Total").val();
+		reqParam.infomation_url = $("#infomation_url").val();
+		reqParam.info_content = $("#info_content").val();
+		reqParam.isdelete = $("#isdelete").val();
+		reqParam.info_url = $("#info_url").val();
+		reqParam.img_type = $("#img_type").val();
+		
+		$.ajax({
+			type:"POST",
+			url:"${pageContext.request.contextPath}/information/toInformationSubmit.do",
+			dataType : 'json',
+			data : JSON.stringify(reqParam),
+			beforeSend : function(xhr) {
+				  xhr.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+			},
+			success : function(data) {
+				alert(JSON.stringify(data));
+				window.parent.$.fancybox.close();
+			},
+			error : function(data) {
+					alert("重复数据");
+			}
+		});
+
+		return true;
+	}
+	
+	/** 表单验证  **/
+	function validateForm(){
+		/* if($("#nickname").val()==""){
+			art.dialog({icon:'error', title:'友情提示', drag:false, resize:false, content:'填写用户名称', ok:true,});
+			return false;
+		}else if($("#heed_image_url").val()==""){
+			art.dialog({icon:'error', title:'友情提示', drag:false, resize:false, content:'上传用户头像', ok:true,});
+			return false;
+		} */
+		return true;
+	}
+</script>
+</head>
+<body>
+<form id="submitForm" name="submitForm" action="" method="post">
+	
+	<div id="container">
+		<div id="nav_links">
+			当前位置：基础数据&nbsp;>&nbsp;<span style="color: #1A5CC6;">资讯编辑</span>
+			<div id="page_close">
+				<a href="javascript:parent.$.fancybox.close();">
+					<img src="../../..${pageContext.request.contextPath}/images/common/page_close.png" width="20" height="20" style="vertical-align: text-top;"/>
+				</a>
+			</div>
+		</div>
+		<div class="ui_content">
+			<table  cellspacing="0" cellpadding="0" width="100%" align="left" border="0">
+			 <input type="hidden" name="info_id"  id="info_id" value="${entityInfo.info_id }"/> 
+				<tr>
+					<td class="ui_text_rt">资讯标题</td>
+					<td class="ui_text_lt">
+						<input type="text" id="info_title" name="info_title" value="${entityInfo.info_title }"  class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">资讯来源</td>
+					<td class="ui_text_lt">
+						<input type="text" id="info_from" name="info_from" value="${entityInfo.info_from }"  class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">资讯浏览数</td>
+					<td class="ui_text_lt">
+						<input type="text" id="view_Total" name="view_Total" value="${entityInfo.view_Total }"  class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">图片类型</td>
+					<td class="ui_text_lt">
+					<select name="img_type" id="img_type" value="${entityInfo.img_type }">
+						<option value="0">单张大图(1380*400)</option>
+						<option value="1">单张小图(440*320)</option>
+						<option value="2">三张小图(440*306)</option>
+                    </select>
+                    </td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">资讯详细内容跳转路径</td>
+					<td class="ui_text_lt">
+						<input type="text" id="infomation_url" name="infomation_url" value="${entityInfo.infomation_url }"  class="ui_input_txt02"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">资讯详细内容</td>
+					<td class="ui_text_lt">
+					<textarea rows="10" cols="50" id="info_content" name="info_content" /> ${entityInfo.info_content }</textarea>
+					</td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">要删除的图片序号(,分隔)</td>
+					<td class="ui_text_lt">
+						<input type="text" id="isdelete" name="isdelete" value="" class="ui_input_txt02"/>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="ui_text_rt">资讯图片地址(befor):</td>
+					<td class="ui_text_lt">
+					<c:forEach var="picInfo" items="${picList}">
+    				   <img width="50px" height="50px" src="http://8yyq8.com<c:out value="${picInfo.t_url}" />@!header">
+				    </c:forEach>
+				    </td>
+				</tr>
+				<tr>
+					<td class="ui_text_rt">资讯图片:</td>
+					<td class="ui_text_lt">
+				    	<input type="hidden" id="info_url" name='info_url'/>
+						<div id="imgs"></div><br/>
+						<div id="queue"></div>
+						<input id="file_upload" name="file_upload" class="easyui-numberbox" type="file"  multiple="true"> 
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td class="ui_text_lt">
+						&nbsp;<input id="submitbutton" type="button" value="提交" class="ui_input_btn01"/>
+						&nbsp;<input id="cancelbutton" type="button" value="取消" class="ui_input_btn01"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</form>
+<script type="text/javascript">
+var imgs = [];
+var respUrl ='';
+//初始化文件上传 start
+$('#file_upload').uploadify({  
+   'debug'         : false,  
+   'auto'          : true,             //是否自动上传,  
+   'buttonText'    : '上传图片',       //按钮文字  
+   'height'        : 30,               //按钮高度  
+   'width'         : 100,              //按钮宽度  
+   'checkExisting' : 'false',//是否检测图片存在,不检测:false  
+   'fileObjName'   : 'files',           //默认 Filedata, $_FILES控件名称  
+   'fileSizeLimit' : '1024KB',          //文件大小限制 0为无限制 默认KB  
+   'fileTypeDesc'  : 'All Files',       //图片选择描述  
+   'fileTypeExts'  : '*.gif; *.jpg; *.png',//文件后缀限制 默认：'*.*'  
+   'formData'      : {'someKey' : 'someValue', 'someOtherKey' : 1},//传输数据JSON格式  
+   //'overrideEvents': ['onUploadProgress'],  // The progress will not be updated  
+   //'progressData' : 'speed',             //默认percentage 进度显示方式  
+   'queueID'       : 'queue',              //默认队列ID  
+   'queueSizeLimit': 20,                   //一个队列上传文件数限制  
+   'removeCompleted' : true,               //完成时是否清除队列 默认true  
+   'removeTimeout'   : 3,                  //完成时清除队列显示秒数,默认3秒  
+   'requeueErrors'   : false,              //队列上传出错，是否继续回滚队列  
+   'successTimeout'  : 5,                  //上传超时  
+   'uploadLimit'     : 3,                 //允许上传的最多张数  
+   'swf'  : '${pageContext.request.contextPath}/jsp/uploadify.swf', //swfUpload  
+   'uploader': '${pageContext.request.contextPath}/uploadFile.do?tag=8', //服务器端脚本   
+   //上传成功  
+   'onUploadSuccess' : function(file, data, response) { 
+  	
+  	 var response=JSON.parse(data);
+  	 if(response.STATUS == '1'){
+  		 var dom='<img src="http://8yyq8.com'+response.url+'@!header" height="100px" width="100px" />';
+      	 $("#imgs").append(dom);
+      	respUrl=respUrl+response.url+',';
+      	 $("#info_url").val(respUrl);
+      	 var imgObj ={};
+      	 imgObj.url=response.url;
+      	 imgs.push(imgObj);
+  	 }else{
+  		 alert(response.MSG);
+  	 }
+           	 
+   },  
+   //上传错误  
+   'onUploadError' : function(file, errorCode, errorMsg, errorString) {  
+       alert("图片上传失败");
+   },
+  
+});  
+//初始化文件上传 end
+</script>
+
+<div style="display:none"><script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script></div>
+</body>
+</html>

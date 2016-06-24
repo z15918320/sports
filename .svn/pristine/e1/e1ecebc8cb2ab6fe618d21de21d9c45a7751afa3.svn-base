@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="topicCommentDao">
+	<select id="topicCommentDao.selectEntity" parameterType="com.miaotu.topicComment.pojo.TopicCommentParams" resultType="com.miaotu.topicComment.vo.TopicCommentInfo">
+		select su.*,us.user_name from TOPIC_COMMENT su inner join USER_INFO us ON su.user_id=us.user_id 
+	        <where>
+		        <if test="reply_user_id!=null and reply_user_id!='' ">  
+		            AND su.reply_user_id = #{reply_user_id}
+		        </if>  
+		        <if test="user_id!=null and user_id!='' ">  
+		            AND su.user_id = #{user_id}   
+		        </if> 
+		        <if test="topic_id!=null and topic_id!='' ">  
+		            AND su.topic_id = #{topic_id}   
+		        </if>
+		        <if test="starTime!=null and starTime!='' ">  
+		            AND su.topic_comment_time &gt;= #{starTime}   
+		        </if> 
+		        <if test="endTime!=null and endTime!='' ">  
+		            AND su.topic_comment_time &lt;= #{endTime}   
+		        </if>
+	        </where> 
+        ORDER BY su.topic_comment_time desc limit #{starNumber}, #{num}
+	</select>
+	
+	<select id="topicCommentDao.selectEntityCount" parameterType="com.miaotu.topicComment.pojo.TopicCommentParams" resultType="Integer">
+		select count(1) from TOPIC_COMMENT su
+		<where>  
+	        <if test="reply_user_id!=null and reply_user_id!='' ">  
+	            AND su.reply_user_id = #{reply_user_id}
+	        </if>  
+	        <if test="user_id!=null and user_id!='' ">  
+	            AND su.user_id = #{user_id}   
+	        </if> 
+	        <if test="topic_id!=null and topic_id!='' ">  
+	            AND su.topic_id = #{topic_id}   
+	        </if>
+	        <if test="starTime!=null and starTime!='' ">  
+	            AND su.topic_comment_time &gt;= #{starTime}   
+	        </if> 
+	        <if test="endTime!=null and endTime!='' ">  
+	            AND su.topic_comment_time &lt;= #{endTime}   
+	        </if>
+    	 </where>
+	</select>
+	
+	<update id="topicCommentDao.deleteEntityById" parameterType="Integer">
+		delete from TOPIC_COMMENT where topic_comment_id = #{topic_comment_id};
+	</update>
+	
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

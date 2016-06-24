@@ -1,0 +1,36 @@
+package com.miaotu.common.service.impl;
+
+import javax.annotation.Resource;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
+import com.miaotu.common.dao.IBaseDao;
+import com.miaotu.common.service.BaseService;
+/**
+ *     service基类
+ * <p>
+ * Title:
+ * </p> 
+ * <p>
+ * Description:
+ * </p> 
+ * <p>
+ * Author: 王海波   2013-9-16  上午08:48:07
+ * </p> 
+ * <p>
+ * Department: 技术部
+ * </p> 
+  * <p>
+ * Copyright: @2009-2016 湖南羊圈科技
+ * </p> 
+ *
+ */
+@Service
+@Scope("prototype")
+public class BaseServiceImpl implements BaseService {
+	
+	@Resource
+	protected IBaseDao baseDao;
+	
+}

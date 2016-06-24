@@ -1,0 +1,97 @@
+package com.miaotu.wantbuy.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.miaotu.common.service.impl.BaseServiceImpl;
+import com.miaotu.wantbuy.pojo.WantBuyParams;
+import com.miaotu.wantbuy.service.WantBuyService;
+import com.miaotu.wantbuy.vo.WantBuyInfo;
+@Service
+public class WantBuyServiceImpl extends BaseServiceImpl implements WantBuyService{
+
+	private static final String  SELECT_ENTITY= "wantbuyDao.selectWantBuy";
+	
+	private static final String  SELECT_ENTITY_BY_ID= "wantbuyDao.selectWantBuyById";
+	
+	private static final String  SELECT_ENTITY_COUNT= "wantbuyDao.selectWantBuyCount";
+	
+	private static final String CHANGE_STATUS = "wantbuyDao.changeStatusWantBuyById";
+	
+	private static final String EDIT_ENTITY = "wantbuyDao.editWantBuyById";
+	
+	private static final String ADD_ENTITY = "wantbuyDao.addWantBuyById";
+	
+	private static final String SELECT_TOP = "wantbuyDao.selectTop";
+	
+	private static final String  CANCEL_TOP= "wantbuyDao.cancelTop";
+	
+	@Override
+	public List<WantBuyInfo> getEntityInfoActivities(WantBuyParams par) {
+		// TODO Auto-generated method stub
+		return baseDao.getList(SELECT_ENTITY,par);
+	}
+
+
+	@Override
+	public WantBuyInfo getEntityInfoByIdActivities(Integer want_buy_id) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_ENTITY_BY_ID, want_buy_id);
+	}
+
+
+	@Override
+	public Integer getCountEntityInfoActivities(WantBuyParams params) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_ENTITY_COUNT, params);
+	}
+
+
+	@Override
+	public boolean changeStautsActivities(Integer want_buy_id) {
+		int i = baseDao.delete(CHANGE_STATUS, want_buy_id);
+		if (i > 0)
+			return true;
+		return false;
+	}
+
+
+	@Override
+	public boolean editEntityActivities(WantBuyParams params) {
+		int count = baseDao.update(EDIT_ENTITY, params);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+
+	@Override
+	public boolean addEntityActivities(WantBuyParams params) {
+		int count = baseDao.save(ADD_ENTITY, params);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+
+	@Override
+	public Integer getTopActivities() {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_TOP,null);
+	}
+
+
+	@Override
+	public boolean cancelTopActivities(Integer want_buy_id) {
+		int count = baseDao.update(CANCEL_TOP, want_buy_id);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	
+}

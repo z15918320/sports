@@ -1,0 +1,50 @@
+package com.miaotu.userIdentity.vo;
+
+public class UserIdentityInfo {
+	private Integer identity_key;
+	private String identity_value;
+	private Integer topic_num;
+	private Integer wantbuy_num;
+	private Integer supply_num;
+
+	public Integer getIdentity_key() {
+		return identity_key;
+	}
+
+	public void setIdentity_key(Integer identity_key) {
+		this.identity_key = identity_key;
+	}
+
+	public String getIdentity_value() {
+		return identity_value;
+	}
+
+	public void setIdentity_value(String identity_value) {
+		this.identity_value = identity_value;
+	}
+
+	public Integer getTopic_num() {
+		return topic_num;
+	}
+
+	public void setTopic_num(Integer topic_num) {
+		this.topic_num = topic_num;
+	}
+
+	public Integer getWantbuy_num() {
+		return wantbuy_num;
+	}
+
+	public void setWantbuy_num(Integer wantbuy_num) {
+		this.wantbuy_num = wantbuy_num;
+	}
+
+	public Integer getSupply_num() {
+		return supply_num;
+	}
+
+	public void setSupply_num(Integer supply_num) {
+		this.supply_num = supply_num;
+	}
+
+}

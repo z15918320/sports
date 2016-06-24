@@ -1,0 +1,38 @@
+package com.miaotu.user.vo;
+
+/**
+ * 用户附加属性表
+ * @author zhijiang.zhang
+ *
+ */
+public class UserBehaviorValue {
+	private Integer user_id;
+	private Integer behavior_value;
+	private Integer consumption_value;
+	private Integer residual_value;
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	public Integer getBehavior_value() {
+		return behavior_value;
+	}
+	public void setBehavior_value(Integer behavior_value) {
+		this.behavior_value = behavior_value;
+	}
+	public Integer getConsumption_value() {
+		return consumption_value;
+	}
+	public void setConsumption_value(Integer consumption_value) {
+		this.consumption_value = consumption_value;
+	}
+	public Integer getResidual_value() {
+		return residual_value;
+	}
+	public void setResidual_value(Integer residual_value) {
+		this.residual_value = residual_value;
+	}
+
+}

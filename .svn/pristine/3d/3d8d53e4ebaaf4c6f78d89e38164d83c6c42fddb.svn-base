@@ -1,0 +1,25 @@
+package com.miaotu.wantbuy.service;
+
+import java.util.List;
+
+import com.miaotu.wantbuy.pojo.WantBuyParams;
+import com.miaotu.wantbuy.vo.WantBuyInfo;
+
+public interface WantBuyService {
+	public List<WantBuyInfo> getEntityInfoActivities(WantBuyParams par);
+	
+	public WantBuyInfo getEntityInfoByIdActivities(Integer want_buy_id);
+	
+	public Integer getCountEntityInfoActivities(WantBuyParams params);
+	
+	public boolean changeStautsActivities(Integer want_buy_id);
+	
+	public boolean editEntityActivities(WantBuyParams params);
+	
+	public boolean addEntityActivities(WantBuyParams params);
+	
+	public Integer getTopActivities();
+	
+	public boolean cancelTopActivities(Integer want_buy_id);
+
+}

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="informationDao">
+
+	<update id="informationDao.changeEntityStatus" parameterType="Integer">
+		update INFORMATION set status=(case when status = 0 then 1 when status = 1 then 0 end)
+		where info_id = #{info_id};
+	</update>
+	
+	<delete id="informationDao.deleteEntity" parameterType="Integer">
+		delete from INFORMATION where info_id = #{info_id};
+	</delete>
+	
+	<select id="informationDao.selectEntityByPar" parameterType="com.miaotu.information.pojo.InformationParams"
+		resultType="com.miaotu.information.vo.InformationInfo">
+		select * from INFORMATION info
+			<where>
+				<if test="info_title !=null and info_title != '' ">
+					AND info.info_title LIKE CONCAT(CONCAT('%', #{info_title}),'%')   
+				</if>
+				<if test="info_from !=null and info_from != '' ">
+					AND info.info_from LIKE CONCAT(CONCAT('%', #{info_from}),'%')   
+				</if>
+				<if test="starTime !=null and starTime !='' ">  
+		        	AND info.uploadtime &gt;= date_format(#{starTime},'%Y-%c-%d %h:%i:%s')
+		        </if> 
+		        <if test="endTime !=null and endTime !='' ">  
+		        	AND info.uploadtime &lt;=  date_format(#{endTime},'%Y-%c-%d %h:%i:%s') 
+		        </if> 
+		        <if test="status !=null">  
+		            AND info.status = #{status}   
+		        </if>
+			</where>
+			order by info.info_id desc 
+			limit #{starNumber}, #{num};
+	</select>
+	
+	<select id="informationDao.selectEntityById" parameterType="Integer"
+		resultType="com.miaotu.information.vo.InformationInfo">
+		select * from INFORMATION info where info.info_id = #{info_id};
+	</select>
+	
+	<select id="informationDao.selectEntityCount" parameterType="com.miaotu.information.pojo.InformationParams"
+		resultType="Integer">
+		select count(1) from INFORMATION info
+			<where>
+				<if test="info_title !=null and info_title != '' ">
+					AND info.info_title LIKE CONCAT(CONCAT('%', #{info_title}),'%')   
+				</if>
+				<if test="info_from !=null and info_from != '' ">
+					AND info.info_from LIKE CONCAT(CONCAT('%', #{info_from}),'%')   
+				</if>
+				<if test="starTime !=null and starTime !='' ">  
+		        	AND info.uploadtime &gt;= date_format(#{starTime},'%Y-%c-%d %h:%i:%s')
+		        </if> 
+		        <if test="endTime !=null and endTime !='' ">  
+		        	AND info.uploadtime &lt;=  date_format(#{endTime},'%Y-%c-%d %h:%i:%s') 
+		        </if> 
+		        <if test="status !=null">  
+		            AND info.status = #{status}   
+		        </if>
+			</where>
+	</select>
+	
+	<insert id="informationDao.addEntity" keyProperty="info_id"
+		useGeneratedKeys="true" parameterType="com.miaotu.information.pojo.InformationParams">
+	 insert into INFORMATION 
+	(info_title,info_content,info_from,view_Total,uploadtime,info_url,img_type,infomation_url) values 
+	(#{info_title},#{info_content},#{info_from},#{view_Total},now(),#{info_url},#{img_type},#{infomation_url});
+	</insert>
+	
+	<update id="informationDao.editEntity" parameterType="com.miaotu.information.pojo.InformationParams">
+		update INFORMATION
+		<set>
+			<if test="info_title != null and info_title != '' ">  
+	            info_title = #{info_title},
+	      	</if>
+	      	<if test="info_content != null and info_content != '' ">  
+	            info_content = #{info_content},
+	      	</if>
+	      	<if test="info_from != null and info_from != '' ">  
+	            info_from = #{info_from},
+	      	</if>
+	      	<if test="view_Total != null">  
+	            view_Total = #{view_Total},
+	      	</if>
+	      	<if test="info_url != null and info_url != '' ">  
+	            info_url = #{info_url},
+	      	</if>
+	      	<if test="infomation_url != null and infomation_url != '' ">  
+	            infomation_url = #{infomation_url},
+	      	</if>
+	      	<if test="img_type != null">  
+	            img_type = #{img_type},
+	      	</if>
+	      	<if test="status != null">  
+	            status = #{status},
+	      	</if>
+		</set>
+		where info_id = #{info_id}
+	</update>
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

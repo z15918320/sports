@@ -1,0 +1,23 @@
+package com.miaotu.activities.vo;
+
+public class IdentityValue {
+	private Integer selectkey;
+
+	private String selectvalue;
+
+	public Integer getSelectkey() {
+		return selectkey;
+	}
+
+	public void setSelectkey(Integer selectkey) {
+		this.selectkey = selectkey;
+	}
+
+	public String getSelectvalue() {
+		return selectvalue;
+	}
+
+	public void setSelectvalue(String selectvalue) {
+		this.selectvalue = selectvalue;
+	}
+}

@@ -1,0 +1,62 @@
+package com.miaotu.feedBack.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.miaotu.common.service.impl.BaseServiceImpl;
+import com.miaotu.feedBack.pojo.FeedBackParams;
+import com.miaotu.feedBack.service.FeedBackService;
+import com.miaotu.feedBack.vo.FeedBackInfo;
+@Service
+public class FeedBackServiceImpl extends BaseServiceImpl implements FeedBackService{
+
+	private static final String  SELECT_ENTITY= "feedBackDao.selectFeedBack";
+	
+	private static final String  SELECT_ENTITY_BY_ID= "feedBackDao.selectFeedBackById";
+	
+	private static final String  SELECT_ENTITY_COUNT= "feedBackDao.selectFeedBackCount";
+	
+	private static final String EDIT_ENTITY = "feedBackDao.editFeedBackById";
+	
+	private static final String ADD_ENTITY = "feedBackDao.addFeedBack";
+
+	@Override
+	public List<FeedBackInfo> getEntityInfoActivities(FeedBackParams par) {
+		// TODO Auto-generated method stub
+		return baseDao.getList(SELECT_ENTITY,par);
+	}
+
+	@Override
+	public FeedBackInfo getEntityInfoByIdActivities(Integer feed_back_id) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_ENTITY_BY_ID, feed_back_id);
+	}
+
+	@Override
+	public Integer getCountEntityInfoActivities(FeedBackParams params) {
+		// TODO Auto-generated method stub
+		return baseDao.get(SELECT_ENTITY_COUNT, params);
+	}
+
+	@Override
+	public boolean editEntityActivities(FeedBackParams params) {
+		int count = baseDao.update(EDIT_ENTITY, params);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean addEntityActivities(FeedBackParams params) {
+		int count = baseDao.save(ADD_ENTITY, params);
+		if (count > 0) {
+			return true;
+		}
+		return false;
+	}
+
+
+	
+}

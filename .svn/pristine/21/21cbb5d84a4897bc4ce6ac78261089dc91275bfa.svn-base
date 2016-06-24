@@ -1,0 +1,106 @@
+package com.miaotu.supplyComment.pojo;
+
+public class SupplyCommentParams {
+
+	/**
+	 * 一页显示条数
+	 */
+	private static Integer num = 10;
+
+	/**
+	 * 起始数
+	 */
+	private static Integer starNumber = 0;
+
+	private Integer supply_comment_id;
+	private Integer supply_id;
+	private Integer user_id;
+	private String supply_comment;
+	private String supply_comment_time;
+	private Integer reply_user_id;
+	private String reply_nickname;
+	private Integer comment_type;
+	private Integer reply_supply_comment_id;
+	private String starTime;
+	private String endTime;
+	
+	public String getStarTime() {
+		return starTime;
+	}
+	public void setStarTime(String starTime) {
+		this.starTime = starTime;
+	}
+	public String getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+	public static Integer getNum() {
+		return num;
+	}
+	public static void setNum(Integer num) {
+		SupplyCommentParams.num = num;
+	}
+	public static Integer getStarNumber() {
+		return starNumber;
+	}
+	public static void setStarNumber(Integer starNumber) {
+		SupplyCommentParams.starNumber = starNumber;
+	}
+	public Integer getSupply_comment_id() {
+		return supply_comment_id;
+	}
+	public void setSupply_comment_id(Integer supply_comment_id) {
+		this.supply_comment_id = supply_comment_id;
+	}
+	public Integer getSupply_id() {
+		return supply_id;
+	}
+	public void setSupply_id(Integer supply_id) {
+		this.supply_id = supply_id;
+	}
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	public String getSupply_comment() {
+		return supply_comment;
+	}
+	public void setSupply_comment(String supply_comment) {
+		this.supply_comment = supply_comment;
+	}
+	public String getSupply_comment_time() {
+		return supply_comment_time;
+	}
+	public void setSupply_comment_time(String supply_comment_time) {
+		this.supply_comment_time = supply_comment_time;
+	}
+	public Integer getReply_user_id() {
+		return reply_user_id;
+	}
+	public void setReply_user_id(Integer reply_user_id) {
+		this.reply_user_id = reply_user_id;
+	}
+	public String getReply_nickname() {
+		return reply_nickname;
+	}
+	public void setReply_nickname(String reply_nickname) {
+		this.reply_nickname = reply_nickname;
+	}
+	public Integer getComment_type() {
+		return comment_type;
+	}
+	public void setComment_type(Integer comment_type) {
+		this.comment_type = comment_type;
+	}
+	public Integer getReply_supply_comment_id() {
+		return reply_supply_comment_id;
+	}
+	public void setReply_supply_comment_id(Integer reply_supply_comment_id) {
+		this.reply_supply_comment_id = reply_supply_comment_id;
+	}
+
+}

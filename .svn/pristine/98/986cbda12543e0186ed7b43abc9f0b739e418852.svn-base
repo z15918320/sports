@@ -1,0 +1,21 @@
+package com.miaotu.userIdentity.service;
+
+import java.util.List;
+
+import com.miaotu.userIdentity.pojo.UserIdentityParams;
+import com.miaotu.userIdentity.vo.UserIdentityInfo;
+
+public interface UserIdentityService {
+	public List<UserIdentityInfo> getEntityInfoActivities(UserIdentityParams par);
+	
+	public UserIdentityInfo getEntityInfoByIdActivities(Integer identity_key);
+	
+	public Integer getCountEntityInfoActivities(UserIdentityParams params);
+	
+	public boolean editEntityActivities(UserIdentityParams params);
+	
+	public boolean addEntityActivities(UserIdentityParams params);
+	
+	public boolean deleteEntityActivities(Integer identity_key);
+
+}

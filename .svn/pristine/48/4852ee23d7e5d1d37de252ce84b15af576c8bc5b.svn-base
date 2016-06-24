@@ -1,0 +1,39 @@
+package com.miaotu.topicComment.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.miaotu.common.service.impl.BaseServiceImpl;
+import com.miaotu.topicComment.pojo.TopicCommentParams;
+import com.miaotu.topicComment.service.TopicCommentService;
+import com.miaotu.topicComment.vo.TopicCommentInfo;
+@Service
+public class TopicCommentServiceImpl extends BaseServiceImpl implements TopicCommentService{
+
+	private static final String  SELECT_ENEITY= "topicCommentDao.selectEntity";
+	
+	private static final String SELECT_ENEITY_COUNT="topicCommentDao.selectEntityCount";
+	
+	private static final String  DELETE_ENEITY_BY_ID= "topicCommentDao.deleteEntityById";
+	
+	@Override
+	public List<TopicCommentInfo> getEntityInfoActivities(TopicCommentParams params) {
+		return baseDao.getList(SELECT_ENEITY,params);
+	}
+
+	@Override
+	public Integer getCountActivities(TopicCommentParams params) {
+		return baseDao.get(SELECT_ENEITY_COUNT,params);
+	}
+
+	@Override
+	public boolean deleteActivities(Integer topic_comment_id) {
+		int i = baseDao.delete(DELETE_ENEITY_BY_ID, topic_comment_id);
+		if (i > 0)
+			return true;
+		return false;
+	}
+
+	
+}

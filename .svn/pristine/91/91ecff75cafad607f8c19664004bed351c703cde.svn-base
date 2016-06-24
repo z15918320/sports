@@ -1,0 +1,51 @@
+package com.miaotu.user.service;
+import java.util.List;
+
+import com.miaotu.activities.vo.IdentityValue;
+import com.miaotu.user.pojo.UserAddParams;
+import com.miaotu.user.pojo.UserBehaviorValueParams;
+import com.miaotu.user.pojo.UserParams;
+import com.miaotu.user.vo.UserAddInfo;
+import com.miaotu.user.vo.UserInfo;
+
+public interface UserService {
+	
+	public boolean deleteUserActivities(Integer userId);
+	
+	public Integer getCountUserInfoActivities(UserParams userPars);
+	
+	public boolean addUserActivities(UserParams userPar);
+	
+	public boolean editUserActivities(UserParams userPar);
+	
+	public UserInfo getUserInfoFroIdActivities(Integer user_id);
+	
+	public boolean updateUserBehaviorValueActivities(UserBehaviorValueParams par);
+	
+	public boolean addUserBehaviorValueActivities(UserParams userPar);
+	
+	public List<UserInfo> getUserInfoFroParActivities(UserParams userPar);
+	
+	public List<UserInfo> getCertificationActivities(UserParams userPar);
+	
+	public Integer getCountCertificationActivities(UserParams userPar);
+	
+	public List<IdentityValue> getUserIdentityActivities(Integer identity_key);
+	
+	public List<IdentityValue> getUserITypeIdActivities(Integer i_type_id);
+	
+
+	public List<UserAddInfo> getUserAddList(UserAddParams pars);
+	
+	public Integer getCountUserAddList(UserAddParams pars);
+	
+	public UserAddInfo getUserAddFroId(Integer a_id);
+	
+	public boolean addUserAddActivities(UserAddParams pars);
+	
+	public boolean editUserAddActivities(UserAddParams pars);
+	
+	public boolean deleteUserAddActivities(Integer a_id);
+	
+	public boolean addTaskNewUser(Integer user_id);
+}

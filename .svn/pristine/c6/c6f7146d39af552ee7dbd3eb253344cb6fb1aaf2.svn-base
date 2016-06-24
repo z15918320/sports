@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="activitiesDao">
+
+	<select id="selectWantBuyId" parameterType="com.miaotu.activities.pojo.ActivitiesParams"
+		resultType="com.miaotu.activities.vo.ActivitiesInfo">
+		select * from LAUNCH_ACTIVITIES c where 1=1 limit #{page},
+		#{num};
+	</select>
+
+	<select id="selecActivitiesforId" parameterType="Integer" resultType="Integer">
+		select * from LAUNCH_ACTIVITIES c where c.activities_id = #{activities_id} ;
+	</select>
+
+	<select id="selecActivitiesforuserId" parameterType="com.miaotu.activities.pojo.ActivitiesParams"
+		resultType="com.miaotu.activities.vo.ActivitiesInfo">
+		SELECT  la.* FROM  USER_ACTIVITIES ua LEFT JOIN LAUNCH_ACTIVITIES la ON ua.activities_id = la.activities_id 
+		WHERE ua.user_id = #{user_id}  
+		ORDER BY  la.uploadtime DESC 
+		LIMIT #{page},#{num};
+	</select>
+
+	<insert id="saveActivities" keyProperty="activities_id"
+		useGeneratedKeys="true" parameterType="com.miaotu.activities.vo.ActivitiesInfo">
+		insert into
+		LAUNCH_ACTIVITIES(activities_titile,activities_starttime,activities_endtime,activities_content,
+		activities_pic,activities_expiretime,user_upper_limit_num,onlookers_user,
+		registration_user,activities_contacts,contact_phone,payment_amount,uploadtime)
+		values
+		(#{activities_id},#{activities_titile},#{activities_starttime},#{activities_endtime},#{activities_content},
+		#{activities_pic},#{activities_expiretime},
+		#{user_upper_limit_num},#{onlookers_user},#{registration_user},#{activities_contacts},#{contact_phone},#{payment_amount},
+		date_format(now(),'%Y-%c-%d %h:%i:%s'));
+		<!-- ON duplicate KEY UPDATE user_name = #{user_name} 限制重复插入的另一种方法 -->
+	</insert>
+		<insert id="activitiesDao.saveActivitiesByParams" keyProperty="activities_id"
+		useGeneratedKeys="true" parameterType="com.miaotu.activities.pojo.ActivitiesParams">
+		insert into
+		LAUNCH_ACTIVITIES(activities_titile,activities_starttime,activities_endtime,activities_content,
+		activities_pic,activities_expiretime,activities_contacts,contact_phone,
+		payment_amount,uploadtime,user_upper_limit_num,onlookers_user,registration_user)
+		values
+		(#{activities_titile},date_format(#{activities_starttime},'%Y-%c-%d %h:%i:%s'),date_format(#{activities_endtime},'%Y-%c-%d %h:%i:%s'),#{activities_content},
+		#{activities_pic},date_format(#{activities_expiretime},'%Y-%c-%d %h:%i:%s'),#{activities_contacts},
+		#{contact_phone},#{payment_amount},#{uploadtime},#{user_upper_limit_num},#{onlookers_user},#{registration_user});
+		<!-- ON duplicate KEY UPDATE user_name = #{user_name} 限制重复插入的另一种方法 -->
+	</insert>
+
+
+	<update id="updateActivitiesId" parameterType="com.miaotu.activities.vo.ActivitiesInfo">
+		update
+		LAUNCH_ACTIVITIES set
+		activities_titile = #{activities_titile},
+		activities_starttime = #{activities_starttime},
+		activities_endtime =
+		#{activities_endtime},
+		activities_content = #{activities_content},
+		activities_pic = #{activities_pic},
+		activities_expiretime =
+		#{activities_expiretime},
+		user_upper_limit_num =
+		#{user_upper_limit_num},
+		onlookers_user = #{onlookers_user},
+		registration_user = #{registration_user},
+		activities_contacts =
+		#{activities_contacts},
+		contact_phone = #{contact_phone},
+		payment_amount = #{payment_amount}
+		where activities_id =
+		#{activities_id}
+	</update>
+
+	<delete id="deleteActivitiesId" parameterType="Integer">
+		delete from
+		LAUNCH_ACTIVITIES
+		where activities_id = #{activities_id};
+	</delete>
+
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,15 @@
+package com.miaotu.activities.vo;
+
+public class ActivitesPar {
+	private Integer modeId;
+
+	public Integer getModeId() {
+		return modeId;
+	}
+
+	public void setModeId(Integer modeId) {
+		this.modeId = modeId;
+	}
+	
+	
+}

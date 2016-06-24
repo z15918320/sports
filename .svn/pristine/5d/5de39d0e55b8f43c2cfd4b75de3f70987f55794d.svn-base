@@ -1,0 +1,5 @@
+package com.miaotu.common.service;
+
+public interface BaseService {
+
+}

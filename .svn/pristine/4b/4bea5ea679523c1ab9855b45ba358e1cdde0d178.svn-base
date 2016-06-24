@@ -1,0 +1,147 @@
+package com.miaotu.supply.vo;
+
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
+public class UserSupplyCollection {
+	
+	@ApiModelProperty(value="s:供应主键ID",required=true)
+	private Integer supply_id;
+	@ApiModelProperty(value="用户主键ID",required=true)
+	private Integer user_id;
+	@ApiModelProperty(value="数量",required=true)
+	private Integer number;
+	@ApiModelProperty(value="单价",required=true)
+	private Float unit_price;
+	@ApiModelProperty(value="分枝点",required=true)
+	private Float branch_point;
+	@ApiModelProperty(value="杆径",required=true)
+	private Float rod_diameter;
+	@ApiModelProperty(value="冠幅头",required=true)
+	private Float crown_width_s;
+	@ApiModelProperty(value="冠幅尾",required=true)
+	private Float crown_width_e;
+	@ApiModelProperty(value="高度头",required=true)
+	private Float height_s;
+	@ApiModelProperty(value="高度尾",required=true)
+	private Float height_e;
+	@ApiModelProperty(value="品种",required=true)
+	private String varieties;
+	@ApiModelProperty(value="描叙",required=true)
+	private String selling_point;
+	@ApiModelProperty(value="苗源所在地",required=true)
+	private String seedling_source_address;
+	@ApiModelProperty(value="图片url",required=true)
+	private String  supply_url;
+	@ApiModelProperty(value="s:上传时间由服务器生成,客户端可忽略",required=true)
+	private String uploadtime;
+	@ApiModelProperty(value="地址",required=true)
+	private String address;
+	@ApiModelProperty(value="昵称",required=true)
+	private String nickname;
+	
+	public Integer getSupply_id() {
+		return supply_id;
+	}
+	public void setSupply_id(Integer supply_id) {
+		this.supply_id = supply_id;
+	}
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	public Integer getNumber() {
+		return number;
+	}
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+	public Float getUnit_price() {
+		return unit_price;
+	}
+	public void setUnit_price(Float unit_price) {
+		this.unit_price = unit_price;
+	}
+	public Float getBranch_point() {
+		return branch_point;
+	}
+	public void setBranch_point(Float branch_point) {
+		this.branch_point = branch_point;
+	}
+	public Float getRod_diameter() {
+		return rod_diameter;
+	}
+	public void setRod_diameter(Float rod_diameter) {
+		this.rod_diameter = rod_diameter;
+	}
+	public Float getCrown_width_s() {
+		return crown_width_s;
+	}
+	public void setCrown_width_s(Float crown_width_s) {
+		this.crown_width_s = crown_width_s;
+	}
+	public Float getCrown_width_e() {
+		return crown_width_e;
+	}
+	public void setCrown_width_e(Float crown_width_e) {
+		this.crown_width_e = crown_width_e;
+	}
+	public Float getHeight_s() {
+		return height_s;
+	}
+	public void setHeight_s(Float height_s) {
+		this.height_s = height_s;
+	}
+	public Float getHeight_e() {
+		return height_e;
+	}
+	public void setHeight_e(Float height_e) {
+		this.height_e = height_e;
+	}
+	public String getVarieties() {
+		return varieties;
+	}
+	public void setVarieties(String varieties) {
+		this.varieties = varieties;
+	}
+	public String getSelling_point() {
+		return selling_point;
+	}
+	public void setSelling_point(String selling_point) {
+		this.selling_point = selling_point;
+	}
+	public String getSeedling_source_address() {
+		return seedling_source_address;
+	}
+	public void setSeedling_source_address(String seedling_source_address) {
+		this.seedling_source_address = seedling_source_address;
+	}
+	public String getSupply_url() {
+		return supply_url;
+	}
+	public void setSupply_url(String supply_url) {
+		this.supply_url = supply_url;
+	}
+	public String getUploadtime() {
+		return uploadtime;
+	}
+	public void setUploadtime(String uploadtime) {
+		this.uploadtime = uploadtime;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getNickname() {
+		return nickname;
+	}
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+	
+	
+	
+}

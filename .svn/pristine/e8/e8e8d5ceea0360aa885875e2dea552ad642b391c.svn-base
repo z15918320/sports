@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="zmh Maven Webapp"
+  id="myeclipse.1457416668041"
+  context-root="/zmh"
+  j2ee-spec="6.0"
+  archive="zmh Maven Webapp.war">
+  <attributes>
+    <attribute name="webrootdir" value="src/main/webapp" />
+  </attributes>
+</project-module>
+

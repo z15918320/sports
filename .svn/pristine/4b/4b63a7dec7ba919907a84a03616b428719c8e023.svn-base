@@ -1,0 +1,15 @@
+package com.miaotu.wantbuyComment.service;
+
+import java.util.List;
+
+import com.miaotu.wantbuyComment.pojo.WantBuyCommentParams;
+import com.miaotu.wantbuyComment.vo.WantBuyCommentInfo;
+
+public interface  WantBuyCommentService {
+
+	public List<WantBuyCommentInfo> getEntityInfoActivities(WantBuyCommentParams params);
+	
+	public Integer getCountActivities(WantBuyCommentParams params);
+	
+	public boolean deleteActivities(Integer want_buy_comment_id);
+}
